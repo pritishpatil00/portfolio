@@ -20,13 +20,77 @@ export default function Home() {
         }}
         transition={{ type: "tween", ease: "backOut", duration:0.5}}
       >
-          <p onMouseEnter={() => {setIsHovered(true)}} onMouseLeave={() => {setIsHovered(false)}}>
-            A visual designer - with skills that haven't been replaced by A.I (yet) - making good shit only if the paycheck is equally good.
-          </p>
+          <div onMouseEnter={() => {setIsHovered(true)}} onMouseLeave={() => {setIsHovered(false)}}>
+            <div className={styles.content}>
+              <motion.div
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0 }}
+                className={styles.name}
+              >PRITISH PATIL</motion.div>
+              <motion.p
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+              >GREAT</motion.p>
+              <motion.p
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+              >PRODUCT</motion.p>
+              <motion.p
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+              >DESIGN</motion.p>
+              <motion.p
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+              >IS</motion.p>
+              <motion.p
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
+              >INVISIBLE</motion.p>
+            </div>
+          </div>
       </motion.div>
 
       <div className={styles.body}>
-        <p>I'm a <span>selectively skilled</span> product designer with strong focus on producing high quality & impactful digital experience.</p>
+        <div className={styles.content}>
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0 }}
+            className={styles.name}
+          >PRITISH PATIL</motion.div>
+          <motion.p
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+          >GREAT</motion.p>
+          <motion.p
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+          ><span>PRODUCT</span></motion.p>
+          <motion.p
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+          ><span>DESIGN</span></motion.p>
+          <motion.p
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+          >IS</motion.p>
+          <motion.p
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
+          >SIMPLE</motion.p>
+        </div>
       </div>
 
     </main>
