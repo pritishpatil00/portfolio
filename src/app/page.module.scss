@@ -1,6 +1,6 @@
 .main {
     height: 100vh;
-    background: #ffffff;
+    background: #F8F8F8;
 
     .body, .mask {
         height: 100%;
@@ -10,8 +10,8 @@
         align-items: center;
         justify-content: center;
         color: #5D6476;
-        font-size: 120px;
-        line-height: 120px;
+        font-size: 140px;
+        line-height: 124px;
         cursor: default;
 
         p{
@@ -31,13 +31,15 @@
     }
 
     .content {
-        margin-top: -100px;
+        margin-top: -64px;
+        
 
         .name {
             font-size: 24px;
             text-align: center;
-            display: block;
-            margin-bottom: 5px;
+            letter-spacing: 1px;
+            line-height: 24px;
+            padding-bottom: 40px;
         }
     }
 
@@ -51,3 +53,45 @@
         color: white;
     }
 }
+
+.blueCircle {
+    position: fixed;
+    top: 64px;
+    left: 64px;
+    width: 56px;
+    height: 56px;
+    background: #0E58E9;
+    border-radius: 50%;
+    z-index: 1000;
+}
+
+.sectionRoutes {
+    position: fixed;
+    top: 44px;
+    right: 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1000;
+    align-items: end;
+    padding: 20px;
+
+    p {
+        margin: 0;
+        font-size: 18px;
+        color: #5D6476;
+        cursor: pointer;
+        transition: color 0.3s ease, opacity 0.3s ease;
+        letter-spacing: 1px;
+
+        &:hover {
+            opacity: 0.5;
+        }
+    }
+
+    &:hover p {
+        color: #ffffff;
+    }
+}
+
+

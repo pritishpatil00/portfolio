@@ -7,11 +7,22 @@ import useMousePosition from './utils/useMousePosition';
 export default function Home() {
 
   const [isHovered, setIsHovered] = useState(false);
+  const [isMenuHovered, setIsMenuHovered] = useState(false);
   const { x, y } = useMousePosition();
-  const size = isHovered ? 400 : 40;
+  const size = isHovered ? 464 : isMenuHovered ? 240 : 40;
 
   return (
     <main className={styles.main}>
+      <div className={styles.blueCircle}></div>
+      <div 
+        className={styles.sectionRoutes} 
+        onMouseEnter={() => {setIsMenuHovered(true)}} 
+        onMouseLeave={() => {setIsMenuHovered(false)}}
+        >
+        <p>WORK</p>
+        <p>ABOUT</p>
+        <p>SANDBOX</p>
+      </div>
       <motion.div 
         className={styles.mask}
         animate={{
@@ -37,11 +48,6 @@ export default function Home() {
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-              >PRODUCT</motion.p>
-              <motion.p
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
               >DESIGN</motion.p>
               <motion.p
                 initial={{ y: 100, opacity: 0 }}
@@ -69,16 +75,11 @@ export default function Home() {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-          >GREAT</motion.p>
+          >GOOD</motion.p>
           <motion.p
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          ><span>PRODUCT</span></motion.p>
-          <motion.p
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
           ><span>DESIGN</span></motion.p>
           <motion.p
             initial={{ y: 100, opacity: 0 }}
