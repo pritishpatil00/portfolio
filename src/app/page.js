@@ -188,6 +188,15 @@ export default function Home() {
         </div>
       </div>
 
+      <div className={styles.caseStudy}>
+        <div className={styles.caseStudyItem}>
+          <p>Rectangle 1</p>
+        </div>
+        <div className={styles.caseStudyItem}>
+          <p>Rectangle 2</p>
+        </div>
+      </div>
+
     </main>
   )
 }
