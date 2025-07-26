@@ -125,6 +125,7 @@ export default function Home() {
         }}
         transition={{ type: "tween", ease: "backOut", duration:0.5}}
       >
+        <div className={styles.heroSection}>
           <div onMouseEnter={() => {setIsHovered(true)}} onMouseLeave={() => {setIsHovered(false)}}>
             <div className={styles.content}>
               <motion.div
@@ -155,36 +156,39 @@ export default function Home() {
               >INVISIBLE</motion.p>
             </div>
           </div>
+        </div>
       </motion.div>
 
       <div className={styles.body}>
-        <div className={styles.content}>
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0 }}
-            className={styles.name}
-          >PRITISH PATIL</motion.div>
-          <motion.p
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-          >GOOD</motion.p>
-          <motion.p
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          ><span>DESIGN</span></motion.p>
-          <motion.p
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-          >IS</motion.p>
-          <motion.p
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
-          >SIMPLE</motion.p>
+        <div className={styles.heroSection}>
+          <div className={styles.content}>
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0 }}
+              className={styles.name}
+            >PRITISH PATIL</motion.div>
+            <motion.p
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+            >GOOD</motion.p>
+            <motion.p
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            ><span>DESIGN</span></motion.p>
+            <motion.p
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+            >IS</motion.p>
+            <motion.p
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
+            >SIMPLE</motion.p>
+          </div>
         </div>
       </div>
 
