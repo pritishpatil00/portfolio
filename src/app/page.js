@@ -34,7 +34,7 @@ export default function Home() {
     if (showImages && currentImageIndex < images.length) {
       const timer = setTimeout(() => {
         setCurrentImageIndex(prev => prev + 1);
-      }, 100); // Fast transition between images
+      }, 150); // Fast transition between images
       return () => clearTimeout(timer);
     } else if (currentImageIndex >= images.length) {
       const timer = setTimeout(() => {
@@ -47,7 +47,7 @@ export default function Home() {
   // Natural loading animation - starts slow, speeds up
   useEffect(() => {
     if (showImages) {
-      const totalTime = images.length * 100 + 200; // Total sequence time
+      const totalTime = images.length * 150 + 200; // Total sequence time
       const startTime = Date.now();
       
       const animateProgress = () => {
@@ -113,7 +113,7 @@ export default function Home() {
         onMouseEnter={() => {setIsMenuHovered(true)}} 
         onMouseLeave={() => {setIsMenuHovered(false)}}
         >
-        <p>WORK</p>
+        <p>CASE STUDIES</p>
         <p>ABOUT</p>
         <p>SANDBOX</p>
       </div>
@@ -198,6 +198,9 @@ export default function Home() {
         </div>
         <div className={styles.caseStudyItem}>
           <p>Rectangle 2</p>
+        </div>
+        <div className={styles.caseStudyItem}>
+          <p>Rectangle 3</p>
         </div>
       </div>
 

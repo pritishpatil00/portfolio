@@ -157,12 +157,12 @@
 
 .caseStudyItem {
     position: relative;
-    height: 30vw;
     width: 100%;
+    aspect-ratio: 16 / 9;
     background: #ffffff;
     border-radius: 8px;
     border: 2px solid #eeeeee;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
     cursor: pointer;
     pointer-events: auto;
     z-index: 1001;
