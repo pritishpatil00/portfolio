@@ -45,14 +45,31 @@
 
     .content {
         width: 100%;
+    }
 
-        .name {
-            font-size: 24px;
-            text-align: center;
-            letter-spacing: 1px;
-            line-height: 24px;
-            padding-bottom: 40px;
-        }
+    .nameContainer {
+        display: block;
+        overflow: hidden;
+        line-height: 1;
+        margin-bottom: 40px;
+    }
+
+    .nameInner {
+        font-size: 24px;
+        text-align: center;
+        letter-spacing: 1px;
+        display: block;
+    }
+
+    .wordContainer {
+        display: block;
+        overflow: hidden;
+        line-height: 1;
+    }
+
+    .wordInner {
+        display: block;
+        margin: 0;
     }
 
 .mask {
@@ -87,7 +104,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 60vh;
+    height: 50vh;
     border-radius: 0px;
     overflow: hidden;
     z-index: 10;
@@ -98,7 +115,7 @@
     bottom: 15vh;
     left: 50%;
     transform: translateX(-50%);
-    width: 75%;
+    width: 50%;
     height: 6px;
     background: #EEEEEE;
     border-radius: 0px;

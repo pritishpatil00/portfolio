@@ -136,32 +136,46 @@ export default function Home() {
         <div className={styles.heroSection}>
           <div onMouseEnter={() => {setIsHovered(true)}} onMouseLeave={() => {setIsHovered(false)}}>
             <div className={styles.content}>
-              <motion.div
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut", delay: 0.8 }}
-                className={styles.name}
-              >PRITISH PATIL</motion.div>
-              <motion.p
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut", delay: 0.9 }}
-              >GREAT</motion.p>
-              <motion.p
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut", delay: 1.0 }}
-              >DESIGN</motion.p>
-              <motion.p
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut", delay: 1.1 }}
-              >IS</motion.p>
-              <motion.p
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut", delay: 1.2 }}
-              >INVISIBLE</motion.p>
+              <div className={styles.nameContainer}>
+                <motion.p
+                  initial={{ y: "100%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.95 }}
+                  className={styles.nameInner}
+                >PRITISH PATIL</motion.p>
+              </div>
+              <div className={styles.wordContainer}>
+                <motion.p
+                  initial={{ y: "100%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.8 }}
+                  className={styles.wordInner}
+                >GREAT</motion.p>
+              </div>
+              <div className={styles.wordContainer}>
+                <motion.p
+                  initial={{ y: "100%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.95 }}
+                  className={styles.wordInner}
+                >DESIGN</motion.p>
+              </div>
+              <div className={styles.wordContainer}>
+                <motion.p
+                  initial={{ y: "100%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.1 }}
+                  className={styles.wordInner}
+                >IS</motion.p>
+              </div>
+              <div className={styles.wordContainer}>
+                <motion.p
+                  initial={{ y: "100%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.25 }}
+                  className={styles.wordInner}
+                >INVISIBLE</motion.p>
+              </div>
             </div>
           </div>
         </div>
@@ -170,32 +184,46 @@ export default function Home() {
       <div className={styles.body}>
         <div className={styles.heroSection}>
           <div className={styles.content}>
-            <motion.div
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, ease: "easeOut", delay: 0.8 }}
-              className={styles.name}
-            >PRITISH PATIL</motion.div>
-            <motion.p
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, ease: "easeOut", delay: 0.9 }}
-            >GOOD</motion.p>
-            <motion.p
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, ease: "easeOut", delay: 1.0 }}
-            ><span>DESIGN</span></motion.p>
-            <motion.p
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, ease: "easeOut", delay: 1.1 }}
-            >IS</motion.p>
-            <motion.p
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, ease: "easeOut", delay: 1.2 }}
-            >SIMPLE</motion.p>
+            <div className={styles.nameContainer}>
+              <motion.p
+                initial={{ y: "100%" }}
+                animate={{ y: "0%" }}
+                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.95 }}
+                className={styles.nameInner}
+              >PRITISH PATIL</motion.p>
+            </div>
+            <div className={styles.wordContainer}>
+              <motion.p
+                initial={{ y: "100%" }}
+                animate={{ y: "0%" }}
+                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.8 }}
+                className={styles.wordInner}
+              >GOOD</motion.p>
+            </div>
+            <div className={styles.wordContainer}>
+              <motion.p
+                initial={{ y: "100%" }}
+                animate={{ y: "0%" }}
+                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.95 }}
+                className={styles.wordInner}
+              ><span>DESIGN</span></motion.p>
+            </div>
+            <div className={styles.wordContainer}>
+              <motion.p
+                initial={{ y: "100%" }}
+                animate={{ y: "0%" }}
+                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.1 }}
+                className={styles.wordInner}
+              >IS</motion.p>
+            </div>
+            <div className={styles.wordContainer}>
+              <motion.p
+                initial={{ y: "100%" }}
+                animate={{ y: "0%" }}
+                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.25 }}
+                className={styles.wordInner}
+              >SIMPLE</motion.p>
+            </div>
           </div>
         </div>
       </div>
