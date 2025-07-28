@@ -12,6 +12,7 @@ export default function Home() {
   const [showImages, setShowImages] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [hoveredRect, setHoveredRect] = useState(null);
   const { x, y } = useMousePosition();
   const size = isHovered ? 464 : isMenuHovered ? 240 : 40;
 
@@ -69,6 +70,28 @@ export default function Home() {
       requestAnimationFrame(animateProgress);
     }
   }, [showImages, images.length]);
+
+  // Check for rectangle hover during scroll
+  useEffect(() => {
+    if (!x || !y) return;
+    
+    const rectangles = document.querySelectorAll(`.${styles.caseStudyItem}`);
+    let foundHover = null;
+    
+    rectangles.forEach((rect, index) => {
+      const bounds = rect.getBoundingClientRect();
+      const isInside = x >= bounds.left + window.scrollX && 
+                      x <= bounds.right + window.scrollX && 
+                      y >= bounds.top + window.scrollY && 
+                      y <= bounds.bottom + window.scrollY;
+      
+      if (isInside) {
+        foundHover = index;
+      }
+    });
+    
+    setHoveredRect(foundHover);
+  }, [x, y, styles.caseStudyItem]);
 
   if (showImages) {
     return (
@@ -229,13 +252,13 @@ export default function Home() {
       </div>
 
       <div className={styles.caseStudy}>
-        <div className={styles.caseStudyItem}>
+        <div className={`${styles.caseStudyItem} ${hoveredRect === 0 ? styles.hovered : ''}`}>
           <p>Rectangle 1</p>
         </div>
-        <div className={styles.caseStudyItem}>
+        <div className={`${styles.caseStudyItem} ${hoveredRect === 1 ? styles.hovered : ''}`}>
           <p>Rectangle 2</p>
         </div>
-        <div className={styles.caseStudyItem}>
+        <div className={`${styles.caseStudyItem} ${hoveredRect === 2 ? styles.hovered : ''}`}>
           <p>Rectangle 3</p>
         </div>
       </div>
