@@ -107,16 +107,24 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <div className={styles.blueCircle}></div>
-      <div 
+      <motion.div 
+        className={styles.blueCircle}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, ease: "linear", delay: 0.3 }}
+      ></motion.div>
+      <motion.div 
         className={styles.sectionRoutes} 
         onMouseEnter={() => {setIsMenuHovered(true)}} 
         onMouseLeave={() => {setIsMenuHovered(false)}}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, ease: "linear", delay: 0.3 }}
         >
         <p>CASE STUDIES</p>
         <p>ABOUT</p>
         <p>SANDBOX</p>
-      </div>
+      </motion.div>
       <motion.div 
         className={styles.mask}
         animate={{
@@ -131,28 +139,28 @@ export default function Home() {
               <motion.div
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 0.8 }}
                 className={styles.name}
               >PRITISH PATIL</motion.div>
               <motion.p
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 0.9 }}
               >GREAT</motion.p>
               <motion.p
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 1.0 }}
               >DESIGN</motion.p>
               <motion.p
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 1.1 }}
               >IS</motion.p>
               <motion.p
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 1.2 }}
               >INVISIBLE</motion.p>
             </div>
           </div>
@@ -165,28 +173,28 @@ export default function Home() {
             <motion.div
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 0.8 }}
               className={styles.name}
             >PRITISH PATIL</motion.div>
             <motion.p
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 0.9 }}
             >GOOD</motion.p>
             <motion.p
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 1.0 }}
             ><span>DESIGN</span></motion.p>
             <motion.p
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 1.1 }}
             >IS</motion.p>
             <motion.p
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 1.2 }}
             >SIMPLE</motion.p>
           </div>
         </div>
