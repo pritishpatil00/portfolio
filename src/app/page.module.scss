@@ -84,7 +84,12 @@
     mask-position: 15%;
     mask-size: 40px;
     color: white;
-    z-index: 10;
+    z-index: 2000;
+    pointer-events: none;
+    
+    .heroSection {
+        pointer-events: auto;
+    }
 }
 }
 
