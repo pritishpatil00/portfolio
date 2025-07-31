@@ -292,9 +292,9 @@ export default function Home() {
       </div>
       
       <div style={{ height: '30vh' }}/>
-      <Slider src="/images/CapsuleOne.png" left="-55%" progress={scrollYProgress} text="Product Designer"/>
-      <Slider src="/images/CapsuleOne.png" left="-15%" progress={scrollYProgress} reverse={true} text="Creative Developer"/>
-      <Slider src="/images/CapsuleOne.png" left="-40%" progress={scrollYProgress} text="Interaction Designer"/>
+      <Slider src="/images/CapsuleOne.png" left="-55%" progress={scrollYProgress} text="Product Design"/>
+      <Slider src="/images/CapsuleOne.png" left="-25%" progress={scrollYProgress} reverse={true} text="Interaction Design"/>
+      <Slider src="/images/CapsuleOne.png" left="-40%" progress={scrollYProgress} text="Visual Design"/>
       <div style={{ height: '200vh' }} />
 
 
@@ -303,7 +303,7 @@ export default function Home() {
 }
 
 const Slider = ({src, left, progress, reverse = false, text}) => {
-  const x = useTransform(progress, [0, 1], reverse ? [500, -500] : [-500, 500]);
+  const x = useTransform(progress, [0, 1], reverse ? [750, -750] : [-750, 750]);
   
   return (
     <motion.div className={styles.slider} style={{left: left, x}}>
