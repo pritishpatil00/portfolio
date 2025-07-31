@@ -1,10 +1,10 @@
 .main {
-    height: 5000px;
     background: #ffffff;
     position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow: hidden;
 
     .body, .mask {
         height: 100%;
@@ -165,10 +165,8 @@
 }
 
 .imageGrid {
-    position: absolute;
-    top: 100vh;
-    left: 64px;
-    right: 64px;
+    position: relative;
+    margin: 0 64px;
     display: flex;
     flex-direction: column;
     gap: 48px;
@@ -209,6 +207,36 @@
     text-align: left;
     line-height: 1.5;
     width: 85%;
+}
+
+.phrase {
+    padding: 0 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 2vw;
+}
+
+.phraseText {
+    font-size: 7.5vw;
+    font-family: 'Neue Montreal Book';
+    margin: 0;
+}
+
+.phraseImage {
+    position: relative;
+    height: 6vw;
+    aspect-ratio: 4/2;
+    border-radius: 100px;
+    overflow: hidden;
+}
+
+.slider {
+    display: flex;
+    flex-direction: row;
+    gap: 0px;
+    white-space: nowrap;
+    position: relative;
 }
 
 

@@ -1,7 +1,7 @@
 'use client'
 import styles from './page.module.scss'
-import { useState, useEffect } from 'react';  
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';  
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue } from 'framer-motion';
 import useMousePosition from './utils/useMousePosition';
 import Image from 'next/image';
 import Lenis from 'lenis';
@@ -31,6 +31,8 @@ export default function Home() {
     '/images/Atombeam.png',
     '/images/Crowdsurf.png', 
   ];
+
+  const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     const lenis = new Lenis()
@@ -289,10 +291,41 @@ export default function Home() {
         </div>
       </div>
       
-      <div className='h-[100vh]'/>
-      <div className='h-[100vh]'/>
+      <div style={{ height: '30vh' }}/>
+      <Slider src="/images/CapsuleOne.png" left="-55%" progress={scrollYProgress} text="Product Designer"/>
+      <Slider src="/images/CapsuleOne.png" left="-15%" progress={scrollYProgress} reverse={true} text="Creative Developer"/>
+      <Slider src="/images/CapsuleOne.png" left="-40%" progress={scrollYProgress} text="Interaction Designer"/>
+      <div style={{ height: '200vh' }} />
 
 
     </main>
+  )
+}
+
+const Slider = ({src, left, progress, reverse = false, text}) => {
+  const x = useTransform(progress, [0, 1], reverse ? [500, -500] : [-500, 500]);
+  
+  return (
+    <motion.div className={styles.slider} style={{left: left, x}}>
+      <Phrase src={src} text={text}/>
+      <Phrase src={src} text={text}/>
+      <Phrase src={src} text={text}/>
+    </motion.div>
+  )
+}
+
+const Phrase = ({src, text}) => {
+  return (
+    <div className={styles.phrase}>
+      <p className={styles.phraseText}>{text}</p>
+      <span className={styles.phraseImage}>
+        <Image
+          style={{objectFit: "cover"}}
+          src={src}
+          alt="image"
+          fill
+        />
+      </span>
+    </div>
   )
 }
