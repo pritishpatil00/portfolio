@@ -164,44 +164,52 @@
     }
 }
 
-.caseStudy {
+.imageGrid {
     position: absolute;
     top: 100vh;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 64px;
+    right: 64px;
     display: flex;
     flex-direction: column;
-    width: min(70vw, 800px);
-    max-width: 70vw;
-    gap: 20px;
-    z-index: 1000;
+    gap: 48px;
 }
 
-.caseStudyItem {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #ffffff;
-    border-radius: 8px;
-    border: 2px solid #eeeeee;
-    transition: all 0.1s ease;
-    cursor: pointer;
-    pointer-events: auto;
-    z-index: 1001;
+.imageRow {
+    gap: 8px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+}
+
+.imageItem {
+    flex: 1;
     
-    p {
-        margin: 0;
-        font-size: 18px;
-        color: #333;
+    img {
+        width: 100%;
+        height: auto;
+        display: block;
     }
 }
 
-.caseStudyItem.hovered {
-    border: 2px solid blue !important;
-    transform: scale(1.03) !important;
+.imageTitle {
+    font-size: 24px;
+    font-family: 'Neue Montreal Book';
+    color: #000000;
+    margin: 16px 0 8px 0;
+    text-align: left;
+    width: 90%;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
 }
+
+.imageDescription {
+    font-family: 'Neue Montreal Book';
+    font-size: 16px;
+    color: #8F8F8F;
+    margin: 0;
+    text-align: left;
+    line-height: 1.5;
+    width: 85%;
+}
+
 
 

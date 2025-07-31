@@ -5,8 +5,22 @@
   src: url('../../public/fonts/AVGARDD_2.woff') format('woff');
 }
 
+@font-face {
+  font-family: 'Neue Montreal Medium';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../../public/fonts/PPNeueMontreal-Medium.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Neue Montreal Book';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../../public/fonts/PPNeueMontreal-Book.otf') format('opentype');
+}
+
 body{
   margin: 0px;
   background-color: #0f0f0f;
-  font-family: 'Avant Garde Book BT';
+  font-family: 'Neue Montreal Medium';
 }

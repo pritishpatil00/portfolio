@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useMousePosition from './utils/useMousePosition';
 import Image from 'next/image';
+import Lenis from 'lenis';
 
 export default function Home() {
 
@@ -30,6 +31,17 @@ export default function Home() {
     '/images/Atombeam.png',
     '/images/Crowdsurf.png', 
   ];
+
+  useEffect(() => {
+    const lenis = new Lenis()
+
+    function raf(time) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+  }, []);
 
   useEffect(() => {
     if (showImages && currentImageIndex < images.length) {
@@ -70,28 +82,6 @@ export default function Home() {
       requestAnimationFrame(animateProgress);
     }
   }, [showImages, images.length]);
-
-  // Check for rectangle hover during scroll
-  useEffect(() => {
-    if (!x || !y) return;
-    
-    const rectangles = document.querySelectorAll(`.${styles.caseStudyItem}`);
-    let foundHover = null;
-    
-    rectangles.forEach((rect, index) => {
-      const bounds = rect.getBoundingClientRect();
-      const isInside = x >= bounds.left + window.scrollX && 
-                      x <= bounds.right + window.scrollX && 
-                      y >= bounds.top + window.scrollY && 
-                      y <= bounds.bottom + window.scrollY;
-      
-      if (isInside) {
-        foundHover = index;
-      }
-    });
-    
-    setHoveredRect(foundHover);
-  }, [x, y, styles.caseStudyItem]);
 
   if (showImages) {
     return (
@@ -251,17 +241,57 @@ export default function Home() {
         </div>
       </div>
 
-      <div className={styles.caseStudy}>
-        <div className={`${styles.caseStudyItem} ${hoveredRect === 0 ? styles.hovered : ''}`}>
-          <p>Rectangle 1</p>
+      <div className= {styles.imageGrid}>
+        <div className={styles.imageRow}>
+
+          <div className={styles.imageItem}>
+            <Image
+              src="/images/PoppinHeroThree.png"
+              alt="Crew Hero"
+              width={1200}
+              height={675}
+            />
+            <h3 className={styles.imageTitle}>Bootstrapping a hyperlocal ticketing marketplace to 75,000 users</h3>
+            <p className={styles.imageDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>          </div>
+
+          <div className={styles.imageItem}>
+            <Image
+              src="/images/AllAthleteHero.png"
+              alt="Crowdsurf Hero"
+              width={1200}
+              height={675}
+            />
+            <h3 className={styles.imageTitle}>Connecting high school athletes with college programs</h3>
+            <p className={styles.imageDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          </div>
         </div>
-        <div className={`${styles.caseStudyItem} ${hoveredRect === 1 ? styles.hovered : ''}`}>
-          <p>Rectangle 2</p>
-        </div>
-        <div className={`${styles.caseStudyItem} ${hoveredRect === 2 ? styles.hovered : ''}`}>
-          <p>Rectangle 3</p>
+
+        <div className={styles.imageRow}>
+          <div className={styles.imageItem}>
+            <Image
+              src="/images/CrewHero.png"
+              alt="Crew Hero"
+              width={1200}
+              height={675}
+            />
+            <h3 className={styles.imageTitle}>Raising $200,000 to explore group photo-messaging</h3>
+            <p className={styles.imageDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>          </div>
+
+          <div className={styles.imageItem}>
+            <Image
+              src="/images/CrowdsurfHero.png"
+              alt="All Athlete Hero"
+              width={1200}
+              height={675}
+            />
+            <h3 className={styles.imageTitle}>Pitching Sequoia: Crowdsurf</h3>
+            <p className={styles.imageDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>          </div>
         </div>
       </div>
+      
+      <div className='h-[100vh]'/>
+      <div className='h-[100vh]'/>
+
 
     </main>
   )
