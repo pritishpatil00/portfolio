@@ -257,7 +257,7 @@ export default function Home() {
       <div id="case-studies" className={styles.caseStudiesContainer}>
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2024</p>
+            <p className={styles.caseStudyYear}>2023</p>
             <h3 className={styles.caseStudyTitle}>Poppin</h3>
             <p className={styles.caseStudyDescription}>
             I led the end to end design of an interactive web tool that aims to visualize the lunar orbital regions in space. 
@@ -268,7 +268,17 @@ export default function Home() {
             <div className={styles.dropdownSection}>
               <div className={styles.dropdownRow} onClick={() => toggleDropdown(0, 'role')}>
                 <span className={styles.dropdownLabel}>Role</span>
-                <div className={styles.dropdownIcon}></div>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['0-role'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#000000" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#000000" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['0-role'] ? styles.open : ''}`}>
                 Lead Product Designer
@@ -278,7 +288,17 @@ export default function Home() {
             <div className={styles.dropdownSection}>
               <div className={styles.dropdownRow} onClick={() => toggleDropdown(0, 'contributions')}>
                 <span className={styles.dropdownLabel}>Contributions</span>
-                <div className={styles.dropdownIcon}></div>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['0-contributions'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#000000" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#000000" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['0-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
                 <ul className={styles.contributionsList}>
@@ -286,6 +306,7 @@ export default function Home() {
                   <li>User Interviews</li>
                   <li>Contextual Inquiry</li>
                   <li>Usability Testing</li>
+                  <li>Product Management</li>
                   <li>Front-End Development</li>
                 </ul>
               </div>
@@ -294,7 +315,17 @@ export default function Home() {
             <div className={styles.dropdownSection}>
               <div className={styles.dropdownRow} onClick={() => toggleDropdown(0, 'timeline')}>
                 <span className={styles.dropdownLabel}>Timeline</span>
-                <div className={styles.dropdownIcon}></div>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['0-timeline'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#000000" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#000000" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['0-timeline'] ? styles.open : ''}`}>
                 6 months (Jan 2024 - Jun 2024)
