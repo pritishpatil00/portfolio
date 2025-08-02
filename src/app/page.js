@@ -14,8 +14,39 @@ export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [hoveredRect, setHoveredRect] = useState(null);
+  const [dropdownStates, setDropdownStates] = useState({
+    '0-role': true // Role open by default for first case study
+  });
   const { x, y } = useMousePosition();
-  const size = isHovered ? 464 : isMenuHovered ? 240 : 40;
+  const size = isHovered ? 580 : isMenuHovered ? 240 : 40;
+
+  const toggleDropdown = (caseStudyIndex, dropdownType) => {
+    const newKey = `${caseStudyIndex}-${dropdownType}`;
+    setDropdownStates(prev => {
+      const newState = {};
+      // Copy existing state for other case studies
+      Object.keys(prev).forEach(key => {
+        if (!key.startsWith(`${caseStudyIndex}-`)) {
+          newState[key] = prev[key];
+        }
+      });
+      
+      // If clicking the currently open dropdown, close it
+      if (prev[newKey]) {
+        newState[newKey] = false;
+      } else {
+        // Close all dropdowns for this case study and open the clicked one
+        Object.keys(prev).forEach(key => {
+          if (key.startsWith(`${caseStudyIndex}-`)) {
+            newState[key] = false;
+          }
+        });
+        newState[newKey] = true;
+      }
+      
+      return newState;
+    });
+  };
 
   const images = [
     '/images/Hazard.png',
@@ -122,24 +153,20 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <motion.div 
-        className={styles.blueCircle}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, ease: "linear", delay: 0.3 }}
-      ></motion.div>
-      <motion.div 
-        className={styles.sectionRoutes} 
-        onMouseEnter={() => {setIsMenuHovered(true)}} 
-        onMouseLeave={() => {setIsMenuHovered(false)}}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, ease: "linear", delay: 0.3 }}
+      <motion.header 
+        className={styles.stickyHeader}
+      >
+        <div className={styles.headerName}>
+          <p onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>PRITISH PATIL</p>
+        </div>
+        <nav 
+          className={styles.headerNav}
         >
-        <p>CASE STUDIES</p>
-        <p>ABOUT</p>
-        <p>SANDBOX</p>
-      </motion.div>
+          <p onClick={() => document.getElementById('case-studies').scrollIntoView({ behavior: 'smooth' })}>CASE STUDIES</p>
+          <p>ABOUT</p>
+          <p>SANDBOX</p>
+        </nav>
+      </motion.header>
       <motion.div 
         className={styles.mask}
         animate={{
@@ -151,14 +178,6 @@ export default function Home() {
         <div className={styles.heroSection}>
           <div onMouseEnter={() => {setIsHovered(true)}} onMouseLeave={() => {setIsHovered(false)}}>
             <div className={styles.content}>
-              <div className={styles.nameContainer}>
-                <motion.p
-                  initial={{ y: "100%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.95 }}
-                  className={styles.nameInner}
-                >PRITISH PATIL</motion.p>
-              </div>
               <div className={styles.wordContainer}>
                 <motion.p
                   initial={{ y: "100%" }}
@@ -199,14 +218,6 @@ export default function Home() {
       <div className={styles.body}>
         <div className={styles.heroSection}>
           <div className={styles.content}>
-            <div className={styles.nameContainer}>
-              <motion.p
-                initial={{ y: "100%" }}
-                animate={{ y: "0%" }}
-                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.95 }}
-                className={styles.nameInner}
-              >PRITISH PATIL</motion.p>
-            </div>
             <div className={styles.wordContainer}>
               <motion.p
                 initial={{ y: "100%" }}
@@ -243,58 +254,120 @@ export default function Home() {
         </div>
       </div>
 
-      <div className= {styles.imageGrid}>
-        <div className={styles.imageRow}>
+      <div id="case-studies" className={styles.caseStudiesContainer}>
+        <div className={styles.caseStudy}>
+          <div className={styles.caseStudyContent}>
+            <p className={styles.caseStudyYear}>2024</p>
+            <h3 className={styles.caseStudyTitle}>Poppin</h3>
+            <p className={styles.caseStudyDescription}>
+            I led the end to end design of an interactive web tool that aims to visualize the lunar orbital regions in space. 
 
-          <div className={styles.imageItem}>
-            <Image
-              src="/images/PoppinHeroThree.png"
-              alt="Crew Hero"
-              width={1200}
-              height={675}
-            />
-            <h3 className={styles.imageTitle}>Bootstrapping a hyperlocal ticketing marketplace to 75,000 users</h3>
-            <p className={styles.imageDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>          </div>
+            I lead the 0→1 conceptualization and designs, along with leading two ideation workshops, four user interviews, stakeholder presentations, and five shipped features in collaboration with fellow student engineers.            
+            </p>
+            
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(0, 'role')}>
+                <span className={styles.dropdownLabel}>Role</span>
+                <div className={styles.dropdownIcon}></div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['0-role'] ? styles.open : ''}`}>
+                Lead Product Designer
+              </div>
+            </div>
 
-          <div className={styles.imageItem}>
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(0, 'contributions')}>
+                <span className={styles.dropdownLabel}>Contributions</span>
+                <div className={styles.dropdownIcon}></div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['0-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
+                <ul className={styles.contributionsList}>
+                  <li>UX/UI Design</li>
+                  <li>User Interviews</li>
+                  <li>Contextual Inquiry</li>
+                  <li>Usability Testing</li>
+                  <li>Front-End Development</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(0, 'timeline')}>
+                <span className={styles.dropdownLabel}>Timeline</span>
+                <div className={styles.dropdownIcon}></div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['0-timeline'] ? styles.open : ''}`}>
+                6 months (Jan 2024 - Jun 2024)
+              </div>
+            </div>
+          </div>
+          <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/AllAthleteHero.png"
-              alt="Crowdsurf Hero"
-              width={1200}
-              height={675}
+              src="/images/PoppinMockupTwo.png"
+              alt="Poppin Case Study"
+              width={1600}
+              height={900}
+              className={styles.caseStudyImage}
             />
-            <h3 className={styles.imageTitle}>Connecting high school athletes with college programs</h3>
-            <p className={styles.imageDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
           </div>
         </div>
 
-        <div className={styles.imageRow}>
-          <div className={styles.imageItem}>
+        <div className={styles.caseStudy}>
+          <div className={styles.caseStudyContent}>
+            <p className={styles.caseStudyYear}>2023</p>
+            <h3 className={styles.caseStudyTitle}>AllAthlete</h3>
+            <p className={styles.caseStudyDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          </div>
+          <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/CrewHero.png"
-              alt="Crew Hero"
-              width={1200}
-              height={675}
+              src="/images/AllAthleteMockup.png"
+              alt="Case Study"
+              width={1600}
+              height={900}
+              className={styles.caseStudyImage}
             />
-            <h3 className={styles.imageTitle}>Raising $200,000 to explore group photo-messaging</h3>
-            <p className={styles.imageDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>          </div>
+          </div>
+        </div>
 
-          <div className={styles.imageItem}>
+        <div className={styles.caseStudy}>
+          <div className={styles.caseStudyContent}>
+            <p className={styles.caseStudyYear}>2022</p>
+            <h3 className={styles.caseStudyTitle}>Raising $200,000 to explore group photo-messaging</h3>
+            <p className={styles.caseStudyDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          </div>
+          <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/CrowdsurfHero.png"
-              alt="All Athlete Hero"
-              width={1200}
-              height={675}
+              src="/images/PoppinHand.png"
+              alt="Case Study"
+              width={1600}
+              height={900}
+              className={styles.caseStudyImage}
             />
-            <h3 className={styles.imageTitle}>Pitching Sequoia: Crowdsurf</h3>
-            <p className={styles.imageDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>          </div>
+          </div>
+        </div>
+
+        <div className={styles.caseStudy}>
+          <div className={styles.caseStudyContent}>
+            <p className={styles.caseStudyYear}>2021</p>
+            <h3 className={styles.caseStudyTitle}>Pitching Sequoia: Crowdsurf</h3>
+            <p className={styles.caseStudyDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          </div>
+          <div className={styles.caseStudyImageContainer}>
+            <Image
+              src="/images/PoppinHand.png"
+              alt="Case Study"
+              width={1600}
+              height={900}
+              className={styles.caseStudyImage}
+            />
+          </div>
         </div>
       </div>
       
       <div style={{ height: '30vh' }}/>
-      <Slider src="/images/CapsuleOne.png" left="-55%" progress={scrollYProgress} text="Product Design"/>
-      <Slider src="/images/CapsuleOne.png" left="-25%" progress={scrollYProgress} reverse={true} text="Interaction Design"/>
-      <Slider src="/images/CapsuleOne.png" left="-40%" progress={scrollYProgress} text="Visual Design"/>
+      <Slider src="/images/CapsuleOne.png" left="-155%" progress={scrollYProgress} text="Product Design"/>
+      <Slider src="/images/CapsuleOne.png" left="-125%" progress={scrollYProgress} reverse={true} text="Interaction Design"/>
+      <Slider src="/images/CapsuleOne.png" left="-160%" progress={scrollYProgress} text="Visual Design"/>
       <div style={{ height: '200vh' }} />
 
 
@@ -307,6 +380,8 @@ const Slider = ({src, left, progress, reverse = false, text}) => {
   
   return (
     <motion.div className={styles.slider} style={{left: left, x}}>
+      <Phrase src={src} text={text}/>
+      <Phrase src={src} text={text}/>
       <Phrase src={src} text={text}/>
       <Phrase src={src} text={text}/>
       <Phrase src={src} text={text}/>

@@ -19,8 +19,22 @@
   src: url('../../public/fonts/PPNeueMontreal-Book.otf') format('opentype');
 }
 
+@font-face {
+  font-family: 'Neue Montreal Thin';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../../public/fonts/PPNeueMontreal-Thin.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Neue Montreal Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../../public/fonts/neue-montreal-regular.otf') format('opentype');
+}
+
 body{
   margin: 0px;
   background-color: #0f0f0f;
-  font-family: 'Neue Montreal Medium';
+  font-family: 'Neue Montreal Regular';
 }
