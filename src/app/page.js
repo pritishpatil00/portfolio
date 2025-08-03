@@ -15,7 +15,10 @@ export default function Home() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [hoveredRect, setHoveredRect] = useState(null);
   const [dropdownStates, setDropdownStates] = useState({
-    '0-role': true // Role open by default for first case study
+    '0-role': true, // Role open by default for first case study
+    '1-role': true, // Role open by default for second case study
+    '2-role': true, // Role open by default for third case study  
+    '3-role': true  // Role open by default for fourth case study
   });
   const { x, y } = useMousePosition();
   const size = isHovered ? 580 : isMenuHovered ? 240 : 40;
@@ -163,8 +166,8 @@ export default function Home() {
           className={styles.headerNav}
         >
           <p onClick={() => document.getElementById('case-studies').scrollIntoView({ behavior: 'smooth' })}>CASE STUDIES</p>
-          <p>ABOUT</p>
           <p>SANDBOX</p>
+          <p>ABOUT</p>
         </nav>
       </motion.header>
       <motion.div 
@@ -271,11 +274,11 @@ export default function Home() {
                 <div className={styles.dropdownIcon}>
                   {dropdownStates['0-role'] ? (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8H13" stroke="#000000" strokeWidth="1"/>
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
                     </svg>
                   ) : (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M8 3V13M3 8H13" stroke="#000000" strokeWidth="1"/>
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
                     </svg>
                   )}
                 </div>
@@ -291,11 +294,11 @@ export default function Home() {
                 <div className={styles.dropdownIcon}>
                   {dropdownStates['0-contributions'] ? (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8H13" stroke="#000000" strokeWidth="1"/>
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
                     </svg>
                   ) : (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M8 3V13M3 8H13" stroke="#000000" strokeWidth="1"/>
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
                     </svg>
                   )}
                 </div>
@@ -318,11 +321,11 @@ export default function Home() {
                 <div className={styles.dropdownIcon}>
                   {dropdownStates['0-timeline'] ? (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8H13" stroke="#000000" strokeWidth="1"/>
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
                     </svg>
                   ) : (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M8 3V13M3 8H13" stroke="#000000" strokeWidth="1"/>
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
                     </svg>
                   )}
                 </div>
@@ -348,6 +351,72 @@ export default function Home() {
             <p className={styles.caseStudyYear}>2023</p>
             <h3 className={styles.caseStudyTitle}>AllAthlete</h3>
             <p className={styles.caseStudyDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(1, 'role')}>
+                <span className={styles.dropdownLabel}>Role</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['1-role'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['1-role'] ? styles.open : ''}`}>
+                Product Designer
+              </div>
+            </div>
+
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(1, 'contributions')}>
+                <span className={styles.dropdownLabel}>Contributions</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['1-contributions'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['1-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
+                <ul className={styles.contributionsList}>
+                  <li>User Research</li>
+                  <li>Wireframing</li>
+                  <li>Prototyping</li>
+                  <li>Visual Design</li>
+                  <li>User Testing</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(1, 'timeline')}>
+                <span className={styles.dropdownLabel}>Timeline</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['1-timeline'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['1-timeline'] ? styles.open : ''}`}>
+                4 months (Mar 2023 - Jun 2023)
+              </div>
+            </div>
           </div>
           <div className={styles.caseStudyImageContainer}>
             <Image
@@ -362,13 +431,79 @@ export default function Home() {
 
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2022</p>
-            <h3 className={styles.caseStudyTitle}>Raising $200,000 to explore group photo-messaging</h3>
+            <p className={styles.caseStudyYear}>2025</p>
+            <h3 className={styles.caseStudyTitle}>Crowdsurf</h3>
             <p className={styles.caseStudyDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(2, 'role')}>
+                <span className={styles.dropdownLabel}>Role</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['2-role'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['2-role'] ? styles.open : ''}`}>
+                Co-Founder & Lead Designer
+              </div>
+            </div>
+
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(2, 'contributions')}>
+                <span className={styles.dropdownLabel}>Contributions</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['2-contributions'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['2-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
+                <ul className={styles.contributionsList}>
+                  <li>Product Strategy</li>
+                  <li>Brand Design</li>
+                  <li>Mobile App Design</li>
+                  <li>Investor Presentations</li>
+                  <li>Team Leadership</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(2, 'timeline')}>
+                <span className={styles.dropdownLabel}>Timeline</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['2-timeline'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['2-timeline'] ? styles.open : ''}`}>
+                8 months (Jan 2022 - Aug 2022)
+              </div>
+            </div>
           </div>
           <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/PoppinHand.png"
+              src="/images/CrowdsurfMockupTwo.png"
               alt="Case Study"
               width={1600}
               height={900}
@@ -380,12 +515,78 @@ export default function Home() {
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
             <p className={styles.caseStudyYear}>2021</p>
-            <h3 className={styles.caseStudyTitle}>Pitching Sequoia: Crowdsurf</h3>
+            <h3 className={styles.caseStudyTitle}>Crowdsurf</h3>
             <p className={styles.caseStudyDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'role')}>
+                <span className={styles.dropdownLabel}>Role</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['3-role'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['3-role'] ? styles.open : ''}`}>
+                Founder & CEO
+              </div>
+            </div>
+
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'contributions')}>
+                <span className={styles.dropdownLabel}>Contributions</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['3-contributions'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['3-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
+                <ul className={styles.contributionsList}>
+                  <li>Business Strategy</li>
+                  <li>Pitch Deck Design</li>
+                  <li>Product Vision</li>
+                  <li>Investor Relations</li>
+                  <li>Market Research</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'timeline')}>
+                <span className={styles.dropdownLabel}>Timeline</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['3-timeline'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['3-timeline'] ? styles.open : ''}`}>
+                5 months (Sep 2021 - Jan 2022)
+              </div>
+            </div>
           </div>
           <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/PoppinHand.png"
+              src="/images/CrowdsurfMockupTwo.png"
               alt="Case Study"
               width={1600}
               height={900}
