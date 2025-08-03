@@ -260,12 +260,12 @@ export default function Home() {
       <div id="case-studies" className={styles.caseStudiesContainer}>
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2023</p>
-            <h3 className={styles.caseStudyTitle}>Poppin</h3>
+            <p className={styles.caseStudyYear}>2025</p>
+            <h3 className={styles.caseStudyTitle}>Crowdsurf</h3>
             <p className={styles.caseStudyDescription}>
-            I led the end to end design of an interactive web tool that aims to visualize the lunar orbital regions in space. 
-
-            I lead the 0→1 conceptualization and designs, along with leading two ideation workshops, four user interviews, stakeholder presentations, and five shipped features in collaboration with fellow student engineers.            
+              A social music discovery concept app created to transform isolated music listening into a shared social experience. 
+              <br /><br />
+              Backed by iHeartRadio.
             </p>
             
             <div className={styles.dropdownSection}>
@@ -284,7 +284,7 @@ export default function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['0-role'] ? styles.open : ''}`}>
-                Lead Product Designer
+                Founder and Product Lead
               </div>
             </div>
 
@@ -305,19 +305,18 @@ export default function Home() {
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['0-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
                 <ul className={styles.contributionsList}>
+                  <li>User Research</li>
                   <li>UX/UI Design</li>
-                  <li>User Interviews</li>
-                  <li>Contextual Inquiry</li>
-                  <li>Usability Testing</li>
-                  <li>Product Management</li>
+                  <li>Product Strategy</li>
                   <li>Front-End Development</li>
+                  <li>Usability Testing</li>
                 </ul>
               </div>
             </div>
 
             <div className={styles.dropdownSection}>
               <div className={styles.dropdownRow} onClick={() => toggleDropdown(0, 'timeline')}>
-                <span className={styles.dropdownLabel}>Timeline</span>
+                <span className={styles.dropdownLabel}>Outcomes</span>
                 <div className={styles.dropdownIcon}>
                   {dropdownStates['0-timeline'] ? (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -331,13 +330,13 @@ export default function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['0-timeline'] ? styles.open : ''}`}>
-                6 months (Jan 2024 - Jun 2024)
+                This project is ongoing
               </div>
             </div>
           </div>
           <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/PoppinMockupTwo.png"
+              src="/images/CrowdSurfMockupTwo.png"
               alt="Poppin Case Study"
               width={1600}
               height={900}
@@ -348,9 +347,13 @@ export default function Home() {
 
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2023</p>
-            <h3 className={styles.caseStudyTitle}>AllAthlete</h3>
-            <p className={styles.caseStudyDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <p className={styles.caseStudyYear}>2024</p>
+            <h3 className={styles.caseStudyTitle}>Crew</h3>
+            <p className={styles.caseStudyDescription}>
+              A photo-messaging platform for groups designed to foster habitual daily interactions.
+              <br /><br />
+              Backed by Unshackled Ventures.
+            </p>
             
             <div className={styles.dropdownSection}>
               <div className={styles.dropdownRow} onClick={() => toggleDropdown(1, 'role')}>
@@ -368,7 +371,7 @@ export default function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['1-role'] ? styles.open : ''}`}>
-                Product Designer
+                Lead Product Designer
               </div>
             </div>
 
@@ -390,17 +393,17 @@ export default function Home() {
               <div className={`${styles.dropdownContent} ${dropdownStates['1-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
                 <ul className={styles.contributionsList}>
                   <li>User Research</li>
-                  <li>Wireframing</li>
-                  <li>Prototyping</li>
+                  <li>UX/UI Design</li>
                   <li>Visual Design</li>
-                  <li>User Testing</li>
+                  <li>Design Systems</li>
+                  <li>Usability Testing</li>
                 </ul>
               </div>
             </div>
 
             <div className={styles.dropdownSection}>
               <div className={styles.dropdownRow} onClick={() => toggleDropdown(1, 'timeline')}>
-                <span className={styles.dropdownLabel}>Timeline</span>
+                <span className={styles.dropdownLabel}>Outcomes</span>
                 <div className={styles.dropdownIcon}>
                   {dropdownStates['1-timeline'] ? (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -414,13 +417,17 @@ export default function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['1-timeline'] ? styles.open : ''}`}>
-                4 months (Mar 2023 - Jun 2023)
+                <ul className={styles.contributionsList}>
+                  <li>300,000+ photos and videos sent</li>
+                  <li>2500+ users</li>
+                  <li>Sub 2 second photo + video sending</li>
+                </ul>
               </div>
             </div>
           </div>
           <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/AllAthleteMockup.png"
+              src="/images/CrewMockupFinal.png"
               alt="Case Study"
               width={1600}
               height={900}
@@ -431,9 +438,13 @@ export default function Home() {
 
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2025</p>
-            <h3 className={styles.caseStudyTitle}>Crowdsurf</h3>
-            <p className={styles.caseStudyDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <p className={styles.caseStudyYear}>2023</p>
+            <h3 className={styles.caseStudyTitle}>Poppin</h3>
+            <p className={styles.caseStudyDescription}>
+              A hyperlocal ticketing marketplace enabling social event discovery. I led the 0→1 design and conceptualization from MVP to v3. Managed a team of four designers.
+              <br /><br />
+              Participated in PearX's S'23 accelerator and raised a $2,000,000+ seed round backed by 1984Ventures, ProgressionFund, and Liquid2.
+            </p>
             
             <div className={styles.dropdownSection}>
               <div className={styles.dropdownRow} onClick={() => toggleDropdown(2, 'role')}>
@@ -451,7 +462,7 @@ export default function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['2-role'] ? styles.open : ''}`}>
-                Co-Founder & Lead Designer
+                Lead Product Designer
               </div>
             </div>
 
@@ -472,18 +483,18 @@ export default function Home() {
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['2-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
                 <ul className={styles.contributionsList}>
-                  <li>Product Strategy</li>
-                  <li>Brand Design</li>
-                  <li>Mobile App Design</li>
-                  <li>Investor Presentations</li>
-                  <li>Team Leadership</li>
+                  <li>User Research</li>
+                  <li>UX/UI Design</li>
+                  <li>Visual Design</li>
+                  <li>Engineer Collaboration</li>
+                  <li>Front-End Development</li>
                 </ul>
               </div>
             </div>
 
             <div className={styles.dropdownSection}>
               <div className={styles.dropdownRow} onClick={() => toggleDropdown(2, 'timeline')}>
-                <span className={styles.dropdownLabel}>Timeline</span>
+                <span className={styles.dropdownLabel}>Outcomes</span>
                 <div className={styles.dropdownIcon}>
                   {dropdownStates['2-timeline'] ? (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -497,13 +508,18 @@ export default function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['2-timeline'] ? styles.open : ''}`}>
-                8 months (Jan 2022 - Aug 2022)
+                <ul className={styles.contributionsList}>
+                  <li>$2,000,000+ GMV</li>
+                  <li>75,000+ Users</li>
+                  <li>60% Weekly Retention</li>
+                  <li>Seed Round</li>
+                </ul>
               </div>
             </div>
           </div>
           <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/CrowdsurfMockupTwo.png"
+              src="/images/PoppinMockupTwo.png"
               alt="Case Study"
               width={1600}
               height={900}
@@ -514,8 +530,8 @@ export default function Home() {
 
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2021</p>
-            <h3 className={styles.caseStudyTitle}>Crowdsurf</h3>
+            <p className={styles.caseStudyYear}>2022</p>
+            <h3 className={styles.caseStudyTitle}>AllAthlete</h3>
             <p className={styles.caseStudyDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
             
             <div className={styles.dropdownSection}>
@@ -534,7 +550,7 @@ export default function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['3-role'] ? styles.open : ''}`}>
-                Founder & CEO
+                Product Designer I
               </div>
             </div>
 
@@ -555,18 +571,17 @@ export default function Home() {
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['3-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
                 <ul className={styles.contributionsList}>
-                  <li>Business Strategy</li>
-                  <li>Pitch Deck Design</li>
-                  <li>Product Vision</li>
-                  <li>Investor Relations</li>
-                  <li>Market Research</li>
+                  <li>Design System</li>
+                  <li>User Research</li>
+                  <li>UX/UI Design</li>
+                  <li>Usability Testing</li>
                 </ul>
               </div>
             </div>
 
             <div className={styles.dropdownSection}>
               <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'timeline')}>
-                <span className={styles.dropdownLabel}>Timeline</span>
+                <span className={styles.dropdownLabel}>Outcomes</span>
                 <div className={styles.dropdownIcon}>
                   {dropdownStates['3-timeline'] ? (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -580,13 +595,17 @@ export default function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['3-timeline'] ? styles.open : ''}`}>
-                5 months (Sep 2021 - Jan 2022)
+              <ul className={styles.contributionsList}>
+                  <li>300,000+ Users</li>
+                  <li>10,000+ College Visits Created</li>
+                  <li>8,000+ Offers Created</li>
+                </ul>
               </div>
             </div>
           </div>
           <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/CrowdsurfMockupTwo.png"
+              src="/images/AllAthleteMockup.png"
               alt="Case Study"
               width={1600}
               height={900}
