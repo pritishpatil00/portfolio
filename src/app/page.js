@@ -187,7 +187,7 @@ export default function Home() {
                   animate={{ y: "0%" }}
                   transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.8 }}
                   className={styles.wordInner}
-                >GREAT</motion.p>
+                >PRODUCT</motion.p>
               </div>
               <div className={styles.wordContainer}>
                 <motion.p
@@ -195,23 +195,7 @@ export default function Home() {
                   animate={{ y: "0%" }}
                   transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.95 }}
                   className={styles.wordInner}
-                >DESIGN</motion.p>
-              </div>
-              <div className={styles.wordContainer}>
-                <motion.p
-                  initial={{ y: "100%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.1 }}
-                  className={styles.wordInner}
-                >IS</motion.p>
-              </div>
-              <div className={styles.wordContainer}>
-                <motion.p
-                  initial={{ y: "100%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.25 }}
-                  className={styles.wordInner}
-                >INVISIBLE</motion.p>
+                >DESIGNER</motion.p>
               </div>
             </div>
           </div>
@@ -227,7 +211,7 @@ export default function Home() {
                 animate={{ y: "0%" }}
                 transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.8 }}
                 className={styles.wordInner}
-              >GOOD</motion.p>
+              >PRITISH</motion.p>
             </div>
             <div className={styles.wordContainer}>
               <motion.p
@@ -235,23 +219,7 @@ export default function Home() {
                 animate={{ y: "0%" }}
                 transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.95 }}
                 className={styles.wordInner}
-              ><span>DESIGN</span></motion.p>
-            </div>
-            <div className={styles.wordContainer}>
-              <motion.p
-                initial={{ y: "100%" }}
-                animate={{ y: "0%" }}
-                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.1 }}
-                className={styles.wordInner}
-              >IS</motion.p>
-            </div>
-            <div className={styles.wordContainer}>
-              <motion.p
-                initial={{ y: "100%" }}
-                animate={{ y: "0%" }}
-                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.25 }}
-                className={styles.wordInner}
-              >SIMPLE</motion.p>
+              ><span>PATIL</span></motion.p>
             </div>
           </div>
         </div>
@@ -371,7 +339,7 @@ export default function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['1-role'] ? styles.open : ''}`}>
-                Lead Product Designer
+                Founding Designer
               </div>
             </div>
 
@@ -462,7 +430,7 @@ export default function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['2-role'] ? styles.open : ''}`}>
-                Lead Product Designer
+                Founding Designer and Product Lead
               </div>
             </div>
 
@@ -532,7 +500,11 @@ export default function Home() {
           <div className={styles.caseStudyContent}>
             <p className={styles.caseStudyYear}>2022</p>
             <h3 className={styles.caseStudyTitle}>AllAthlete</h3>
-            <p className={styles.caseStudyDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <p className={styles.caseStudyDescription}>
+              As the first product designer on the product team, my job was 
+              <br /><br />
+              Participated in PearX's S'23 accelerator and raised a $2,000,000+ seed round backed by 1984Ventures, ProgressionFund, and Liquid2.
+            </p>
             
             <div className={styles.dropdownSection}>
               <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'role')}>
