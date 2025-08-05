@@ -19,7 +19,12 @@ export default function PoppinCaseStudy() {
   }
 
   return (
-    <main className={styles.main}>
+    <motion.main 
+      className={styles.main}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
       {/* Header */}
       <motion.header className={styles.stickyHeader}>
         <div className={styles.headerName}>
@@ -144,6 +149,6 @@ export default function PoppinCaseStudy() {
 
       {/* Footer spacing */}
       <div style={{ height: '10vh' }} />
-    </main>
+    </motion.main>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 import styles from './page.module.scss'
 import { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';  
+import { useSearchParams, useRouter } from 'next/navigation';  
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue } from 'framer-motion';
 import useMousePosition from './utils/useMousePosition';
 import Image from 'next/image';
@@ -10,6 +10,7 @@ import Link from 'next/link';
 
 export default function Home() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const skipLoading = searchParams.get('skipLoading') === 'true'
   
   // Only show loading on fresh entry (not browser back/forward or internal navigation)
@@ -21,6 +22,7 @@ export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [hoveredRect, setHoveredRect] = useState(null);
+  const [isNavigating, setIsNavigating] = useState(false);
   const [dropdownStates, setDropdownStates] = useState({
     '0-role': true, // Role open by default for first case study
     '1-role': true, // Role open by default for second case study
@@ -29,6 +31,14 @@ export default function Home() {
   });
   const { x, y } = useMousePosition();
   const size = isHovered ? 580 : isMenuHovered ? 240 : 40;
+
+  const handlePoppinNavigation = (e) => {
+    e.preventDefault()
+    setIsNavigating(true)
+    setTimeout(() => {
+      router.push('/poppin')
+    }, 400) // Wait for fade out animation
+  }
 
   const toggleDropdown = (caseStudyIndex, dropdownType) => {
     const newKey = `${caseStudyIndex}-${dropdownType}`;
@@ -178,7 +188,11 @@ export default function Home() {
   }
 
   return (
-    <main className={styles.main}>
+    <motion.main 
+      className={styles.main}
+      animate={{ opacity: isNavigating ? 0 : 1 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
       <motion.header 
         className={styles.stickyHeader}
       >
@@ -509,7 +523,7 @@ export default function Home() {
             </div>
           </div>
           <div className={styles.caseStudyImageContainer}>
-            <Link href="/poppin">
+            <Link href="/poppin" onClick={handlePoppinNavigation}>
               <Image
                 src="/images/PoppinMockupTwo.png"
                 alt="Case Study"
@@ -620,7 +634,7 @@ export default function Home() {
       <div style={{ height: '200vh' }} />
 
 
-    </main>
+    </motion.main>
   )
 }
 
