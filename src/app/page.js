@@ -1,16 +1,23 @@
 'use client'
 import styles from './page.module.scss'
-import { useState, useEffect, useRef } from 'react';  
+import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';  
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue } from 'framer-motion';
 import useMousePosition from './utils/useMousePosition';
 import Image from 'next/image';
 import Lenis from 'lenis';
+import Link from 'next/link';
 
 export default function Home() {
+  const searchParams = useSearchParams()
+  const skipLoading = searchParams.get('skipLoading') === 'true'
+  
+  // Only show loading on fresh entry (not browser back/forward or internal navigation)
+  const isInitialEntry = typeof window !== 'undefined' && !sessionStorage.getItem('hasVisited')
 
   const [isHovered, setIsHovered] = useState(false);
   const [isMenuHovered, setIsMenuHovered] = useState(false);
-  const [showImages, setShowImages] = useState(true);
+  const [showImages, setShowImages] = useState(isInitialEntry && !skipLoading);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [hoveredRect, setHoveredRect] = useState(null);
@@ -78,6 +85,22 @@ export default function Home() {
 
     requestAnimationFrame(raf)
   }, []);
+
+  // Mark that user has visited the site
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('hasVisited', 'true')
+    }
+  }, [])
+
+  // Handle scrolling to case studies when skipLoading is true
+  useEffect(() => {
+    if (skipLoading) {
+      setTimeout(() => {
+        document.getElementById('case-studies')?.scrollIntoView({ behavior: 'instant' })
+      }, 100)
+    }
+  }, [skipLoading]);
 
   useEffect(() => {
     if (showImages && currentImageIndex < images.length) {
@@ -486,13 +509,16 @@ export default function Home() {
             </div>
           </div>
           <div className={styles.caseStudyImageContainer}>
-            <Image
-              src="/images/PoppinMockupTwo.png"
-              alt="Case Study"
-              width={1600}
-              height={900}
-              className={styles.caseStudyImage}
-            />
+            <Link href="/poppin">
+              <Image
+                src="/images/PoppinMockupTwo.png"
+                alt="Case Study"
+                width={1600}
+                height={900}
+                className={styles.caseStudyImage}
+                style={{ cursor: 'pointer' }}
+              />
+            </Link>
           </div>
         </div>
 
