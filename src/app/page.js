@@ -35,6 +35,12 @@ export default function Home() {
   const handlePoppinNavigation = (e) => {
     e.preventDefault()
     setIsNavigating(true)
+    
+    // Stop Lenis smooth scroll immediately
+    if (lenisRef.current) {
+      lenisRef.current.stop()
+    }
+    
     setTimeout(() => {
       router.push('/poppin')
     }, 400) // Wait for fade out animation
@@ -85,8 +91,11 @@ export default function Home() {
 
   const { scrollYProgress } = useScroll();
 
+  const lenisRef = useRef(null)
+
   useEffect(() => {
     const lenis = new Lenis()
+    lenisRef.current = lenis
 
     function raf(time) {
       lenis.raf(time)
@@ -94,6 +103,10 @@ export default function Home() {
     }
 
     requestAnimationFrame(raf)
+
+    return () => {
+      lenis.destroy()
+    }
   }, []);
 
   // Mark that user has visited the site
