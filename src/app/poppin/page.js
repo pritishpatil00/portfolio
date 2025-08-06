@@ -64,6 +64,17 @@ export default function PoppinCaseStudy() {
         />
       </div>
 
+      {/* Navigation Menu */}
+      <div className={styles.navigationMenu}>
+        <p>INTRODUCTION</p>
+        <p>CONTEXT</p>
+        <p>PROBLEM</p>
+        <p>RESEARCH</p>
+        <p>SOLUTION</p>
+        <p>DESIGN</p>
+        <p>RESULTS</p>
+      </div>
+
     </motion.main>
   )
 }
