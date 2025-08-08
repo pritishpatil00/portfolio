@@ -81,7 +81,7 @@ export default function PoppinCaseStudy() {
         />
       </div>
 
-      {/* Navigation Container */}
+      {/* Navigation and Content Container */}
       <div ref={containerRef} className={styles.navigationContainer}>
         <div 
           ref={menuRef}
@@ -94,6 +94,39 @@ export default function PoppinCaseStudy() {
           <p>SOLUTION</p>
           <p>DESIGN</p>
           <p>RESULTS</p>
+        </div>
+        
+        <div className={styles.contentSection}>
+          <h2 className={styles.sectionTitle}>INTRODUCTION</h2>
+          <h3 className={styles.companyName}>Poppin</h3>
+          <p className={styles.descriptionParagraph}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+          </p>
+          <div className={styles.contentDivider}></div>
+          <p className={styles.secondParagraph}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </p>
+          <div className={styles.contentDividerTwo}></div>
+          <div className={styles.yearRow}>
+            <span className={styles.yearLabel}>YEAR</span>
+            <span className={styles.yearValue}>2023</span>
+          </div>
+          <div className={styles.contentDividerTwo}></div>
+          <div className={styles.yearRow}>
+            <span className={styles.yearLabel}>Role</span>
+            <span className={styles.yearValue}>FOUNDING DESIGNER</span>
+          </div>
+          <div className={styles.contentDividerTwo}></div>
+          <div className={styles.yearRow}>
+            <span className={styles.yearLabel}>TEAM</span>
+            <div className={styles.verticalRows}>
+              <span className={styles.yearValue}>FOUNDING DESIGNER</span>
+              <span className={styles.yearValue}>FOUNDING DESIGNER</span>
+              <span className={styles.yearValue}>FOUNDING DESIGNER</span>
+              <span className={styles.yearValue}>FOUNDING DESIGNER</span>
+            </div>
+          </div>
+          <div className={styles.contentDividerTwo}></div>
         </div>
       </div>
 

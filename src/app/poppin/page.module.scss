@@ -134,6 +134,8 @@
     margin-top: 48px;
     height: 2000px;
     position: relative;
+    display: flex;
+    align-items: flex-start;
 }
 
 .navigationMenu {
@@ -159,4 +161,110 @@
     top: 64px;
     left: 0px;
     z-index: 1000;
+}
+
+.contentSection {
+    width: 48vw;
+    padding-right: 24px;
+    margin-left: auto;
+
+    .sectionTitle {
+        font-size: 16px;
+        color: #a2a2a2;
+        font-family: 'Neue Montreal Book';
+        font-weight: normal;
+        margin: 0 0 16px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.35px;
+
+    }
+
+    .companyName {
+        font-size: 24px;
+        color: #ffffff;
+        font-family: 'Neue Montreal Book';
+        margin: 0 0 48px 0;
+        letter-spacing: 0.35px;
+
+    }
+
+    .descriptionParagraph {
+        font-size: 16px;
+        color: #a2a2a2;
+        font-family: 'Neue Montreal Book';
+        font-weight: normal;
+        line-height: 150%;
+        letter-spacing: 0.35px;
+        margin: 0 0 24px 0;
+    }
+
+    .contentDivider {
+        width: 100%;
+        height: 1px;
+        background-color: #262626;
+        margin-bottom: 64px;
+    }
+
+    .contentDividerTwo {
+        width: 100%;
+        height: 1px;
+        background-color: #262626;
+        margin-bottom: 0px;
+    }
+
+    .secondParagraph {
+        font-size: 18px;
+        color: #ffffff;
+        font-family: 'Neue Montreal Book';
+        font-weight: normal;
+        line-height: 150%;
+        letter-spacing: 0.35px;
+        margin: 0 0 24px 0;
+    }
+
+    .yearRow {
+        display: flex;
+        position: relative;
+        width: 100%;
+        margin-top: 12px;
+        margin-bottom: 12px;
+
+        &:has(.verticalRows) {
+            min-height: 80px;
+        }
+    }
+
+    .yearLabel {
+        font-size: 12px;
+        color: #a2a2a2;
+        font-family: 'Neue Montreal Book';
+        font-weight: normal;
+        text-transform: uppercase;
+        letter-spacing: 0.35px;
+    }
+
+    .yearValue {
+        position: absolute;
+        left: 50%;
+        font-size: 12px;
+        color: #a2a2a2;
+        font-family: 'Neue Montreal Book';
+        font-weight: normal;
+        letter-spacing: 0.35px;
+    }
+
+    .verticalRows {
+        position: absolute;
+        left: 50%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 12px;
+
+        .yearValue {
+            position: static;
+            left: auto;
+        }
+    }
+
 }
