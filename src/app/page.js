@@ -30,7 +30,7 @@ export default function Home() {
     '3-role': true  // Role open by default for fourth case study
   });
   const { x, y } = useMousePosition();
-  const size = isHovered ? 580 : isMenuHovered ? 240 : 40;
+  const size = isHovered ? 720 : isMenuHovered ? 240 : 40;
 
   const handlePoppinNavigation = (e) => {
     e.preventDefault()
@@ -220,7 +220,7 @@ export default function Home() {
           <p>ABOUT</p>
         </nav>
       </motion.header>
-      <motion.div 
+      <motion.div
         className={styles.mask}
         animate={{
           WebkitMaskPosition: `${x - (size/2)}px ${y - (size/2)}px`,
@@ -237,7 +237,23 @@ export default function Home() {
                   animate={{ y: "0%" }}
                   transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.8 }}
                   className={styles.wordInner}
-                >PRODUCT</motion.p>
+                >GOOD</motion.p>
+              </div>
+              <div className={styles.wordContainer}>
+                <motion.p
+                  initial={{ y: "100%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.85 }}
+                  className={styles.wordInner}
+                >DESIGN</motion.p>
+              </div>
+              <div className={styles.wordContainer}>
+                <motion.p
+                  initial={{ y: "100%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.9 }}
+                  className={styles.wordInner}
+                >IS</motion.p>
               </div>
               <div className={styles.wordContainer}>
                 <motion.p
@@ -245,7 +261,7 @@ export default function Home() {
                   animate={{ y: "0%" }}
                   transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.95 }}
                   className={styles.wordInner}
-                >DESIGNER</motion.p>
+                >INVISIBLE</motion.p>
               </div>
             </div>
           </div>
