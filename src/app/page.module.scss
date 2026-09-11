@@ -4,10 +4,12 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    overflow: hidden;
+    min-height: 100lvh;
+    overflow-x: hidden;
 
     .body, .mask {
         height: 100vh;
+        height: 100lvh;
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -36,12 +38,25 @@
 
     .heroSection {
         height: 100vh;
+        height: 100lvh;
         width: 100%;
         position: relative;
         display: flex;
         align-items: center;
         justify-content: flex-start;
         padding-left: 16px;
+    }
+
+    .heroReveal {
+        display: inline-block;
+        width: fit-content;
+        max-width: 100%;
+        padding-right: 20vw;
+        box-sizing: content-box;
+
+        .content {
+            width: max-content;
+        }
     }
 
     .content {
@@ -79,11 +94,12 @@
         left: 0;
         width: 100%;
         height: 100vh;
+        height: 100lvh;
         mask-image: url('../../public/Mask.svg');
         background: #ffffff;
         mask-repeat: no-repeat;
         mask-position: 85%;
-        mask-size: 40px;
+        mask-size: 0;
         color: #121212;
         z-index: 2002;
         pointer-events: none;
@@ -92,6 +108,124 @@
             pointer-events: auto;
         }
     }
+
+    .maskTouch {
+        pointer-events: none;
+
+        .heroSection {
+            pointer-events: none;
+        }
+    }
+
+    .heroSignifier {
+        position: relative;
+        display: block;
+        width: 14px;
+        height: 14px;
+        margin: 28px 0 0 6px;
+        border-radius: 50%;
+        background: #ffffff;
+        pointer-events: none;
+        animation: heroPulse 2.4s ease-in-out infinite;
+    }
+
+    .heroSignifier::before,
+    .heroSignifier::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1.5px solid #ffffff;
+        box-sizing: border-box;
+        transform: translate(-50%, -50%);
+        animation: heroRipple 2.4s ease-out infinite;
+    }
+
+    .heroSignifier::after {
+        animation-delay: 1.2s;
+    }
+
+    .mask .heroSignifier {
+        background: #121212;
+
+        &::before,
+        &::after {
+            border-color: #121212;
+        }
+    }
+
+    .heroSkillsWrap {
+        display: none;
+        overflow: hidden;
+        margin: 20px 0 0;
+    }
+
+    .heroSkills {
+        margin: 0;
+        max-width: 18em;
+        font-size: 14px;
+        line-height: 1.45;
+        letter-spacing: 0.2px;
+        color: #8f8f8f;
+        font-family: 'Neue Montreal Book';
+    }
+
+    .mask .heroSkills {
+        color: #3a3a3a;
+    }
+}
+
+@keyframes heroPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.18); }
+}
+
+@keyframes heroRipple {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.55;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(3.4);
+        opacity: 0;
+    }
+}
+
+@keyframes headerFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.pageCursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1.5px solid transparent;
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 5000;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+
+    @media (pointer: coarse) {
+        display: none;
+    }
+}
+
+.pageCursorOn {
+    background: transparent;
+    border-color: #ffffff;
+}
+
+.hideNativeCursor,
+.hideNativeCursor * {
+    cursor: none !important;
 }
 
 .imageContainer {
@@ -99,10 +233,22 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: min(90vw, 80vh);
     height: 50vh;
-    border-radius: 0px;
     overflow: hidden;
     z-index: 10;
+}
+
+@media (max-width: 900px) {
+    .imageContainer {
+        width: 84vw;
+        height: 38vh;
+    }
+
+    .loadingBarContainer {
+        width: 70%;
+        bottom: 12vh;
+    }
 }
 
 .loadingBarContainer {
@@ -115,14 +261,29 @@
     background: #333333;
     border-radius: 0px;
     overflow: hidden;
-    z-index: 10;
+    z-index: 20;
+    pointer-events: none;
+}
+
+@keyframes fillLoadingBar {
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: scaleX(1);
+    }
 }
 
 .loadingBar {
     height: 100%;
+    width: 100%;
     background: #ffffff;
     border-radius: 0px;
-    transition: width 0.15s ease-out;
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation-name: fillLoadingBar;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
 }
 
 .stickyHeader {
@@ -138,6 +299,7 @@
     z-index: 3001;
     background: #121212;
     box-sizing: border-box;
+    transition: background-color 0.35s ease-out;
 
     .headerName {
         p {
@@ -147,7 +309,7 @@
             font-weight: 600;
             letter-spacing: 0.35px;
             cursor: pointer;
-            transition: color 0.3s ease, opacity 0.3s ease;
+            transition: color 0.35s ease-out, opacity 0.3s ease;
             font-family: 'Neue Montreal Book';
     
             &:hover {
@@ -166,7 +328,7 @@
             font-size: 12px;
             color: #ffffff;
             cursor: pointer;
-            transition: color 0.3s ease, opacity 0.3s ease;
+            transition: color 0.35s ease-out, opacity 0.3s ease;
             letter-spacing: 0.35px;
             font-family: 'Neue Montreal Book';
     
@@ -175,6 +337,15 @@
             }
         }
     
+    }
+}
+
+.stickyHeaderInverted {
+    background: #ffffff;
+
+    .headerName p,
+    .headerNav p {
+        color: #121212;
     }
 }
 
@@ -194,6 +365,7 @@
     align-items: flex-start;
     gap: 24px;
     padding: 0 24px;
+    box-sizing: border-box;
 }
 
 .caseStudyContent {
@@ -349,6 +521,8 @@
     aspect-ratio: 4/2;
     border-radius: 100px;
     overflow: hidden;
+    flex-shrink: 0;
+    background: #2a2a2a url('/images/CapsuleOne-sm.jpg') center / cover no-repeat;
 }
 
 .slider {
@@ -357,6 +531,143 @@
     gap: 0px;
     white-space: nowrap;
     position: relative;
+    pointer-events: none;
+}
+
+@media (min-width: 901px) {
+    .caseStudyYear {
+        font-size: 16px;
+    }
+
+    .caseStudyTitle {
+        font-size: 24px;
+    }
+
+    .caseStudyDescription {
+        font-size: 16px;
+    }
+
+    .dropdownLabel,
+    .dropdownContent,
+    .contributionsList li {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 900px) {
+    :global(html[data-browser='safari']) .main {
+        .body,
+        .mask,
+        .heroSection {
+            height: calc(100lvh + env(safe-area-inset-bottom, 0px) + 64px);
+        }
+    }
+
+    .caseStudiesContainer {
+        gap: 56px;
+        margin: 40px 0;
+        overflow: visible;
+    }
+
+    .caseStudy {
+        flex-direction: column-reverse;
+        gap: 20px;
+        padding: 0;
+    }
+
+    .caseStudyContent {
+        max-width: none;
+        width: 100%;
+        padding: 0 16px;
+        box-sizing: border-box;
+    }
+
+    .caseStudyTitle {
+        margin-bottom: 20px;
+    }
+
+    .caseStudyDescription {
+        margin-bottom: 24px;
+    }
+
+    .caseStudyImageContainer {
+        width: 100%;
+        max-width: none;
+        aspect-ratio: 16 / 10;
+    }
+
+    .caseStudyImage:hover {
+        transform: none;
+    }
+
+    .phrase {
+        gap: 12px;
+        padding: 0 12px;
+        margin-bottom: 18px;
+    }
+
+    .phraseText {
+        font-size: clamp(56px, 16vw, 84px);
+    }
+
+    .phraseDesign {
+        display: none;
+    }
+
+    .phraseImage {
+        height: clamp(40px, 10vw, 56px);
+    }
+}
+
+@media (max-width: 1100px) {
+    .main {
+        .body, .mask {
+            font-size: clamp(56px, 12vw, 120px);
+            line-height: 0.9;
+        }
+    }
+}
+
+@media (max-width: 700px) {
+    .main {
+        .body, .mask {
+            font-size: clamp(44px, 15vw, 68px);
+            line-height: 0.92;
+        }
+
+        .heroSection {
+            align-items: flex-end;
+            padding: 0 20px calc(14vh + 52px + 32px);
+        }
+
+        .heroSkillsWrap {
+            display: block;
+        }
+
+        p.heroSkills {
+            font-size: 13px;
+        }
+    }
+
+    :global(html[data-browser='safari']) .main {
+        .heroSection {
+            padding: 0 20px calc(14vh + 52px + 112px);
+        }
+    }
+
+    .stickyHeader {
+        padding: 12px 16px;
+        gap: 12px;
+        animation: headerFade 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2s both;
+
+        .headerNav {
+            gap: 12px;
+
+            p {
+                font-size: 11px;
+            }
+        }
+    }
 }
 
 

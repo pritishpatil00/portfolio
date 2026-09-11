@@ -1,0 +1,367 @@
+.about {
+    --margin: 24px;
+    position: relative;
+    z-index: 4;
+    background: #121212;
+    color: #8f8f8f;
+    font-family: 'Neue Montreal Book', sans-serif;
+    padding-top: 8vh;
+    padding-bottom: 120px;
+    scroll-margin-top: 12px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+.section {
+    margin-top: 96px;
+}
+
+.hero {
+    margin-top: 0;
+}
+
+.inner {
+    box-sizing: border-box;
+    width: min(100%, 2000px);
+    margin-inline: auto;
+    padding-inline: var(--margin);
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: 16px;
+    row-gap: 16px;
+}
+
+.kicker {
+    grid-column: 3 / 6;
+    margin: 0 0 12px;
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #6a6a6a;
+}
+
+.lead {
+    grid-column: 3 / 6;
+    margin: 0;
+    font-family: 'Neue Montreal Medium';
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.7px;
+    color: #ffffff;
+    text-wrap: balance;
+}
+
+.heroCopy {
+    grid-column: 7 / 11;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 28px;
+}
+
+.body {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.55;
+    letter-spacing: -0.1px;
+    color: #8f8f8f;
+}
+
+.buildLine {
+    display: flex;
+    gap: 16px;
+    align-items: baseline;
+    margin: 8px 0 0;
+    font-size: 16px;
+    letter-spacing: -0.1px;
+    color: #c8c8c8;
+
+    span {
+        flex-shrink: 0;
+        width: 48px;
+        color: #5c5c5c;
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 0.3px;
+    }
+}
+
+.heading {
+    grid-column: 4 / 5;
+    margin: 0;
+    font-size: 15px;
+    font-style: italic;
+    letter-spacing: -0.2px;
+    color: #8a8a8a;
+}
+
+.list {
+    grid-column: 6 / 11;
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 24px;
+    padding: 20px 0;
+    border-top: 1px solid #262626;
+
+    &:last-child {
+        border-bottom: 1px solid #262626;
+    }
+}
+
+.rowLabel {
+    font-size: 13px;
+    color: #5c5c5c;
+    letter-spacing: -0.1px;
+    padding-top: 3px;
+}
+
+.rowBody {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    a {
+        color: inherit;
+        text-decoration: none;
+
+        &:hover .jobCompany {
+            opacity: 0.55;
+        }
+    }
+}
+
+.jobCompany {
+    font-family: 'Neue Montreal Medium';
+    font-size: 18px;
+    color: #ffffff;
+    letter-spacing: -0.3px;
+    transition: opacity 0.2s ease;
+}
+
+.rowMeta {
+    font-size: 16px;
+    color: #8f8f8f;
+}
+
+.photoSection {
+    margin-top: 48px;
+}
+
+.stage {
+    position: relative;
+    height: 82vh;
+    min-height: 640px;
+    width: min(calc(100% - 48px), 2000px);
+    margin-inline: auto;
+    overflow: hidden;
+}
+
+.card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(28vw, 340px);
+    margin-left: calc(min(28vw, 340px) / -2);
+    margin-top: -210px;
+    cursor: pointer;
+}
+
+.cardFrame {
+    border: 1px solid #2a2a2a;
+    border-radius: 2px;
+    overflow: hidden;
+    line-height: 0;
+    background: #1a1a1a;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.cardImage {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    display: block;
+    filter: saturate(0.92);
+}
+
+.cardCaption {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #6e6e6e;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+
+    span:last-child {
+        color: #5c5c5c;
+    }
+}
+
+.cardCaptionOn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.photoHint {
+    width: min(calc(100% - 48px), 2000px);
+    margin: 16px auto 0;
+    font-size: 13px;
+    color: #5c5c5c;
+    letter-spacing: -0.1px;
+}
+
+.marqueeSection {
+    margin-top: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: hidden;
+    border-top: 1px solid #262626;
+    border-bottom: 1px solid #262626;
+    padding: 18px 0;
+}
+
+.marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marqueeTrack {
+    display: flex;
+    width: max-content;
+    gap: 48px;
+    animation: drift 42s linear infinite;
+
+    span {
+        font-family: 'Neue Montreal Medium';
+        font-size: 22px;
+        color: #ffffff;
+        letter-spacing: -0.4px;
+        white-space: nowrap;
+    }
+}
+
+.marqueeReverse .marqueeTrack {
+    animation-direction: reverse;
+    animation-duration: 52s;
+
+    span {
+        color: #5c5c5c;
+        font-family: 'Neue Montreal Book';
+        font-size: 18px;
+    }
+}
+
+@keyframes drift {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+.nowGrid {
+    grid-column: 6 / 11;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+}
+
+.nowCol {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 16px;
+    line-height: 1.45;
+
+    a, span {
+        color: #c8c8c8;
+        text-decoration: none;
+    }
+
+    a:hover {
+        opacity: 0.55;
+    }
+}
+
+.nowLabel {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: #5c5c5c;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+@media (max-width: 992px) {
+    .inner {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .kicker,
+    .lead,
+    .heroCopy,
+    .heading,
+    .list,
+    .nowGrid {
+        grid-column: auto;
+        width: 100%;
+    }
+
+    .heroCopy {
+        padding-top: 0;
+    }
+
+    .lead {
+        font-size: 26px;
+    }
+
+    .row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .stage {
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+        cursor: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding-bottom: 8px;
+    }
+
+    .card {
+        position: relative;
+        top: auto !important;
+        left: auto !important;
+        width: 100%;
+        margin: 0;
+        transform: none !important;
+        cursor: auto;
+    }
+
+    .cardImage {
+        height: 240px;
+    }
+
+    .cardCaption {
+        opacity: 1;
+        transform: none;
+    }
+
+    .nowGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .photoHint {
+        display: none;
+    }
+}

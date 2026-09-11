@@ -33,8 +33,26 @@
   src: url('../../public/fonts/neue-montreal-regular.otf') format('opentype');
 }
 
+@property --hero-s {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --from {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --to {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 body{
   margin: 0px;
-  background-color: #0f0f0f;
+  background-color: #121212;
   font-family: 'Neue Montreal Regular';
 }

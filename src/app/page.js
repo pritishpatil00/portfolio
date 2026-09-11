@@ -1,26 +1,35 @@
 'use client'
 import styles from './page.module.scss'
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';  
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValue } from 'framer-motion';
+import { motion } from 'framer-motion';
 import useMousePosition from './utils/useMousePosition';
 import Image from 'next/image';
 import Lenis from 'lenis';
 import Link from 'next/link';
+import Sandbox from './components/Sandbox';
+import About from './components/About';
+import HeroGridInvert from './components/HeroGridInvert';
+import DesignSliders from './components/DesignSliders';
 
-export default function Home() {
+export default function Page() {
+  return (
+    <Suspense fallback={<main className={styles.main} />}>
+      <Home />
+    </Suspense>
+  )
+}
+
+function Home() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const skipLoading = searchParams.get('skipLoading') === 'true'
-  
-  // Only show loading on fresh entry (not browser back/forward or internal navigation)
-  const isInitialEntry = typeof window !== 'undefined' && !sessionStorage.getItem('hasVisited')
 
   const [isHovered, setIsHovered] = useState(false);
   const [isMenuHovered, setIsMenuHovered] = useState(false);
-  const [showImages, setShowImages] = useState(isInitialEntry && !skipLoading);
+  const [introReady, setIntroReady] = useState(false);
+  const [showImages, setShowImages] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [loadingProgress, setLoadingProgress] = useState(0);
   const [hoveredRect, setHoveredRect] = useState(null);
   const [isNavigating, setIsNavigating] = useState(false);
   const [dropdownStates, setDropdownStates] = useState({
@@ -30,7 +39,19 @@ export default function Home() {
     '3-role': true  // Role open by default for fourth case study
   });
   const { x, y } = useMousePosition();
-  const size = isHovered ? 720 : isMenuHovered ? 240 : 40;
+  const [finePointer, setFinePointer] = useState(null);
+  const [view, setView] = useState({ w: 1440, h: 900 });
+  const [pastHero, setPastHero] = useState(false);
+  const [gridOrigin, setGridOrigin] = useState({ c: 0.35, r: 0.78 });
+  const isFine = finePointer === true;
+  const isTouch = finePointer === false;
+  const size = isFine
+    ? (isHovered ? 1100 : isMenuHovered ? 240 : x == null ? 0 : 40)
+    : (isHovered ? Math.ceil(Math.hypot(view.w, view.h) * 1.4) : 0);
+  const maskLeft = isFine ? (x ?? 0) - size / 2 : view.w / 2 - size / 2;
+  const maskTop = isFine ? (y ?? 0) - size / 2 : view.h / 2 - size / 2;
+  const [onClickable, setOnClickable] = useState(false);
+  const cursorSize = onClickable ? 56 : 40;
 
   const handlePoppinNavigation = (e) => {
     e.preventDefault()
@@ -89,41 +110,84 @@ export default function Home() {
     '/images/Crowdsurf.png', 
   ];
 
-  const { scrollYProgress } = useScroll();
-
   const lenisRef = useRef(null)
+  const heroRevealRef = useRef(null)
+  const heroTouched = useRef(false)
 
   useEffect(() => {
     const lenis = new Lenis()
     lenisRef.current = lenis
 
+    let rafId = 0
     function raf(time) {
       lenis.raf(time)
-      requestAnimationFrame(raf)
+      rafId = requestAnimationFrame(raf)
     }
 
-    requestAnimationFrame(raf)
+    rafId = requestAnimationFrame(raf)
 
     return () => {
+      cancelAnimationFrame(rafId)
       lenis.destroy()
     }
   }, []);
 
-  // Mark that user has visited the site
+  // Decide the intro after mount so server and client HTML match
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('hasVisited', 'true')
-    }
-  }, [])
+    const isInitialEntry = !sessionStorage.getItem('hasVisited')
+    sessionStorage.setItem('hasVisited', 'true')
 
-  // Handle scrolling to case studies when skipLoading is true
-  useEffect(() => {
+    if (isInitialEntry && !skipLoading) {
+      setShowImages(true)
+    }
+
+    setIntroReady(true)
+
     if (skipLoading) {
       setTimeout(() => {
-        document.getElementById('case-studies')?.scrollIntoView({ behavior: 'instant' })
+        const hash = window.location.hash.replace('#', '')
+        const id = hash === 'about' || hash === 'sandbox' ? hash : 'case-studies'
+        document.getElementById(id)?.scrollIntoView({ behavior: 'instant' })
       }, 100)
     }
   }, [skipLoading]);
+
+  useEffect(() => {
+    if (!introReady || showImages) return
+    const studies = document.getElementById('case-studies')
+    if (!studies) return
+
+    const update = () => {
+      const next = studies.getBoundingClientRect().top <= 56
+      setPastHero((prev) => (prev === next ? prev : next))
+    }
+    update()
+
+    const lenis = lenisRef.current
+    lenis?.on('scroll', update)
+    window.addEventListener('scroll', update, { passive: true })
+    return () => {
+      lenis?.off('scroll', update)
+      window.removeEventListener('scroll', update)
+    }
+  }, [introReady, showImages]);
+
+  useEffect(() => {
+    if (!introReady || showImages || !isTouch || skipLoading) return
+
+    const id = window.setTimeout(() => {
+      if (heroTouched.current) return
+      setIsHovered(true)
+    }, 2500)
+
+    return () => window.clearTimeout(id)
+  }, [introReady, showImages, isTouch, skipLoading]);
+
+  useEffect(() => {
+    if (!introReady || showImages) return
+    lenisRef.current?.resize?.()
+  }, [introReady, showImages]);
+
 
   useEffect(() => {
     if (showImages && currentImageIndex < images.length) {
@@ -139,31 +203,74 @@ export default function Home() {
     }
   }, [currentImageIndex, showImages, images.length]);
 
-  // Natural loading animation - starts slow, speeds up
   useEffect(() => {
-    if (showImages) {
-      const totalTime = images.length * 150 + 200; // Total sequence time
-      const startTime = Date.now();
-      
-      const animateProgress = () => {
-        const elapsed = Date.now() - startTime;
-        const timeRatio = Math.min(elapsed / totalTime, 1);
-        
-        // Ease-in-out curve for natural loading feel
-        const progress = timeRatio < 0.5 
-          ? 2 * timeRatio * timeRatio 
-          : 1 - Math.pow(-2 * timeRatio + 2, 3) / 2;
-        
-        setLoadingProgress(progress * 100);
-        
-        if (timeRatio < 1) {
-          requestAnimationFrame(animateProgress);
-        }
-      };
-      
-      requestAnimationFrame(animateProgress);
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)')
+    const syncPointer = () => setFinePointer(mq.matches)
+    const syncView = () => setView({ w: window.innerWidth, h: window.innerHeight })
+    syncPointer()
+    syncView()
+    mq.addEventListener('change', syncPointer)
+    window.addEventListener('resize', syncView)
+    return () => {
+      mq.removeEventListener('change', syncPointer)
+      window.removeEventListener('resize', syncView)
     }
-  }, [showImages, images.length]);
+  }, [])
+
+  // If the cursor is already over the reveal text when loading ends,
+  // mouseenter never fires — hit-test the pointer instead.
+  useEffect(() => {
+    if (!introReady || showImages || !isFine) return;
+
+    const syncHoverFromPointer = () => {
+      const el = heroRevealRef.current;
+      if (!el) return;
+
+      if (el.matches(':hover')) {
+        setIsHovered(true);
+        return;
+      }
+
+      if (x == null || y == null) return;
+
+      const rect = el.getBoundingClientRect();
+      const clientX = x - window.scrollX;
+      const clientY = y - window.scrollY;
+      setIsHovered(
+        clientX >= rect.left &&
+        clientX <= rect.right &&
+        clientY >= rect.top &&
+        clientY <= rect.bottom
+      );
+    };
+
+    const frame = requestAnimationFrame(syncHoverFromPointer);
+    return () => cancelAnimationFrame(frame);
+  }, [introReady, showImages, isFine, x, y]);
+
+  useEffect(() => {
+    if (x == null || y == null) {
+      setOnClickable(false)
+      return
+    }
+
+    const el = document.elementFromPoint(x - window.scrollX, y - window.scrollY)
+    if (!el) {
+      setOnClickable(false)
+      return
+    }
+
+    const hit = el.closest(
+      'a, button, [role="button"], header p, [class*="dropdownRow"], [class*="hit"]'
+    )
+    setOnClickable(Boolean(hit))
+  }, [x, y]);
+
+  const loadingDurationMs = images.length * 150 + 200;
+
+  if (!introReady) {
+    return <main className={styles.main} />;
+  }
 
   if (showImages) {
     return (
@@ -176,24 +283,18 @@ export default function Home() {
               <Image
                 src={images[currentImageIndex - 1]}
                 alt={`Design work ${currentImageIndex}`}
-                width={0}
-                height={0}
-                sizes="100vh"
-                style={{ 
-                  width: 'auto',
-                  height: '100%',
-                  objectFit: 'contain'
-                }}
+                fill
+                sizes="(max-width: 900px) 84vw, min(90vw, 50vh)"
+                style={{ objectFit: 'contain' }}
+                quality={75}
                 priority={currentImageIndex <= 5}
               />
           </div>
         )}
         <div className={styles.loadingBarContainer}>
-          <div 
+          <div
             className={styles.loadingBar}
-            style={{ 
-              width: `${loadingProgress}%`
-            }}
+            style={{ animationDuration: `${loadingDurationMs}ms` }}
           />
         </div>
       </main>
@@ -202,12 +303,12 @@ export default function Home() {
 
   return (
     <motion.main 
-      className={styles.main}
+      className={`${styles.main} ${y != null && y >= window.innerHeight ? styles.hideNativeCursor : ''}`}
       animate={{ opacity: isNavigating ? 0 : 1 }}
       transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
       <motion.header 
-        className={styles.stickyHeader}
+        className={`${styles.stickyHeader} ${isTouch && isHovered && !pastHero ? styles.stickyHeaderInverted : ''}`}
       >
         <div className={styles.headerName}>
           <p onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>PRITISH PATIL</p>
@@ -216,20 +317,43 @@ export default function Home() {
           className={styles.headerNav}
         >
           <p onClick={() => document.getElementById('case-studies').scrollIntoView({ behavior: 'smooth' })}>CASE STUDIES</p>
-          <p>SANDBOX</p>
-          <p>ABOUT</p>
+          <p onClick={() => document.getElementById('sandbox').scrollIntoView({ behavior: 'smooth' })}>SANDBOX</p>
+          <p onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' })}>ABOUT</p>
         </nav>
       </motion.header>
+      {isFine && x != null && y != null && (
+        <motion.div
+          className={`${styles.pageCursor} ${onClickable ? styles.pageCursorOn : ''}`}
+          animate={{
+            x: x - window.scrollX - cursorSize / 2,
+            y: y - window.scrollY - cursorSize / 2,
+            width: cursorSize,
+            height: cursorSize,
+            opacity: y < window.innerHeight ? 0 : 1,
+          }}
+          transition={{ type: 'tween', ease: 'backOut', duration: 0.5 }}
+        />
+      )}
+      {!isTouch && (
       <motion.div
-        className={styles.mask}
+        className={`${styles.mask} ${isFine ? '' : styles.maskTouch}`}
         animate={{
-          WebkitMaskPosition: `${x - (size/2)}px ${y - (size/2)}px`,
+          WebkitMaskPosition: `${maskLeft}px ${maskTop}px`,
           WebkitMaskSize: `${size}px`,
         }}
-        transition={{ type: "tween", ease: "backOut", duration:0.5}}
+        transition={{
+          type: 'tween',
+          ease: isTouch && !isHovered ? [0.25, 0.46, 0.45, 0.94] : 'backOut',
+          duration: isTouch ? (isHovered ? 0.9 : 0.32) : isFine ? 0.5 : 0,
+        }}
       >
         <div className={styles.heroSection}>
-          <div onMouseEnter={() => {setIsHovered(true)}} onMouseLeave={() => {setIsHovered(false)}}>
+          <div
+            ref={heroRevealRef}
+            className={styles.heroReveal}
+            onMouseEnter={() => { if (isFine) setIsHovered(true) }}
+            onMouseLeave={() => { if (isFine) setIsHovered(false) }}
+          >
             <div className={styles.content}>
               <div className={styles.wordContainer}>
                 <motion.p
@@ -263,13 +387,50 @@ export default function Home() {
                   className={styles.wordInner}
                 >INVISIBLE</motion.p>
               </div>
+              <div className={styles.heroSkillsWrap}>
+                <motion.p
+                  className={styles.heroSkills}
+                  initial={{ y: '100%' }}
+                  animate={{ y: '0%' }}
+                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.1 }}
+                >
+                  Design engineer. Product, interaction, and the interface.
+                </motion.p>
+              </div>
+              {isTouch && (
+                <motion.span
+                  className={styles.heroSignifier}
+                  aria-hidden="true"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 2 }}
+                />
+              )}
             </div>
           </div>
         </div>
       </motion.div>
+      )}
 
       <div className={styles.body}>
-        <div className={styles.heroSection}>
+        <div
+          className={styles.heroSection}
+          onClick={(e) => {
+            if (!isTouch) return
+            heroTouched.current = true
+            const rect = e.currentTarget.getBoundingClientRect()
+            setGridOrigin({
+              c: (e.clientX - rect.left) / rect.width,
+              r: (e.clientY - rect.top) / rect.height,
+            })
+            setIsHovered((open) => !open)
+          }}
+          role={isTouch ? 'button' : undefined}
+          aria-label={isTouch ? (isHovered ? 'Hide headline' : 'Reveal headline') : undefined}
+        >
+          {isTouch && (
+            <HeroGridInvert open={isHovered} origin={gridOrigin} />
+          )}
           <div className={styles.content}>
             <div className={styles.wordContainer}>
               <motion.p
@@ -287,6 +448,25 @@ export default function Home() {
                 className={styles.wordInner}
               ><span>PATIL</span></motion.p>
             </div>
+            <div className={styles.heroSkillsWrap}>
+              <motion.p
+                className={styles.heroSkills}
+                initial={{ y: '100%' }}
+                animate={{ y: '0%' }}
+                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.1 }}
+              >
+                Design engineer. Product, interaction, and the interface.
+              </motion.p>
+            </div>
+            {isTouch && (
+              <motion.span
+                className={styles.heroSignifier}
+                aria-hidden="true"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 2 }}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -370,11 +550,14 @@ export default function Home() {
           </div>
           <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/CrowdSurfMockupTwo.png"
+              src="/images/CrowdSurfMockupTwo.jpg"
               alt="Poppin Case Study"
               width={1600}
               height={900}
               className={styles.caseStudyImage}
+              sizes="(max-width: 900px) 100vw, 75vw"
+              quality={80}
+              priority
             />
           </div>
         </div>
@@ -461,11 +644,13 @@ export default function Home() {
           </div>
           <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/CrewMockupFinal.png"
+              src="/images/CrewMockupFinal.jpg"
               alt="Case Study"
               width={1600}
               height={900}
               className={styles.caseStudyImage}
+              sizes="(max-width: 900px) 100vw, 75vw"
+              quality={80}
             />
           </div>
         </div>
@@ -554,12 +739,14 @@ export default function Home() {
           <div className={styles.caseStudyImageContainer}>
             <Link href="/poppin" onClick={handlePoppinNavigation}>
               <Image
-                src="/images/PoppinMockupTwo.png"
+                src="/images/PoppinMockupTwo.jpg"
                 alt="Case Study"
                 width={1600}
                 height={900}
                 className={styles.caseStudyImage}
                 style={{ cursor: 'pointer' }}
+                sizes="(max-width: 900px) 100vw, 75vw"
+                quality={80}
               />
             </Link>
           </div>
@@ -646,53 +833,23 @@ export default function Home() {
           </div>
           <div className={styles.caseStudyImageContainer}>
             <Image
-              src="/images/AllAthleteMockup.png"
+              src="/images/AllAthleteMockup.jpg"
               alt="Case Study"
               width={1600}
               height={900}
               className={styles.caseStudyImage}
+              sizes="(max-width: 900px) 100vw, 75vw"
+              quality={80}
             />
           </div>
         </div>
       </div>
       
-      <div style={{ height: '30vh' }}/>
-      <Slider src="/images/CapsuleOne.png" left="-155%" progress={scrollYProgress} text="Product Design"/>
-      <Slider src="/images/CapsuleOne.png" left="-125%" progress={scrollYProgress} reverse={true} text="Interaction Design"/>
-      <Slider src="/images/CapsuleOne.png" left="-160%" progress={scrollYProgress} text="Visual Design"/>
-      <div style={{ height: '200vh' }} />
+      <DesignSliders />
+      <Sandbox />
+      <About />
 
 
     </motion.main>
-  )
-}
-
-const Slider = ({src, left, progress, reverse = false, text}) => {
-  const x = useTransform(progress, [0, 1], reverse ? [750, -750] : [-750, 750]);
-  
-  return (
-    <motion.div className={styles.slider} style={{left: left, x}}>
-      <Phrase src={src} text={text}/>
-      <Phrase src={src} text={text}/>
-      <Phrase src={src} text={text}/>
-      <Phrase src={src} text={text}/>
-      <Phrase src={src} text={text}/>
-    </motion.div>
-  )
-}
-
-const Phrase = ({src, text}) => {
-  return (
-    <div className={styles.phrase}>
-      <p className={styles.phraseText}>{text}</p>
-      <span className={styles.phraseImage}>
-        <Image
-          style={{objectFit: "cover"}}
-          src={src}
-          alt="image"
-          fill
-        />
-      </span>
-    </div>
   )
 }

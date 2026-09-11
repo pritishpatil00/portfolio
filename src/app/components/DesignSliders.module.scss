@@ -1,0 +1,76 @@
+.block {
+    width: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.spacer {
+    height: 30vh;
+}
+
+.clip {
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 2vw;
+}
+
+.track {
+    display: flex;
+    width: max-content;
+    backface-visibility: hidden;
+}
+
+.sda {
+    animation: slider-x linear both;
+    animation-timeline: scroll(root);
+}
+
+@keyframes slider-x {
+    from { transform: translate3d(var(--from), 0, 0); }
+    to { transform: translate3d(var(--to), 0, 0); }
+}
+
+.unit {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 20px;
+    padding: 0 20px;
+    white-space: nowrap;
+    color: #ffffff;
+    font-family: 'Neue Montreal Book', sans-serif;
+    font-size: 7.5vw;
+    line-height: 1;
+}
+
+.pill {
+    flex-shrink: 0;
+    height: 6vw;
+    aspect-ratio: 2 / 1;
+    border-radius: 100px;
+    background: #2a2a2a url('/images/CapsuleOne-sm.jpg') center / cover no-repeat;
+}
+
+@media (max-width: 900px) {
+    .spacer {
+        height: 10vh;
+    }
+
+    .clip {
+        margin-bottom: 18px;
+    }
+
+    .unit {
+        gap: 12px;
+        padding: 0 12px;
+        font-size: clamp(56px, 16vw, 84px);
+    }
+
+    .design {
+        display: none;
+    }
+
+    .pill {
+        height: clamp(40px, 10vw, 56px);
+    }
+}
