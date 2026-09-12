@@ -1,0 +1,16 @@
+.wrap {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 72px;
+    z-index: 40;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}

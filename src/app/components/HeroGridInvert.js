@@ -50,24 +50,30 @@ export default function HeroGridInvert({ open, origin }) {
   useEffect(() => {
     const el = wrapRef.current
     if (!el) return
+    let timer = 0
 
-    const sync = () => {
+    const measure = () => {
       if (!el.isConnected) return
       const r = el.getBoundingClientRect()
       if (r.width < 8 || r.height < 8) return
-      setBox((prev) => (
-        Math.abs(prev.w - r.width) < 1 && Math.abs(prev.h - r.height) < 1
-          ? prev
-          : { w: r.width, h: r.height }
-      ))
+      setBox((prev) => {
+        if (Math.abs(prev.w - r.width) < 4 && Math.abs(prev.h - r.height) < 4) return prev
+        return { w: r.width, h: r.height }
+      })
     }
 
-    sync()
+    const sync = () => {
+      window.clearTimeout(timer)
+      timer = window.setTimeout(measure, 80)
+    }
+
+    measure()
     const ro = new ResizeObserver(sync)
     ro.observe(el)
     window.addEventListener('resize', sync)
     window.visualViewport?.addEventListener('resize', sync)
     return () => {
+      window.clearTimeout(timer)
       ro.disconnect()
       window.removeEventListener('resize', sync)
       window.visualViewport?.removeEventListener('resize', sync)

@@ -109,6 +109,7 @@ const EXPERIENCE = [
     role: 'Product Designer I',
     dates: 'Jul 2022 — Jun 2023',
     place: 'Los Angeles',
+    href: '/allathlete',
   },
 ]
 

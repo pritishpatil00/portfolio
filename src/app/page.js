@@ -11,6 +11,7 @@ import Sandbox from './components/Sandbox';
 import About from './components/About';
 import HeroGridInvert from './components/HeroGridInvert';
 import DesignSliders from './components/DesignSliders';
+import BottomBlur from './components/BottomBlur';
 
 export default function Page() {
   return (
@@ -46,9 +47,28 @@ function Home() {
   const isTouch = finePointer === false;
   const [onClickable, setOnClickable] = useState(false);
   const cursorSize = onClickable ? 56 : 40;
+  const lenisRef = useRef(null)
+  const heroTouched = useRef(false)
+  const [homeReady, setHomeReady] = useState(() => {
+    if (typeof window === 'undefined') return false
+    try {
+      return sessionStorage.getItem('homeScroll') == null
+        && !window.location.search.includes('skipLoading=true')
+    } catch {
+      return true
+    }
+  })
+
+  const saveHomeScroll = () => {
+    const y = lenisRef.current?.scroll ?? window.scrollY
+    try {
+      sessionStorage.setItem('homeScroll', String(Math.round(y)))
+    } catch {}
+  }
 
   const handlePoppinNavigation = (e) => {
     e.preventDefault()
+    saveHomeScroll()
     setIsNavigating(true)
     
     // Stop Lenis smooth scroll immediately
@@ -59,6 +79,18 @@ function Home() {
     setTimeout(() => {
       router.push('/poppin')
     }, 400) // Wait for fade out animation
+  }
+
+  const handleAllAthleteNavigation = (e) => {
+    e.preventDefault()
+    saveHomeScroll()
+    setIsNavigating(true)
+    if (lenisRef.current) {
+      lenisRef.current.stop()
+    }
+    setTimeout(() => {
+      router.push('/allathlete')
+    }, 520)
   }
 
   const toggleDropdown = (caseStudyIndex, dropdownType) => {
@@ -104,15 +136,16 @@ function Home() {
     '/images/Crowdsurf.png', 
   ];
 
-  const lenisRef = useRef(null)
-  const heroTouched = useRef(false)
-
   useEffect(() => {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+
     const lenis = new Lenis()
     lenisRef.current = lenis
 
     let rafId = 0
+    let alive = true
     function raf(time) {
+      if (!alive) return
       lenis.raf(time)
       rafId = requestAnimationFrame(raf)
     }
@@ -120,6 +153,7 @@ function Home() {
     rafId = requestAnimationFrame(raf)
 
     return () => {
+      alive = false
       cancelAnimationFrame(rafId)
       lenis.destroy()
     }
@@ -135,15 +169,51 @@ function Home() {
     }
 
     setIntroReady(true)
-
-    if (skipLoading) {
-      setTimeout(() => {
-        const hash = window.location.hash.replace('#', '')
-        const id = hash === 'about' || hash === 'sandbox' ? hash : 'case-studies'
-        document.getElementById(id)?.scrollIntoView({ behavior: 'instant' })
-      }, 100)
-    }
   }, [skipLoading]);
+
+  useEffect(() => {
+    if (!introReady || showImages) return
+
+    let cancelled = false
+    const finish = () => {
+      if (!cancelled) setHomeReady(true)
+    }
+
+    const hash = window.location.hash.replace('#', '')
+    if (hash === 'about' || hash === 'sandbox') {
+      document.getElementById(hash)?.scrollIntoView({ behavior: 'instant' })
+      finish()
+      return
+    }
+
+    let y = 0
+    try {
+      const raw = sessionStorage.getItem('homeScroll')
+      if (raw != null) {
+        y = parseInt(raw, 10)
+        sessionStorage.removeItem('homeScroll')
+      }
+    } catch {}
+
+    const apply = () => {
+      if (cancelled) return
+      const lenis = lenisRef.current
+      lenis?.resize?.()
+      if (Number.isFinite(y) && y > 8) {
+        lenis?.scrollTo(y, { immediate: true })
+        window.scrollTo(0, y)
+      } else if (skipLoading) {
+        document.getElementById('case-studies')?.scrollIntoView({ behavior: 'instant' })
+      }
+      requestAnimationFrame(finish)
+    }
+
+    const id = requestAnimationFrame(() => requestAnimationFrame(apply))
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(id)
+    }
+  }, [introReady, showImages, skipLoading]);
 
   useEffect(() => {
     if (!introReady || showImages) return
@@ -266,8 +336,9 @@ function Home() {
   return (
     <motion.main 
       className={`${styles.main} ${y != null && y >= window.innerHeight ? styles.hideNativeCursor : ''}`}
-      animate={{ opacity: isNavigating ? 0 : 1 }}
-      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+      initial={false}
+      animate={{ opacity: isNavigating || !homeReady ? 0 : 1 }}
+      transition={{ duration: 0.52, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
       <motion.header 
         className={`${styles.stickyHeader} ${(isTouch || isFine) && isHovered && !pastHero ? styles.stickyHeaderInverted : ''}`}
@@ -358,12 +429,12 @@ function Home() {
       <div id="case-studies" className={styles.caseStudiesContainer}>
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2025</p>
-            <h3 className={styles.caseStudyTitle}>Crowdsurf</h3>
+            <p className={styles.caseStudyYear}>2022</p>
+            <h3 className={styles.caseStudyTitle}>AllAthlete</h3>
             <p className={styles.caseStudyDescription}>
-              A social music discovery concept app created to transform isolated music listening into a shared social experience. 
+              As the first product designer on the product team, my job was 
               <br /><br />
-              Backed by iHeartRadio.
+              Participated in PearX's S'23 accelerator and raised a $2,000,000+ seed round backed by 1984Ventures, ProgressionFund, and Liquid2.
             </p>
             
             <div className={styles.dropdownSection}>
@@ -382,7 +453,7 @@ function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['0-role'] ? styles.open : ''}`}>
-                Founder and Product Lead
+                Product Designer I
               </div>
             </div>
 
@@ -403,10 +474,9 @@ function Home() {
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['0-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
                 <ul className={styles.contributionsList}>
+                  <li>Design System</li>
                   <li>User Research</li>
                   <li>UX/UI Design</li>
-                  <li>Product Strategy</li>
-                  <li>Front-End Development</li>
                   <li>Usability Testing</li>
                 </ul>
               </div>
@@ -428,32 +498,40 @@ function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['0-timeline'] ? styles.open : ''}`}>
-                This project is ongoing
+              <ul className={styles.contributionsList}>
+                  <li>300,000+ Users</li>
+                  <li>10,000+ College Visits Created</li>
+                  <li>8,000+ Offers Created</li>
+                </ul>
               </div>
             </div>
           </div>
           <div className={styles.caseStudyImageContainer}>
-            <Image
-              src="/images/CrowdSurfMockupTwo.jpg"
-              alt="Poppin Case Study"
-              width={1600}
-              height={900}
-              className={styles.caseStudyImage}
-              sizes="(max-width: 900px) 100vw, 75vw"
-              quality={80}
-              priority
-            />
+            <Link href="/allathlete" onClick={handleAllAthleteNavigation}>
+              <Image
+                src="/images/AllAthleteMockup.jpg"
+                alt="Case Study"
+                width={1600}
+                height={900}
+                className={styles.caseStudyImage}
+                style={{ cursor: 'pointer' }}
+                sizes="(max-width: 900px) 100vw, 75vw"
+                quality={80}
+                priority
+              />
+            </Link>
           </div>
         </div>
-
+      </div>
+      
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2024</p>
-            <h3 className={styles.caseStudyTitle}>Crew</h3>
+            <p className={styles.caseStudyYear}>2025</p>
+            <h3 className={styles.caseStudyTitle}>Crowdsurf</h3>
             <p className={styles.caseStudyDescription}>
-              A photo-messaging platform for groups designed to foster habitual daily interactions.
+              A social music discovery concept app created to transform isolated music listening into a shared social experience. 
               <br /><br />
-              Backed by Unshackled Ventures.
+              Backed by iHeartRadio.
             </p>
             
             <div className={styles.dropdownSection}>
@@ -472,7 +550,7 @@ function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['1-role'] ? styles.open : ''}`}>
-                Founding Designer
+                Founder and Product Lead
               </div>
             </div>
 
@@ -495,8 +573,8 @@ function Home() {
                 <ul className={styles.contributionsList}>
                   <li>User Research</li>
                   <li>UX/UI Design</li>
-                  <li>Visual Design</li>
-                  <li>Design Systems</li>
+                  <li>Product Strategy</li>
+                  <li>Front End Development</li>
                   <li>Usability Testing</li>
                 </ul>
               </div>
@@ -518,6 +596,95 @@ function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['1-timeline'] ? styles.open : ''}`}>
+                This project is ongoing
+              </div>
+            </div>
+          </div>
+          <div className={styles.caseStudyImageContainer}>
+            <Image
+              src="/images/CrowdSurfMockupTwo.jpg"
+              alt="Poppin Case Study"
+              width={1600}
+              height={900}
+              className={styles.caseStudyImage}
+              sizes="(max-width: 900px) 100vw, 75vw"
+              quality={80}
+            />
+          </div>
+        </div>
+
+        <div className={styles.caseStudy}>
+          <div className={styles.caseStudyContent}>
+            <p className={styles.caseStudyYear}>2024</p>
+            <h3 className={styles.caseStudyTitle}>Crew</h3>
+            <p className={styles.caseStudyDescription}>
+              A photo messaging platform for groups designed to foster habitual daily interactions.
+              <br /><br />
+              Backed by Unshackled Ventures.
+            </p>
+            
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(2, 'role')}>
+                <span className={styles.dropdownLabel}>Role</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['2-role'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['2-role'] ? styles.open : ''}`}>
+                Founding Designer
+              </div>
+            </div>
+
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(2, 'contributions')}>
+                <span className={styles.dropdownLabel}>Contributions</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['2-contributions'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['2-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
+                <ul className={styles.contributionsList}>
+                  <li>User Research</li>
+                  <li>UX/UI Design</li>
+                  <li>Visual Design</li>
+                  <li>Design Systems</li>
+                  <li>Usability Testing</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className={styles.dropdownSection}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(2, 'timeline')}>
+                <span className={styles.dropdownLabel}>Outcomes</span>
+                <div className={styles.dropdownIcon}>
+                  {dropdownStates['2-timeline'] ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={`${styles.dropdownContent} ${dropdownStates['2-timeline'] ? styles.open : ''}`}>
                 <ul className={styles.contributionsList}>
                   <li>300,000+ photos and videos sent</li>
                   <li>2500+ users</li>
@@ -550,10 +717,10 @@ function Home() {
             </p>
             
             <div className={styles.dropdownSection}>
-              <div className={styles.dropdownRow} onClick={() => toggleDropdown(2, 'role')}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'role')}>
                 <span className={styles.dropdownLabel}>Role</span>
                 <div className={styles.dropdownIcon}>
-                  {dropdownStates['2-role'] ? (
+                  {dropdownStates['3-role'] ? (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
                     </svg>
@@ -564,16 +731,16 @@ function Home() {
                   )}
                 </div>
               </div>
-              <div className={`${styles.dropdownContent} ${dropdownStates['2-role'] ? styles.open : ''}`}>
+              <div className={`${styles.dropdownContent} ${dropdownStates['3-role'] ? styles.open : ''}`}>
                 Founding Designer and Product Lead
               </div>
             </div>
 
             <div className={styles.dropdownSection}>
-              <div className={styles.dropdownRow} onClick={() => toggleDropdown(2, 'contributions')}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'contributions')}>
                 <span className={styles.dropdownLabel}>Contributions</span>
                 <div className={styles.dropdownIcon}>
-                  {dropdownStates['2-contributions'] ? (
+                  {dropdownStates['3-contributions'] ? (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
                     </svg>
@@ -584,22 +751,22 @@ function Home() {
                   )}
                 </div>
               </div>
-              <div className={`${styles.dropdownContent} ${dropdownStates['2-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
+              <div className={`${styles.dropdownContent} ${dropdownStates['3-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
                 <ul className={styles.contributionsList}>
                   <li>User Research</li>
                   <li>UX/UI Design</li>
                   <li>Visual Design</li>
                   <li>Engineer Collaboration</li>
-                  <li>Front-End Development</li>
+                  <li>Front End Development</li>
                 </ul>
               </div>
             </div>
 
             <div className={styles.dropdownSection}>
-              <div className={styles.dropdownRow} onClick={() => toggleDropdown(2, 'timeline')}>
+              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'timeline')}>
                 <span className={styles.dropdownLabel}>Outcomes</span>
                 <div className={styles.dropdownIcon}>
-                  {dropdownStates['2-timeline'] ? (
+                  {dropdownStates['3-timeline'] ? (
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
                     </svg>
@@ -610,7 +777,7 @@ function Home() {
                   )}
                 </div>
               </div>
-              <div className={`${styles.dropdownContent} ${dropdownStates['2-timeline'] ? styles.open : ''}`}>
+              <div className={`${styles.dropdownContent} ${dropdownStates['3-timeline'] ? styles.open : ''}`}>
                 <ul className={styles.contributionsList}>
                   <li>$2,000,000+ GMV</li>
                   <li>75,000+ Users</li>
@@ -636,103 +803,10 @@ function Home() {
           </div>
         </div>
 
-        <div className={styles.caseStudy}>
-          <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2022</p>
-            <h3 className={styles.caseStudyTitle}>AllAthlete</h3>
-            <p className={styles.caseStudyDescription}>
-              As the first product designer on the product team, my job was 
-              <br /><br />
-              Participated in PearX's S'23 accelerator and raised a $2,000,000+ seed round backed by 1984Ventures, ProgressionFund, and Liquid2.
-            </p>
-            
-            <div className={styles.dropdownSection}>
-              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'role')}>
-                <span className={styles.dropdownLabel}>Role</span>
-                <div className={styles.dropdownIcon}>
-                  {dropdownStates['3-role'] ? (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  )}
-                </div>
-              </div>
-              <div className={`${styles.dropdownContent} ${dropdownStates['3-role'] ? styles.open : ''}`}>
-                Product Designer I
-              </div>
-            </div>
-
-            <div className={styles.dropdownSection}>
-              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'contributions')}>
-                <span className={styles.dropdownLabel}>Contributions</span>
-                <div className={styles.dropdownIcon}>
-                  {dropdownStates['3-contributions'] ? (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  )}
-                </div>
-              </div>
-              <div className={`${styles.dropdownContent} ${dropdownStates['3-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
-                <ul className={styles.contributionsList}>
-                  <li>Design System</li>
-                  <li>User Research</li>
-                  <li>UX/UI Design</li>
-                  <li>Usability Testing</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className={styles.dropdownSection}>
-              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'timeline')}>
-                <span className={styles.dropdownLabel}>Outcomes</span>
-                <div className={styles.dropdownIcon}>
-                  {dropdownStates['3-timeline'] ? (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  )}
-                </div>
-              </div>
-              <div className={`${styles.dropdownContent} ${dropdownStates['3-timeline'] ? styles.open : ''}`}>
-              <ul className={styles.contributionsList}>
-                  <li>300,000+ Users</li>
-                  <li>10,000+ College Visits Created</li>
-                  <li>8,000+ Offers Created</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className={styles.caseStudyImageContainer}>
-            <Image
-              src="/images/AllAthleteMockup.jpg"
-              alt="Case Study"
-              width={1600}
-              height={900}
-              className={styles.caseStudyImage}
-              sizes="(max-width: 900px) 100vw, 75vw"
-              quality={80}
-            />
-          </div>
-        </div>
-      </div>
-      
       <DesignSliders />
       <Sandbox />
       <About />
-
+      <BottomBlur />
 
     </motion.main>
   )

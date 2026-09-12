@@ -96,7 +96,7 @@ const ShaderImage = ({ src, alt, width, height, className }) => {
 
     // Clear any existing canvas and add new one
     const existingCanvas = container.querySelector('canvas');
-    if (existingCanvas) {
+    if (existingCanvas?.parentNode === container) {
       container.removeChild(existingCanvas);
     }
     
@@ -174,13 +174,15 @@ const ShaderImage = ({ src, alt, width, height, className }) => {
   };
 
   useEffect(() => {
+    let cancelled = false
     if (isLoaded && imageRef.current) {
       const texture = new THREE.TextureLoader().load(src, () => {
-        initializeScene(texture);
+        if (!cancelled) initializeScene(texture);
       });
     }
 
     return () => {
+      cancelled = true
       // Cleanup
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
