@@ -47,6 +47,18 @@
         padding-left: 16px;
     }
 
+    .heroHit {
+        position: relative;
+        display: inline-block;
+        width: fit-content;
+        max-width: 100%;
+        z-index: 1;
+    }
+
+    .heroMeta {
+        display: contents;
+    }
+
     .heroReveal {
         display: inline-block;
         width: fit-content;
@@ -161,9 +173,11 @@
         display: none;
         overflow: hidden;
         margin: 20px 0 0;
+        line-height: 1.45;
     }
 
     .heroSkills {
+        display: block;
         margin: 0;
         max-width: 18em;
         font-size: 14px;
@@ -197,6 +211,76 @@
 @keyframes headerFade {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+@media (min-width: 701px) {
+    .main {
+        .heroSection {
+            align-items: stretch;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .heroHit {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+            box-sizing: border-box;
+            width: 100%;
+            max-width: none;
+            height: 100%;
+            padding: 0 16px 16vh;
+            font-size: clamp(56px, min(13vw, 13.5vh), 180px);
+            line-height: 1;
+        }
+
+        .heroMeta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin: 0.133em 0 0;
+        }
+
+        .heroSkillsWrap {
+            display: block;
+            overflow: hidden;
+            margin: 0;
+            padding-left: 0.056em;
+            line-height: 1.45;
+        }
+
+        .heroSkills {
+            display: block;
+            max-width: none;
+            font-size: 0.178em;
+            line-height: 1.45;
+            white-space: nowrap;
+        }
+
+        .heroSignifier {
+            width: 0.156em;
+            height: 0.156em;
+            margin: 0.289em 0 0 0.167em;
+            animation: heroPulse 2.4s ease-in-out infinite;
+        }
+
+        .heroSignifier::before,
+        .heroSignifier::after {
+            width: 100%;
+            height: 100%;
+            border-width: 2px;
+        }
+    }
+
+    .stickyHeaderInverted {
+        transition-delay: 0.32s;
+
+        .headerName p,
+        .headerNav p {
+            transition-delay: 0.32s;
+        }
+    }
 }
 
 .pageCursor {
@@ -646,6 +730,11 @@
 
         p.heroSkills {
             font-size: 13px;
+        }
+
+        .heroHit {
+            display: block;
+            width: 100%;
         }
     }
 

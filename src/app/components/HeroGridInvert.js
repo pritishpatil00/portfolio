@@ -3,8 +3,14 @@
 import { useEffect, useRef, useState } from 'react'
 import styles from './HeroGridInvert.module.scss'
 
-const COLS = 6
-const ROWS = 10
+function gridFor(w, h) {
+  if (w <= 900) return { cols: 6, rows: 10 }
+  const target = 96
+  return {
+    cols: Math.min(16, Math.max(10, Math.round(w / target))),
+    rows: Math.min(12, Math.max(8, Math.round(h / target))),
+  }
+}
 
 function InvertCopy({ width, height, left, top }) {
   return (
@@ -46,8 +52,14 @@ export default function HeroGridInvert({ open, origin }) {
     if (!el) return
 
     const sync = () => {
+      if (!el.isConnected) return
       const r = el.getBoundingClientRect()
-      setBox({ w: r.width, h: r.height })
+      if (r.width < 8 || r.height < 8) return
+      setBox((prev) => (
+        Math.abs(prev.w - r.width) < 1 && Math.abs(prev.h - r.height) < 1
+          ? prev
+          : { w: r.width, h: r.height }
+      ))
     }
 
     sync()
@@ -62,47 +74,51 @@ export default function HeroGridInvert({ open, origin }) {
     }
   }, [])
 
-  const oc = Math.max(0, Math.min(COLS - 1, Math.round(origin.c * (COLS - 1))))
-  const or = Math.max(0, Math.min(ROWS - 1, Math.round(origin.r * (ROWS - 1))))
-  const maxD = COLS + ROWS
+  const ready = box.w >= 8 && box.h >= 8
+  const { cols, rows } = ready ? gridFor(box.w, box.h) : { cols: 0, rows: 0 }
+  const compact = box.w <= 900
+  const oc = cols ? Math.max(0, Math.min(cols - 1, Math.round(origin.c * (cols - 1)))) : 0
+  const or = rows ? Math.max(0, Math.min(rows - 1, Math.round(origin.r * (rows - 1)))) : 0
+  const maxD = cols + rows
   const overlap = 2
-  const cellW = box.w / COLS
-  const cellH = box.h / ROWS
+  const cellW = cols ? box.w / cols : 0
+  const cellH = rows ? box.h / rows : 0
+  const step = compact ? 0.028 : 0.022
 
   const cells = []
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      const d = Math.abs(c - oc) + Math.abs(r - or)
-      const delay = (open ? d : maxD - d) * 0.028
-      const ox = open ? 0.5 : c < oc ? 1 : c > oc ? 0 : 0.5
-      const oy = open ? 0.5 : r < or ? 1 : r > or ? 0 : 0.5
-      const left = c * cellW - overlap
-      const top = r * cellH - overlap
-      cells.push(
-        <div
-          key={`${c}-${r}`}
-          className={styles.cell}
-          style={{
-            left,
-            top,
-            width: cellW + overlap * 2,
-            height: cellH + overlap * 2,
-            '--hero-s': open ? 1 : 0,
-            '--hero-ox': ox,
-            '--hero-oy': oy,
-            transitionDelay: `${delay}s`,
-          }}
-        >
-          {box.w > 0 && (
+  if (ready) {
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const d = Math.abs(c - oc) + Math.abs(r - or)
+        const delay = (open ? d : maxD - d) * step
+        const ox = open ? 0.5 : c < oc ? 1 : c > oc ? 0 : 0.5
+        const oy = open ? 0.5 : r < or ? 1 : r > or ? 0 : 0.5
+        const left = c * cellW - overlap
+        const top = r * cellH - overlap
+        cells.push(
+          <div
+            key={`${cols}x${rows}-${c}-${r}`}
+            className={styles.cell}
+            style={{
+              left,
+              top,
+              width: cellW + overlap * 2,
+              height: cellH + overlap * 2,
+              '--hero-s': open ? 1 : 0,
+              '--hero-ox': ox,
+              '--hero-oy': oy,
+              transitionDelay: `${delay}s`,
+            }}
+          >
             <InvertCopy
               width={box.w}
               height={box.h}
               left={-left}
               top={-top}
             />
-          )}
-        </div>
-      )
+          </div>
+        )
+      }
     }
   }
 

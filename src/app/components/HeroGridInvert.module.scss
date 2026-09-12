@@ -117,3 +117,38 @@
 :global(html[data-browser='safari']) .copy {
     padding: 0 20px calc(14vh + 52px + 112px);
 }
+
+@media (min-width: 701px) {
+    .copy {
+        justify-content: flex-end;
+        padding: 0 16px 16vh;
+        font-size: clamp(56px, min(13vw, 13.5vh), 180px);
+        line-height: 1;
+    }
+
+    .skillsWrap {
+        display: block;
+        overflow: hidden;
+        margin: 0.133em 0 0;
+        padding-left: 0.056em;
+    }
+
+    .skills {
+        max-width: none;
+        font-size: 0.178em;
+        white-space: nowrap;
+    }
+
+    .signifier {
+        display: block;
+        width: 0.156em;
+        height: 0.156em;
+        margin: 0.289em 0 0 0.167em;
+    }
+
+    .signifierRing {
+        width: 100%;
+        height: 100%;
+        border-width: 2px;
+    }
+}

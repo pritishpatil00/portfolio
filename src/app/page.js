@@ -26,7 +26,6 @@ function Home() {
   const skipLoading = searchParams.get('skipLoading') === 'true'
 
   const [isHovered, setIsHovered] = useState(false);
-  const [isMenuHovered, setIsMenuHovered] = useState(false);
   const [introReady, setIntroReady] = useState(false);
   const [showImages, setShowImages] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -45,11 +44,6 @@ function Home() {
   const [gridOrigin, setGridOrigin] = useState({ c: 0.35, r: 0.78 });
   const isFine = finePointer === true;
   const isTouch = finePointer === false;
-  const size = isFine
-    ? (isHovered ? 1100 : isMenuHovered ? 240 : x == null ? 0 : 40)
-    : (isHovered ? Math.ceil(Math.hypot(view.w, view.h) * 1.4) : 0);
-  const maskLeft = isFine ? (x ?? 0) - size / 2 : view.w / 2 - size / 2;
-  const maskTop = isFine ? (y ?? 0) - size / 2 : view.h / 2 - size / 2;
   const [onClickable, setOnClickable] = useState(false);
   const cursorSize = onClickable ? 56 : 40;
 
@@ -111,7 +105,6 @@ function Home() {
   ];
 
   const lenisRef = useRef(null)
-  const heroRevealRef = useRef(null)
   const heroTouched = useRef(false)
 
   useEffect(() => {
@@ -173,15 +166,15 @@ function Home() {
   }, [introReady, showImages]);
 
   useEffect(() => {
-    if (!introReady || showImages || !isTouch || skipLoading) return
-
+    if (!introReady || showImages || skipLoading) return
+    const desktop = window.matchMedia('(min-width: 701px)').matches
     const id = window.setTimeout(() => {
       if (heroTouched.current) return
       setIsHovered(true)
-    }, 2500)
+    }, desktop ? 3100 : 2750)
 
     return () => window.clearTimeout(id)
-  }, [introReady, showImages, isTouch, skipLoading]);
+  }, [introReady, showImages, skipLoading]);
 
   useEffect(() => {
     if (!introReady || showImages) return
@@ -216,37 +209,6 @@ function Home() {
       window.removeEventListener('resize', syncView)
     }
   }, [])
-
-  // If the cursor is already over the reveal text when loading ends,
-  // mouseenter never fires — hit-test the pointer instead.
-  useEffect(() => {
-    if (!introReady || showImages || !isFine) return;
-
-    const syncHoverFromPointer = () => {
-      const el = heroRevealRef.current;
-      if (!el) return;
-
-      if (el.matches(':hover')) {
-        setIsHovered(true);
-        return;
-      }
-
-      if (x == null || y == null) return;
-
-      const rect = el.getBoundingClientRect();
-      const clientX = x - window.scrollX;
-      const clientY = y - window.scrollY;
-      setIsHovered(
-        clientX >= rect.left &&
-        clientX <= rect.right &&
-        clientY >= rect.top &&
-        clientY <= rect.bottom
-      );
-    };
-
-    const frame = requestAnimationFrame(syncHoverFromPointer);
-    return () => cancelAnimationFrame(frame);
-  }, [introReady, showImages, isFine, x, y]);
 
   useEffect(() => {
     if (x == null || y == null) {
@@ -308,7 +270,7 @@ function Home() {
       transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
       <motion.header 
-        className={`${styles.stickyHeader} ${isTouch && isHovered && !pastHero ? styles.stickyHeaderInverted : ''}`}
+        className={`${styles.stickyHeader} ${(isTouch || isFine) && isHovered && !pastHero ? styles.stickyHeaderInverted : ''}`}
       >
         <div className={styles.headerName}>
           <p onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>PRITISH PATIL</p>
@@ -334,89 +296,10 @@ function Home() {
           transition={{ type: 'tween', ease: 'backOut', duration: 0.5 }}
         />
       )}
-      {!isTouch && (
-      <motion.div
-        className={`${styles.mask} ${isFine ? '' : styles.maskTouch}`}
-        animate={{
-          WebkitMaskPosition: `${maskLeft}px ${maskTop}px`,
-          WebkitMaskSize: `${size}px`,
-        }}
-        transition={{
-          type: 'tween',
-          ease: isTouch && !isHovered ? [0.25, 0.46, 0.45, 0.94] : 'backOut',
-          duration: isTouch ? (isHovered ? 0.9 : 0.32) : isFine ? 0.5 : 0,
-        }}
-      >
-        <div className={styles.heroSection}>
-          <div
-            ref={heroRevealRef}
-            className={styles.heroReveal}
-            onMouseEnter={() => { if (isFine) setIsHovered(true) }}
-            onMouseLeave={() => { if (isFine) setIsHovered(false) }}
-          >
-            <div className={styles.content}>
-              <div className={styles.wordContainer}>
-                <motion.p
-                  initial={{ y: "100%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.8 }}
-                  className={styles.wordInner}
-                >GOOD</motion.p>
-              </div>
-              <div className={styles.wordContainer}>
-                <motion.p
-                  initial={{ y: "100%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.85 }}
-                  className={styles.wordInner}
-                >DESIGN</motion.p>
-              </div>
-              <div className={styles.wordContainer}>
-                <motion.p
-                  initial={{ y: "100%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.9 }}
-                  className={styles.wordInner}
-                >IS</motion.p>
-              </div>
-              <div className={styles.wordContainer}>
-                <motion.p
-                  initial={{ y: "100%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.95 }}
-                  className={styles.wordInner}
-                >INVISIBLE</motion.p>
-              </div>
-              <div className={styles.heroSkillsWrap}>
-                <motion.p
-                  className={styles.heroSkills}
-                  initial={{ y: '100%' }}
-                  animate={{ y: '0%' }}
-                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.1 }}
-                >
-                  Design engineer. Product, interaction, and the interface.
-                </motion.p>
-              </div>
-              {isTouch && (
-                <motion.span
-                  className={styles.heroSignifier}
-                  aria-hidden="true"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 2 }}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      </motion.div>
-      )}
-
       <div className={styles.body}>
         <div
           className={styles.heroSection}
           onClick={(e) => {
-            if (!isTouch) return
             heroTouched.current = true
             const rect = e.currentTarget.getBoundingClientRect()
             setGridOrigin({
@@ -425,13 +308,11 @@ function Home() {
             })
             setIsHovered((open) => !open)
           }}
-          role={isTouch ? 'button' : undefined}
-          aria-label={isTouch ? (isHovered ? 'Hide headline' : 'Reveal headline') : undefined}
+          role="button"
+          aria-label={isHovered ? 'Hide headline' : 'Reveal headline'}
         >
-          {isTouch && (
-            <HeroGridInvert open={isHovered} origin={gridOrigin} />
-          )}
-          <div className={styles.content}>
+          <HeroGridInvert open={isHovered} origin={gridOrigin} />
+          <div className={styles.heroHit}>
             <div className={styles.wordContainer}>
               <motion.p
                 initial={{ y: "100%" }}
@@ -448,25 +329,28 @@ function Home() {
                 className={styles.wordInner}
               ><span>PATIL</span></motion.p>
             </div>
+            <div className={styles.heroMeta}>
             <div className={styles.heroSkillsWrap}>
               <motion.p
-                className={styles.heroSkills}
-                initial={{ y: '100%' }}
-                animate={{ y: '0%' }}
-                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.1 }}
+                className={`${styles.heroSkills} ${styles.wordInner}`}
+                initial={isFine ? { y: '100%', opacity: 0 } : { y: '100%' }}
+                animate={isFine ? { y: '0%', opacity: 1 } : { y: '0%' }}
+                transition={isFine
+                  ? { duration: 1.15, ease: [0.16, 1, 0.3, 1], delay: 1.22 }
+                  : { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.1 }
+                }
               >
                 Design engineer. Product, interaction, and the interface.
               </motion.p>
             </div>
-            {isTouch && (
-              <motion.span
-                className={styles.heroSignifier}
-                aria-hidden="true"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 2 }}
-              />
-            )}
+            <motion.span
+              className={styles.heroSignifier}
+              aria-hidden="true"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 2 }}
+            />
+            </div>
           </div>
         </div>
       </div>
