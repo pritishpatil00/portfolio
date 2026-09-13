@@ -96,9 +96,7 @@ const ShaderImage = ({ src, alt, width, height, className }) => {
 
     // Clear any existing canvas and add new one
     const existingCanvas = container.querySelector('canvas');
-    if (existingCanvas?.parentNode === container) {
-      container.removeChild(existingCanvas);
-    }
+    if (existingCanvas) existingCanvas.remove()
     
     // Style the canvas to match the container
     rendererRef.current.domElement.style.position = 'absolute';

@@ -33,6 +33,7 @@
 
 .kicker {
     grid-column: 3 / 6;
+    grid-row: 1;
     margin: 0 0 12px;
     font-size: 13px;
     letter-spacing: 0.4px;
@@ -42,11 +43,12 @@
 
 .lead {
     grid-column: 3 / 6;
+    grid-row: 2;
     margin: 0;
     font-family: 'Neue Montreal Medium';
     font-size: 32px;
     font-weight: 500;
-    line-height: 1.18;
+    line-height: 1.26;
     letter-spacing: -0.7px;
     color: #ffffff;
     text-wrap: balance;
@@ -54,10 +56,11 @@
 
 .heroCopy {
     grid-column: 7 / 11;
+    grid-row: 2;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding-top: 28px;
+    padding-top: 0;
 }
 
 .body {

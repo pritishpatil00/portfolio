@@ -19,6 +19,15 @@ export default function RootLayout({ children }) {
             var ua = navigator.userAgent;
             var safari = /Safari/i.test(ua) && !/Chrome|CriOS|Chromium|FxiOS|EdgiOS|OPiOS|Android/i.test(ua);
             document.documentElement.setAttribute('data-browser', safari ? 'safari' : 'chrome');
+            window.addEventListener('error', function (e) {
+              var stack = (e.error && e.error.stack) || '';
+              var file = e.filename || '';
+              var fromCssHmr = stack.indexOf('hotModuleReplacement') !== -1 || file.indexOf('hotModuleReplacement') !== -1;
+              if (fromCssHmr && String(e.message || '').indexOf("reading 'removeChild'") !== -1) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+              }
+            }, true);
           })();
         `}</Script>
         {children}

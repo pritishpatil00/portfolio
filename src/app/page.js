@@ -1,6 +1,6 @@
 'use client'
 import styles from './page.module.scss'
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect, useRef, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';  
 import { motion } from 'framer-motion';
 import useMousePosition from './utils/useMousePosition';
@@ -12,6 +12,17 @@ import About from './components/About';
 import HeroGridInvert from './components/HeroGridInvert';
 import DesignSliders from './components/DesignSliders';
 import BottomBlur from './components/BottomBlur';
+
+function ViewCta({ href, onClick, label = 'View case study' }) {
+  return (
+    <Link href={href} className={styles.caseStudyCta} onClick={onClick}>
+      {label}
+      <svg className={styles.caseStudyCtaArrow} width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="M2.2 6h7.2M6.6 3.2 10 6 6.6 8.8" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </Link>
+  )
+}
 
 export default function Page() {
   return (
@@ -33,10 +44,9 @@ function Home() {
   const [hoveredRect, setHoveredRect] = useState(null);
   const [isNavigating, setIsNavigating] = useState(false);
   const [dropdownStates, setDropdownStates] = useState({
-    '0-role': true, // Role open by default for first case study
-    '1-role': true, // Role open by default for second case study
-    '2-role': true, // Role open by default for third case study  
-    '3-role': true  // Role open by default for fourth case study
+    '0-role': true,
+    '1-role': true,
+    '2-role': true,
   });
   const { x, y } = useMousePosition();
   const [finePointer, setFinePointer] = useState(null);
@@ -45,8 +55,9 @@ function Home() {
   const [gridOrigin, setGridOrigin] = useState({ c: 0.35, r: 0.78 });
   const isFine = finePointer === true;
   const isTouch = finePointer === false;
-  const [onClickable, setOnClickable] = useState(false);
-  const cursorSize = onClickable ? 56 : 40;
+  const [onCaseImage, setOnCaseImage] = useState(false);
+  const cursorW = onCaseImage ? 98 : 40;
+  const cursorH = 40;
   const lenisRef = useRef(null)
   const heroTouched = useRef(false)
   const [homeReady, setHomeReady] = useState(() => {
@@ -78,7 +89,7 @@ function Home() {
     
     setTimeout(() => {
       router.push('/poppin')
-    }, 400) // Wait for fade out animation
+    }, 520)
   }
 
   const handleAllAthleteNavigation = (e) => {
@@ -136,6 +147,16 @@ function Home() {
     '/images/Crowdsurf.png', 
   ];
 
+  const imageDelays = useMemo(() => {
+    const last = images.length - 1
+    if (last <= 0) return [380]
+    return images.map((_, i) => Math.round(380 * Math.pow(52 / 380, i / last)))
+  }, [images.length])
+  const loadingDurationMs = useMemo(
+    () => imageDelays.reduce((sum, delay) => sum + delay, 0),
+    [imageDelays]
+  )
+
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
 
@@ -155,7 +176,7 @@ function Home() {
     return () => {
       alive = false
       cancelAnimationFrame(rafId)
-      lenis.destroy()
+      try { lenis.destroy() } catch {}
     }
   }, []);
 
@@ -256,15 +277,15 @@ function Home() {
     if (showImages && currentImageIndex < images.length) {
       const timer = setTimeout(() => {
         setCurrentImageIndex(prev => prev + 1);
-      }, 150); // Fast transition between images
+      }, imageDelays[currentImageIndex] ?? 50);
       return () => clearTimeout(timer);
     } else if (currentImageIndex >= images.length) {
       const timer = setTimeout(() => {
         setShowImages(false);
-      }, 400); // Brief pause before showing landing page
+      }, 400);
       return () => clearTimeout(timer);
     }
-  }, [currentImageIndex, showImages, images.length]);
+  }, [currentImageIndex, showImages, images.length, imageDelays]);
 
   useEffect(() => {
     const mq = window.matchMedia('(hover: hover) and (pointer: fine)')
@@ -282,23 +303,12 @@ function Home() {
 
   useEffect(() => {
     if (x == null || y == null) {
-      setOnClickable(false)
+      setOnCaseImage(false)
       return
     }
-
     const el = document.elementFromPoint(x - window.scrollX, y - window.scrollY)
-    if (!el) {
-      setOnClickable(false)
-      return
-    }
-
-    const hit = el.closest(
-      'a, button, [role="button"], header p, [class*="dropdownRow"], [class*="hit"]'
-    )
-    setOnClickable(Boolean(hit))
-  }, [x, y]);
-
-  const loadingDurationMs = images.length * 150 + 200;
+    setOnCaseImage(Boolean(el?.closest('[data-cursor="view"]')))
+  }, [x, y])
 
   if (!introReady) {
     return <main className={styles.main} />;
@@ -335,13 +345,16 @@ function Home() {
 
   return (
     <motion.main 
-      className={`${styles.main} ${y != null && y >= window.innerHeight ? styles.hideNativeCursor : ''}`}
+      className={`${styles.main} ${isFine ? styles.hideNativeCursor : ''}`}
       initial={false}
       animate={{ opacity: isNavigating || !homeReady ? 0 : 1 }}
       transition={{ duration: 0.52, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
       <motion.header 
         className={`${styles.stickyHeader} ${(isTouch || isFine) && isHovered && !pastHero ? styles.stickyHeaderInverted : ''}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 2 }}
       >
         <div className={styles.headerName}>
           <p onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>PRITISH PATIL</p>
@@ -356,16 +369,27 @@ function Home() {
       </motion.header>
       {isFine && x != null && y != null && (
         <motion.div
-          className={`${styles.pageCursor} ${onClickable ? styles.pageCursorOn : ''}`}
+          className={`${styles.pageCursor} ${onCaseImage ? styles.pageCursorView : ''} ${(isTouch || isFine) && isHovered && !pastHero ? styles.pageCursorInverted : ''}`}
           animate={{
-            x: x - window.scrollX - cursorSize / 2,
-            y: y - window.scrollY - cursorSize / 2,
-            width: cursorSize,
-            height: cursorSize,
-            opacity: y < window.innerHeight ? 0 : 1,
+            x: x - window.scrollX - cursorW / 2,
+            y: y - window.scrollY - cursorH / 2,
+            width: cursorW,
+            height: cursorH,
           }}
-          transition={{ type: 'tween', ease: 'backOut', duration: 0.5 }}
-        />
+          transition={{
+            x: { type: 'tween', ease: 'backOut', duration: 0.5 },
+            y: { type: 'tween', ease: 'backOut', duration: 0.5 },
+            width: { type: 'tween', ease: [0.25, 0.46, 0.45, 0.94], duration: 0.28 },
+            height: { type: 'tween', ease: [0.25, 0.46, 0.45, 0.94], duration: 0.28 },
+          }}
+        >
+          <span className={styles.pageCursorLabel}>
+            View
+            <svg className={styles.pageCursorArrow} width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2.2 6h7.2M6.6 3.2 10 6 6.6 8.8" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </motion.div>
       )}
       <div className={styles.body}>
         <div
@@ -505,8 +529,9 @@ function Home() {
                 </ul>
               </div>
             </div>
+            <ViewCta href="/allathlete" onClick={handleAllAthleteNavigation} />
           </div>
-          <div className={styles.caseStudyImageContainer}>
+          <div className={styles.caseStudyImageContainer} data-cursor="view">
             <Link href="/allathlete" onClick={handleAllAthleteNavigation}>
               <Image
                 src="/images/AllAthleteMockup.jpg"
@@ -522,16 +547,15 @@ function Home() {
             </Link>
           </div>
         </div>
-      </div>
       
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2025</p>
-            <h3 className={styles.caseStudyTitle}>Crowdsurf</h3>
+            <p className={styles.caseStudyYear}>2023</p>
+            <h3 className={styles.caseStudyTitle}>Poppin</h3>
             <p className={styles.caseStudyDescription}>
-              A social music discovery concept app created to transform isolated music listening into a shared social experience. 
+              A hyperlocal ticketing marketplace enabling social event discovery. I led the 0→1 design and conceptualization from MVP to v3. Managed a team of four designers.
               <br /><br />
-              Backed by iHeartRadio.
+              Participated in PearX and raised a $2,000,000+ round backed by 1984Ventures, ProgressionFund, and Liquid2.
             </p>
             
             <div className={styles.dropdownSection}>
@@ -550,7 +574,7 @@ function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['1-role'] ? styles.open : ''}`}>
-                Founder and Product Lead
+                Founding Designer and Product Lead
               </div>
             </div>
 
@@ -573,9 +597,9 @@ function Home() {
                 <ul className={styles.contributionsList}>
                   <li>User Research</li>
                   <li>UX/UI Design</li>
-                  <li>Product Strategy</li>
+                  <li>Visual Design</li>
+                  <li>Engineer Collaboration</li>
                   <li>Front End Development</li>
-                  <li>Usability Testing</li>
                 </ul>
               </div>
             </div>
@@ -596,31 +620,40 @@ function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['1-timeline'] ? styles.open : ''}`}>
-                This project is ongoing
+                <ul className={styles.contributionsList}>
+                  <li>$2,000,000+ GMV</li>
+                  <li>75,000+ Users</li>
+                  <li>60% Weekly Retention</li>
+                  <li>Round raised</li>
+                </ul>
               </div>
             </div>
+            <ViewCta href="/poppin" onClick={handlePoppinNavigation} />
           </div>
-          <div className={styles.caseStudyImageContainer}>
-            <Image
-              src="/images/CrowdSurfMockupTwo.jpg"
-              alt="Poppin Case Study"
-              width={1600}
-              height={900}
-              className={styles.caseStudyImage}
-              sizes="(max-width: 900px) 100vw, 75vw"
-              quality={80}
-            />
+          <div className={styles.caseStudyImageContainer} data-cursor="view">
+            <Link href="/poppin" onClick={handlePoppinNavigation}>
+              <Image
+                src="/images/PoppinMockupTwo.jpg"
+                alt="Case Study"
+                width={1600}
+                height={900}
+                className={styles.caseStudyImage}
+                style={{ cursor: 'pointer' }}
+                sizes="(max-width: 900px) 100vw, 75vw"
+                quality={80}
+              />
+            </Link>
           </div>
         </div>
 
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2024</p>
-            <h3 className={styles.caseStudyTitle}>Crew</h3>
+            <p className={styles.caseStudyYear}>2025</p>
+            <h3 className={styles.caseStudyTitle}>Crowdsurf</h3>
             <p className={styles.caseStudyDescription}>
-              A photo messaging platform for groups designed to foster habitual daily interactions.
+              A social music discovery concept app created to transform isolated music listening into a shared social experience. 
               <br /><br />
-              Backed by Unshackled Ventures.
+              Backed by iHeartRadio.
             </p>
             
             <div className={styles.dropdownSection}>
@@ -639,7 +672,7 @@ function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['2-role'] ? styles.open : ''}`}>
-                Founding Designer
+                Founder and Product Lead
               </div>
             </div>
 
@@ -662,8 +695,8 @@ function Home() {
                 <ul className={styles.contributionsList}>
                   <li>User Research</li>
                   <li>UX/UI Design</li>
-                  <li>Visual Design</li>
-                  <li>Design Systems</li>
+                  <li>Product Strategy</li>
+                  <li>Front End Development</li>
                   <li>Usability Testing</li>
                 </ul>
               </div>
@@ -685,18 +718,15 @@ function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['2-timeline'] ? styles.open : ''}`}>
-                <ul className={styles.contributionsList}>
-                  <li>300,000+ photos and videos sent</li>
-                  <li>2500+ users</li>
-                  <li>Sub 2 second photo + video sending</li>
-                </ul>
+                This project is ongoing
               </div>
             </div>
+            <span className={`${styles.caseStudyCta} ${styles.caseStudyCtaMuted}`}>Coming soon</span>
           </div>
-          <div className={styles.caseStudyImageContainer}>
+          <div className={styles.caseStudyImageContainer} data-cursor="view">
             <Image
-              src="/images/CrewMockupFinal.jpg"
-              alt="Case Study"
+              src="/images/CrowdSurfMockupTwo.jpg"
+              alt="Poppin Case Study"
               width={1600}
               height={900}
               className={styles.caseStudyImage}
@@ -706,102 +736,7 @@ function Home() {
           </div>
         </div>
 
-        <div className={styles.caseStudy}>
-          <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2023</p>
-            <h3 className={styles.caseStudyTitle}>Poppin</h3>
-            <p className={styles.caseStudyDescription}>
-              A hyperlocal ticketing marketplace enabling social event discovery. I led the 0→1 design and conceptualization from MVP to v3. Managed a team of four designers.
-              <br /><br />
-              Participated in PearX's S'23 accelerator and raised a $2,000,000+ seed round backed by 1984Ventures, ProgressionFund, and Liquid2.
-            </p>
-            
-            <div className={styles.dropdownSection}>
-              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'role')}>
-                <span className={styles.dropdownLabel}>Role</span>
-                <div className={styles.dropdownIcon}>
-                  {dropdownStates['3-role'] ? (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  )}
-                </div>
-              </div>
-              <div className={`${styles.dropdownContent} ${dropdownStates['3-role'] ? styles.open : ''}`}>
-                Founding Designer and Product Lead
-              </div>
-            </div>
-
-            <div className={styles.dropdownSection}>
-              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'contributions')}>
-                <span className={styles.dropdownLabel}>Contributions</span>
-                <div className={styles.dropdownIcon}>
-                  {dropdownStates['3-contributions'] ? (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  )}
-                </div>
-              </div>
-              <div className={`${styles.dropdownContent} ${dropdownStates['3-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
-                <ul className={styles.contributionsList}>
-                  <li>User Research</li>
-                  <li>UX/UI Design</li>
-                  <li>Visual Design</li>
-                  <li>Engineer Collaboration</li>
-                  <li>Front End Development</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className={styles.dropdownSection}>
-              <div className={styles.dropdownRow} onClick={() => toggleDropdown(3, 'timeline')}>
-                <span className={styles.dropdownLabel}>Outcomes</span>
-                <div className={styles.dropdownIcon}>
-                  {dropdownStates['3-timeline'] ? (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M8 3V13M3 8H13" stroke="#ffffff" strokeWidth="1"/>
-                    </svg>
-                  )}
-                </div>
-              </div>
-              <div className={`${styles.dropdownContent} ${dropdownStates['3-timeline'] ? styles.open : ''}`}>
-                <ul className={styles.contributionsList}>
-                  <li>$2,000,000+ GMV</li>
-                  <li>75,000+ Users</li>
-                  <li>60% Weekly Retention</li>
-                  <li>Seed Round</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className={styles.caseStudyImageContainer}>
-            <Link href="/poppin" onClick={handlePoppinNavigation}>
-              <Image
-                src="/images/PoppinMockupTwo.jpg"
-                alt="Case Study"
-                width={1600}
-                height={900}
-                className={styles.caseStudyImage}
-                style={{ cursor: 'pointer' }}
-                sizes="(max-width: 900px) 100vw, 75vw"
-                quality={80}
-              />
-            </Link>
-          </div>
-        </div>
+      </div>
 
       <DesignSliders />
       <Sandbox />

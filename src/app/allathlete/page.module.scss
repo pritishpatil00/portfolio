@@ -8,7 +8,9 @@
     --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --gutter: clamp(20px, 5vw, 72px);
     --col: 1120px;
+    --col-wide: 1600px;
     --inset: max(var(--gutter), calc((100% - var(--col)) / 2));
+    --inset-wide: max(var(--gutter), calc((100% - var(--col-wide)) / 2));
     background: var(--bg);
     color: var(--ink);
     min-height: 100vh;
@@ -99,11 +101,6 @@
     }
 }
 
-.pageCursorOn {
-    background: transparent;
-    border-color: #121212;
-}
-
 .hideNativeCursor,
 .hideNativeCursor * {
     cursor: none !important;
@@ -122,7 +119,7 @@
     margin: 16px 0 24px;
     font-family: 'Neue Montreal Regular', sans-serif;
     font-size: clamp(40px, 5.4vw, 76px);
-    line-height: 0.98;
+    line-height: 1.1;
     letter-spacing: -0.03em;
     font-weight: 400;
     max-width: 18ch;
@@ -203,9 +200,40 @@
 }
 
 .ctaWrap {
-    overflow: hidden;
+    overflow: visible;
     width: fit-content;
     padding-bottom: 2px;
+}
+
+.liveSiteCta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    height: 40px;
+    padding: 0 16px 0 18px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    background: #121212;
+    color: #ffffff;
+    text-decoration: none;
+    font-family: 'Neue Montreal Book', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.liveSiteCta:hover {
+    background: #ffffff;
+    color: #121212;
+    box-shadow: inset 0 0 0 1px #121212;
+}
+
+.liveSiteCtaArrow {
+    display: block;
+    flex-shrink: 0;
 }
 
 .primaryStretch {
@@ -393,7 +421,7 @@
         margin: 12px 0 0;
         font-family: 'Neue Montreal Regular', sans-serif;
         font-size: clamp(32px, 3.4vw, 48px);
-        line-height: 1.05;
+        line-height: 1.12;
         font-weight: 400;
         letter-spacing: -0.03em;
         span { color: var(--muted); }
@@ -440,7 +468,7 @@
         margin: 8px 0 24px;
         font-family: 'Neue Montreal Regular', sans-serif;
         font-size: clamp(32px, 3.6vw, 52px);
-        line-height: 1.05;
+        line-height: 1.12;
         font-weight: 400;
         letter-spacing: -0.03em;
         span { color: var(--muted); }
@@ -526,6 +554,8 @@
     gap: 24px 20px;
     padding-top: 40px;
     padding-bottom: 120px;
+    padding-left: var(--inset-wide);
+    padding-right: var(--inset-wide);
     align-items: start;
 }
 
@@ -541,7 +571,7 @@
         font-size: clamp(26px, 2.4vw, 36px);
         font-weight: 400;
         letter-spacing: -0.03em;
-        line-height: 1.1;
+        line-height: 1.16;
     }
     p {
         margin: 0;
@@ -591,6 +621,7 @@
         text-transform: none;
         letter-spacing: -0.03em;
         font-size: 28px;
+        line-height: 1.16;
         font-family: 'Neue Montreal Regular', sans-serif;
         font-weight: 400;
         color: var(--ink);
@@ -609,7 +640,7 @@
         margin: 0 0 28px;
         font-family: 'Neue Montreal Regular', sans-serif;
         font-size: clamp(28px, 3vw, 44px);
-        line-height: 1.08;
+        line-height: 1.14;
         font-weight: 400;
         letter-spacing: -0.03em;
         span { color: var(--muted); }
@@ -638,6 +669,7 @@
         text-transform: none;
         letter-spacing: -0.03em;
         font-size: clamp(32px, 4vw, 56px);
+        line-height: 1.12;
         font-family: 'Neue Montreal Regular', sans-serif;
         font-weight: 400;
         color: var(--ink);
@@ -660,7 +692,7 @@
         font-size: 22px;
         font-weight: 400;
         letter-spacing: -0.02em;
-        line-height: 1.2;
+        line-height: 1.28;
         font-family: 'Neue Montreal Regular', sans-serif;
     }
     p {

@@ -163,9 +163,8 @@ export default function AllAthleteCaseStudy() {
   const router = useRouter()
   const [leaving, setLeaving] = useState(false)
   const [finePointer, setFinePointer] = useState(false)
-  const [onClickable, setOnClickable] = useState(false)
   const { x, y } = useMousePosition()
-  const cursorSize = onClickable ? 56 : 40
+  const cursorSize = 40
 
   useEffect(() => {
     const mq = window.matchMedia('(hover: hover) and (pointer: fine)')
@@ -174,20 +173,6 @@ export default function AllAthleteCaseStudy() {
     mq.addEventListener('change', sync)
     return () => mq.removeEventListener('change', sync)
   }, [])
-
-  useEffect(() => {
-    if (x == null || y == null) {
-      setOnClickable(false)
-      return
-    }
-    const el = document.elementFromPoint(x - window.scrollX, y - window.scrollY)
-    if (!el) {
-      setOnClickable(false)
-      return
-    }
-    const hit = el.closest('a, button, [role="button"], header p, [class*="beforeAfter"]')
-    setOnClickable(Boolean(hit))
-  }, [x, y])
 
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
@@ -215,7 +200,7 @@ export default function AllAthleteCaseStudy() {
     return () => {
       alive = false
       cancelAnimationFrame(raf)
-      lenis?.destroy()
+      try { lenis?.destroy() } catch {}
       window.removeEventListener('popstate', fadeOut)
       window.removeEventListener('pagehide', fadeOut)
     }
@@ -239,7 +224,7 @@ export default function AllAthleteCaseStudy() {
     >
       {finePointer && x != null && y != null && (
         <motion.div
-          className={`${styles.pageCursor} ${onClickable ? styles.pageCursorOn : ''}`}
+          className={styles.pageCursor}
           animate={{
             x: x - window.scrollX - cursorSize / 2,
             y: y - window.scrollY - cursorSize / 2,
@@ -287,11 +272,18 @@ export default function AllAthleteCaseStudy() {
             First product designer on the team. Redesigned the web experience and brand for an existing base of athletes and coaches, then shipped the system that let that network actually connect.
           </motion.p>
         </div>
-        <div className={`${styles.ctaWrap} ${styles.clip}`}>
-          <motion.div variants={rise} initial="hidden" animate="show" transition={{ delay: 0.18, duration: 0.75, ease }}>
-            <HoverFill href="https://www.allathlete.com" className={styles.primary} external>
-              Visit Live Site
-            </HoverFill>
+        <div className={styles.ctaWrap}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.18, duration: 0.75, ease }}
+          >
+            <a href="https://www.allathlete.com" target="_blank" rel="noreferrer" className={styles.liveSiteCta}>
+              Visit live site
+              <svg className={styles.liveSiteCtaArrow} width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2.2 6h7.2M6.6 3.2 10 6 6.6 8.8" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
           </motion.div>
         </div>
       </section>
@@ -330,7 +322,7 @@ export default function AllAthleteCaseStudy() {
           </div>
         </div>
         <div className={styles.objective}>
-          <h6>Objective</h6>
+          <h6>Brief</h6>
           <p>
             Alongside distribution, AllAthlete needed an online experience that matched the mission: be the place athletes get recruited. The existing web product had a tangled information architecture that athletes and coaches could not consume. This was the chance to design a digital experience for the people already on the platform, and to give the product a brand that could hold them.
           </p>
@@ -395,7 +387,7 @@ export default function AllAthleteCaseStudy() {
       </section>
 
       <section className={styles.narrative}>
-        <h6>Research</h6>
+        <h6>Audit</h6>
         <h3>Find out who was on the platform, and why recruiting never closed<span>.</span></h3>
         <p>
           I joined and audited top down. Direct user testing was not guaranteed, so the first job was to learn how people already related to AllAthlete, and what they hoped to get from it, from stakeholders, field notes, and the competitive set.
@@ -489,9 +481,10 @@ export default function AllAthleteCaseStudy() {
       </section>
 
       <section className={styles.narrative}>
-        <h6>HiFi designs</h6>
+        <h6>Shipped screens</h6>
+        <h3>Home, profile, search, and training as one recruiting system<span>.</span></h3>
         <p>
-          High fidelity screens locked layout, type, color, and the interactive pieces of the system, so engineering had a single source of truth across home, profile, search, and training.
+          Visual design locked layout, type, color, and interaction so engineering could build the coach-to-athlete loop without guessing across surfaces.
         </p>
       </section>
 
@@ -499,16 +492,16 @@ export default function AllAthleteCaseStudy() {
 
       <section className={styles.stickyBand}>
         <aside className={styles.stickyCard}>
-          <h4>Let’s work together<span>.</span></h4>
-          <p>If you want a designer who can take a messy two sided product and make the path obvious, I’m around.</p>
+          <h4>Need a product designer<span>.</span></h4>
+          <p>I can take a messy two sided recruiting product and make the path between athletes and coaches obvious.</p>
           <HoverFill href="/?skipLoading=true#about" className={`${styles.primary} ${styles.primaryStretch}`}>
-            Let’s connect
+            Let’s talk
           </HoverFill>
         </aside>
         <div className={styles.stickyCopy}>
           <h3>The AllAthlete web overhaul made recruiting data usable for the people already on the platform<span>.</span></h3>
           <p>
-            The work sat on a two sided problem: athletes could not finish or present a profile, and coaches could not find them. We rebuilt consumption around modular posts, rebuilt the profile around sports data, and put customizable filters next to search so AllAthlete’s coach relationships had somewhere to land.
+            Athletes could not finish or present a profile, and coaches could not find them. We rebuilt consumption around modular posts, rebuilt the profile around sports data, and put customizable filters next to search so AllAthlete’s coach relationships had somewhere to land.
           </p>
           <p>
             A design system and brand held the new IA together across web and mobile. Development resources were thin relative to the architecture, so the rate of learning outpaced the rate of shipping, which meant the system had to be specific, not exhaustive.
@@ -516,7 +509,7 @@ export default function AllAthleteCaseStudy() {
           <blockquote>
             “Only a small proportion of athletes had completed their profile. The breakpoints were in upload, not in demand.”
           </blockquote>
-          <h6>Results</h6>
+          <h6>What landed</h6>
           <p>
             The redesigned web platform supported hundreds of thousands of users, 10,000+ college visits, and 8,000+ offers. Coaches could finally cut the directory; athletes had a reason to finish the page that represented them.
           </p>
@@ -524,13 +517,13 @@ export default function AllAthleteCaseStudy() {
       </section>
 
       <section className={styles.narrative}>
-        <h6>Close</h6>
-        <h3>What I learned<span>.</span></h3>
+        <h6>After the year</h6>
+        <h3>The audit had to stand in for the tests we could not run yet<span>.</span></h3>
         <p>
-          Being the first product designer on a small team means the research has to stand in for the tests you cannot run yet. Stakeholder interviews and field notes were enough to name the three breakpoints (upload, social density, coach filter) and to refuse features that did not serve them.
+          Being the first product designer on a small team means stakeholder interviews and field notes have to name the breakpoints before a test plan exists. Upload, social density, and coach filter were enough to refuse features that did not serve them.
         </p>
         <p>
-          I also learned the cost of communication past the point of diminishing returns, and the cost of an architecture that outruns engineering. The useful response was not more screens. It was a tighter system, a clearer brand, and flows that a limited build could actually finish.
+          I also learned the cost of communication past the point of diminishing returns, and the cost of an architecture that outruns engineering. The useful response was a tighter system, a clearer brand, and flows that a limited build could actually finish.
         </p>
       </section>
 
@@ -542,16 +535,16 @@ export default function AllAthleteCaseStudy() {
               <Image src="/images/PoppinMockupTwo.jpg" alt="Poppin" width={1200} height={800} sizes="(max-width: 700px) 100vw, 50vw" />
               <span className={styles.moreCircle} />
             </div>
-            <h3>Building a socially proofed ticketing network for campus events.</h3>
+            <h3>Building a socially proofed ticketing network for live events.</h3>
             <p>Product lead at Poppin. Overhaul of 3.0 through seed.</p>
           </Link>
           <Link href="/?skipLoading=true#case-studies" className={styles.moreItem}>
             <div className={styles.moreImg}>
-              <Image src="/images/CrewMockupFinal.jpg" alt="Crew" width={1200} height={800} sizes="(max-width: 700px) 100vw, 50vw" />
+              <Image src="/images/CrowdSurfMockupTwo.jpg" alt="Crowdsurf" width={1200} height={800} sizes="(max-width: 700px) 100vw, 50vw" />
               <span className={styles.moreCircle} />
             </div>
-            <h3>A new way to digitally interact and relive memories.</h3>
-            <p>Lead product designer at Crew.</p>
+            <h3>A social music discovery concept for shared listening.</h3>
+            <p>Founder and product lead at Crowdsurf.</p>
           </Link>
         </div>
       </section>
