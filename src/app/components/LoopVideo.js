@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 
-const players = new Set()
+const players = new Map()
 
 function arm(el) {
   if (!el) return
@@ -16,32 +16,39 @@ function arm(el) {
 }
 
 function playEl(el) {
+  if (!el) return
   arm(el)
   const run = el.play()
   if (run) run.catch(() => {})
 }
 
+function playVisible() {
+  players.forEach((state, el) => {
+    if (state.inView) playEl(el)
+  })
+}
+
 export function pauseAllLoopVideos() {
-  players.forEach((el) => {
+  players.forEach((_, el) => {
     el.pause()
   })
 }
 
 export function playAllLoopVideos() {
-  players.forEach(playEl)
+  playVisible()
 }
 
 if (typeof window !== 'undefined') {
-  const kick = () => playAllLoopVideos()
+  const kick = () => playVisible()
   window.addEventListener('pointerdown', kick, { capture: true, passive: true })
   window.addEventListener('touchstart', kick, { capture: true, passive: true })
   window.addEventListener('click', kick, { capture: true })
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') playAllLoopVideos()
+    if (document.visibilityState === 'visible') playVisible()
   })
 }
 
-export default function LoopVideo({ src, title, className }) {
+export default function LoopVideo({ src, title, className, eager = false }) {
   const ref = useRef(null)
 
   useEffect(() => {
@@ -49,21 +56,57 @@ export default function LoopVideo({ src, title, className }) {
     if (!el) return
 
     arm(el)
-    players.add(el)
-    playEl(el)
+    const state = { inView: eager, retries: 0 }
+    players.set(el, state)
 
-    const onReady = () => playEl(el)
-    el.addEventListener('canplay', onReady)
-    el.addEventListener('loadeddata', onReady)
-    el.addEventListener('playing', onReady)
+    const tryPlay = () => {
+      if (state.inView) playEl(el)
+    }
+
+    const onError = () => {
+      if (state.retries >= 2) return
+      state.retries += 1
+      const next = src + (src.includes('?') ? '&' : '?') + 'r=' + state.retries
+      el.src = next
+      el.load()
+      tryPlay()
+    }
+
+    el.addEventListener('canplay', tryPlay)
+    el.addEventListener('loadeddata', tryPlay)
+    el.addEventListener('playing', tryPlay)
+    el.addEventListener('stalled', tryPlay)
+    el.addEventListener('suspend', tryPlay)
+    el.addEventListener('error', onError)
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        state.inView = entry.isIntersecting
+        if (entry.isIntersecting) {
+          if (el.preload !== 'auto') el.preload = 'auto'
+          tryPlay()
+        } else {
+          el.pause()
+        }
+      },
+      { rootMargin: '120px 0px', threshold: 0.01 }
+    )
+    io.observe(el)
+
+    if (eager) tryPlay()
 
     return () => {
       players.delete(el)
-      el.removeEventListener('canplay', onReady)
-      el.removeEventListener('loadeddata', onReady)
-      el.removeEventListener('playing', onReady)
+      io.disconnect()
+      el.removeEventListener('canplay', tryPlay)
+      el.removeEventListener('loadeddata', tryPlay)
+      el.removeEventListener('playing', tryPlay)
+      el.removeEventListener('stalled', tryPlay)
+      el.removeEventListener('suspend', tryPlay)
+      el.removeEventListener('error', onError)
+      el.pause()
     }
-  }, [src])
+  }, [src, eager])
 
   return (
     <video
@@ -79,7 +122,7 @@ export default function LoopVideo({ src, title, className }) {
       autoPlay
       loop
       playsInline
-      preload="auto"
+      preload={eager ? 'auto' : 'metadata'}
       controls={false}
       disablePictureInPicture
       disableRemotePlayback

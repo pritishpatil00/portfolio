@@ -9,9 +9,10 @@ import Lenis from 'lenis';
 import Link from 'next/link';
 import Sandbox from './components/Sandbox';
 import About from './components/About';
-import HeroGridInvert from './components/HeroGridInvert';
+import HeroGridInvert, { invertWaveDelay, HERO_CELL_DURATION, HERO_CELL_EASE } from './components/HeroGridInvert';
 import DesignSliders from './components/DesignSliders';
 import BottomBlur from './components/BottomBlur';
+import LoreModal from './components/LoreModal';
 
 function ViewCta({ href, onClick, label = 'View case study' }) {
   return (
@@ -43,6 +44,7 @@ function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [hoveredRect, setHoveredRect] = useState(null);
   const [isNavigating, setIsNavigating] = useState(false);
+  const [loreOpen, setLoreOpen] = useState(false);
   const [dropdownStates, setDropdownStates] = useState({
     '0-role': true,
     '1-role': true,
@@ -56,10 +58,12 @@ function Home() {
   const isFine = finePointer === true;
   const isTouch = finePointer === false;
   const [onCaseImage, setOnCaseImage] = useState(false);
-  const cursorW = onCaseImage ? 98 : 40;
-  const cursorH = 40;
+  const [onNavLink, setOnNavLink] = useState(false);
+  const cursorW = loreOpen ? 0 : onCaseImage ? 98 : onNavLink ? 26 : 40;
+  const cursorH = loreOpen ? 0 : onCaseImage ? 40 : onNavLink ? 26 : 40;
   const lenisRef = useRef(null)
   const heroTouched = useRef(false)
+  const heroRef = useRef(null)
   const [homeReady, setHomeReady] = useState(() => {
     if (typeof window === 'undefined') return false
     try {
@@ -102,6 +106,17 @@ function Home() {
     setTimeout(() => {
       router.push('/allathlete')
     }, 520)
+  }
+
+  const handleLoreNavigation = (e) => {
+    e.preventDefault()
+    setLoreOpen(true)
+    lenisRef.current?.stop()
+  }
+
+  const closeLore = () => {
+    setLoreOpen(false)
+    lenisRef.current?.start()
   }
 
   const toggleDropdown = (caseStudyIndex, dropdownType) => {
@@ -304,11 +319,30 @@ function Home() {
   useEffect(() => {
     if (x == null || y == null) {
       setOnCaseImage(false)
+      setOnNavLink(false)
       return
     }
     const el = document.elementFromPoint(x - window.scrollX, y - window.scrollY)
-    setOnCaseImage(Boolean(el?.closest('[data-cursor="view"]')))
+    const hit = el?.closest('[data-cursor]')
+    const mode = hit?.getAttribute('data-cursor')
+    setOnCaseImage(mode === 'view')
+    setOnNavLink(mode === 'link')
   }, [x, y])
+
+  const cursorInvertDelay = (() => {
+    const el = heroRef.current
+    if (!el || x == null || y == null || typeof window === 'undefined') return 0
+    const rect = el.getBoundingClientRect()
+    if (rect.width < 8 || rect.height < 8) return 0
+    return invertWaveDelay({
+      open: isHovered,
+      origin: gridOrigin,
+      nx: (x - window.scrollX - rect.left) / rect.width,
+      ny: (y - window.scrollY - rect.top) / rect.height,
+      w: rect.width,
+      h: rect.height,
+    })
+  })()
 
   if (!introReady) {
     return <main className={styles.main} />;
@@ -351,25 +385,31 @@ function Home() {
       transition={{ duration: 0.52, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
       <motion.header 
-        className={`${styles.stickyHeader} ${(isTouch || isFine) && isHovered && !pastHero ? styles.stickyHeaderInverted : ''}`}
+        className={`${styles.stickyHeader} ${pastHero ? styles.stickyHeaderFilled : ''} ${(isTouch || isFine) && isHovered && !pastHero ? styles.stickyHeaderInverted : ''}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 2 }}
       >
         <div className={styles.headerName}>
-          <p onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>PRITISH PATIL</p>
+          <p data-cursor="link" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>PRITISH PATIL</p>
         </div>
         <nav 
           className={styles.headerNav}
         >
-          <p onClick={() => document.getElementById('case-studies').scrollIntoView({ behavior: 'smooth' })}>CASE STUDIES</p>
-          <p onClick={() => document.getElementById('sandbox').scrollIntoView({ behavior: 'smooth' })}>SANDBOX</p>
-          <p onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' })}>ABOUT</p>
+          <p data-cursor="link" onClick={() => document.getElementById('case-studies').scrollIntoView({ behavior: 'smooth' })}>WORK</p>
+          <p data-cursor="link" onClick={() => document.getElementById('sandbox').scrollIntoView({ behavior: 'smooth' })}>SANDBOX</p>
+          <p data-cursor="link" onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' })}>ABOUT</p>
         </nav>
       </motion.header>
-      {isFine && x != null && y != null && (
+      {isFine && !loreOpen && x != null && y != null && (
         <motion.div
-          className={`${styles.pageCursor} ${onCaseImage ? styles.pageCursorView : ''} ${(isTouch || isFine) && isHovered && !pastHero ? styles.pageCursorInverted : ''}`}
+          className={`${styles.pageCursor} ${onCaseImage ? styles.pageCursorView : ''} ${onNavLink ? styles.pageCursorLink : ''} ${(isTouch || isFine) && isHovered && !pastHero && !onNavLink ? styles.pageCursorInverted : ''}`}
+          style={{
+            transitionDuration: `${HERO_CELL_DURATION}s`,
+            transitionTimingFunction: HERO_CELL_EASE,
+            transitionDelay: `${cursorInvertDelay}s`,
+            transitionProperty: 'background-color',
+          }}
           animate={{
             x: x - window.scrollX - cursorW / 2,
             y: y - window.scrollY - cursorH / 2,
@@ -383,6 +423,7 @@ function Home() {
             height: { type: 'tween', ease: [0.25, 0.46, 0.45, 0.94], duration: 0.28 },
           }}
         >
+          <span className={styles.pageCursorDot} aria-hidden="true" />
           <span className={styles.pageCursorLabel}>
             View
             <svg className={styles.pageCursorArrow} width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -394,6 +435,7 @@ function Home() {
       <div className={styles.body}>
         <div
           className={styles.heroSection}
+          ref={heroRef}
           onClick={(e) => {
             heroTouched.current = true
             const rect = e.currentTarget.getBoundingClientRect()
@@ -477,7 +519,7 @@ function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['0-role'] ? styles.open : ''}`}>
-                Product Designer I
+                Product Designer
               </div>
             </div>
 
@@ -648,12 +690,10 @@ function Home() {
 
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>2025</p>
-            <h3 className={styles.caseStudyTitle}>Crowdsurf</h3>
+            <p className={styles.caseStudyYear}>Present</p>
+            <h3 className={styles.caseStudyTitle}>Lore Health</h3>
             <p className={styles.caseStudyDescription}>
-              A social music discovery concept app created to transform isolated music listening into a shared social experience. 
-              <br /><br />
-              Backed by iHeartRadio.
+              An AI-powered health platform helping users manage psychological and physical stressors.
             </p>
             
             <div className={styles.dropdownSection}>
@@ -672,7 +712,7 @@ function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['2-role'] ? styles.open : ''}`}>
-                Founder and Product Lead
+                Design Engineer
               </div>
             </div>
 
@@ -693,11 +733,9 @@ function Home() {
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['2-contributions'] ? `${styles.open} ${styles.contributionsDropdown}` : ''}`}>
                 <ul className={styles.contributionsList}>
-                  <li>User Research</li>
-                  <li>UX/UI Design</li>
-                  <li>Product Strategy</li>
-                  <li>Front End Development</li>
-                  <li>Usability Testing</li>
+                  <li>Product Design</li>
+                  <li>Design Systems</li>
+                  <li>Front-End Development</li>
                 </ul>
               </div>
             </div>
@@ -721,18 +759,21 @@ function Home() {
                 This project is ongoing
               </div>
             </div>
-            <span className={`${styles.caseStudyCta} ${styles.caseStudyCtaMuted}`}>Coming soon</span>
+            <ViewCta href="#lore" onClick={handleLoreNavigation} />
           </div>
           <div className={styles.caseStudyImageContainer} data-cursor="view">
-            <Image
-              src="/images/CrowdSurfMockupTwo.jpg"
-              alt="Poppin Case Study"
+            <a href="#lore" onClick={handleLoreNavigation}>
+              <Image
+              src="/images/LoreHealthMockup.png"
+              alt="Lore Health"
               width={1600}
-              height={900}
+              height={1200}
               className={styles.caseStudyImage}
+              style={{ cursor: 'pointer' }}
               sizes="(max-width: 900px) 100vw, 75vw"
               quality={80}
             />
+            </a>
           </div>
         </div>
 
@@ -742,6 +783,7 @@ function Home() {
       <Sandbox />
       <About />
       <BottomBlur />
+      <LoreModal open={loreOpen} onClose={closeLore} />
 
     </motion.main>
   )

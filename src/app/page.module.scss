@@ -281,10 +281,6 @@
             transition-delay: 0.32s;
         }
     }
-
-    .pageCursorInverted {
-        transition-delay: 0.32s;
-    }
 }
 
 .pageCursor {
@@ -303,7 +299,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
     @media (pointer: coarse) {
         display: none;
@@ -328,6 +324,35 @@
 .pageCursorArrow {
     display: block;
     flex-shrink: 0;
+}
+
+.pageCursorLink {
+    background: transparent;
+    border-color: #ffffff;
+    mix-blend-mode: difference;
+}
+
+.pageCursorDot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ffffff;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.pageCursorLink .pageCursorDot {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.pageCursorView .pageCursorDot {
+    opacity: 0;
 }
 
 .pageCursorView .pageCursorLabel {
@@ -418,12 +443,13 @@
     padding: 12px 24px;
     z-index: 3001;
     background: transparent;
+    transition: background-color 0.35s ease-out;
     box-sizing: border-box;
 
     .headerName {
         p {
             margin: 0;
-            font-size: 12px;
+            font-size: 14px;
             color: #ffffff;
             font-weight: 600;
             letter-spacing: 0.35px;
@@ -444,7 +470,7 @@
     
         p {
             margin: 0;
-            font-size: 12px;
+            font-size: 14px;
             color: #ffffff;
             cursor: pointer;
             transition: color 0.35s ease-out, opacity 0.3s ease;
@@ -457,6 +483,10 @@
         }
     
     }
+}
+
+.stickyHeaderFilled {
+    background: #121212;
 }
 
 .stickyHeaderInverted {
@@ -822,6 +852,10 @@
     .stickyHeader {
         padding: 12px 16px;
         gap: 12px;
+
+        .headerName p {
+            font-size: 12px;
+        }
 
         .headerNav {
             gap: 12px;

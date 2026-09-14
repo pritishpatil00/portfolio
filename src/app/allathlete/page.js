@@ -164,7 +164,8 @@ export default function AllAthleteCaseStudy() {
   const [leaving, setLeaving] = useState(false)
   const [finePointer, setFinePointer] = useState(false)
   const { x, y } = useMousePosition()
-  const cursorSize = 40
+  const [onNavLink, setOnNavLink] = useState(false)
+  const cursorSize = onNavLink ? 26 : 40
 
   useEffect(() => {
     const mq = window.matchMedia('(hover: hover) and (pointer: fine)')
@@ -173,6 +174,15 @@ export default function AllAthleteCaseStudy() {
     mq.addEventListener('change', sync)
     return () => mq.removeEventListener('change', sync)
   }, [])
+
+  useEffect(() => {
+    if (x == null || y == null) {
+      setOnNavLink(false)
+      return
+    }
+    const el = document.elementFromPoint(x - window.scrollX, y - window.scrollY)
+    setOnNavLink(Boolean(el?.closest('[data-cursor="link"]')))
+  }, [x, y])
 
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
@@ -224,7 +234,7 @@ export default function AllAthleteCaseStudy() {
     >
       {finePointer && x != null && y != null && (
         <motion.div
-          className={styles.pageCursor}
+          className={`${styles.pageCursor} ${onNavLink ? styles.pageCursorLink : ''}`}
           animate={{
             x: x - window.scrollX - cursorSize / 2,
             y: y - window.scrollY - cursorSize / 2,
@@ -232,16 +242,18 @@ export default function AllAthleteCaseStudy() {
             height: cursorSize,
           }}
           transition={{ type: 'tween', ease: 'backOut', duration: 0.5 }}
-        />
+        >
+          <span className={styles.pageCursorDot} aria-hidden="true" />
+        </motion.div>
       )}
       <header className={styles.stickyHeader}>
         <div className={styles.headerName}>
-          <Link href="/" onClick={(e) => { e.preventDefault(); goHome('/?skipLoading=true') }}><p>PRITISH PATIL</p></Link>
+          <Link href="/" data-cursor="link" onClick={(e) => { e.preventDefault(); goHome('/?skipLoading=true') }}><p>PRITISH PATIL</p></Link>
         </div>
         <nav className={styles.headerNav}>
-          <p onClick={handleCaseStudiesClick}>CASE STUDIES</p>
-          <Link href="/?skipLoading=true#sandbox"><p>SANDBOX</p></Link>
-          <Link href="/?skipLoading=true#about"><p>ABOUT</p></Link>
+          <p data-cursor="link" onClick={handleCaseStudiesClick}>WORK</p>
+          <Link href="/?skipLoading=true#sandbox" data-cursor="link"><p>SANDBOX</p></Link>
+          <Link href="/?skipLoading=true#about" data-cursor="link"><p>ABOUT</p></Link>
         </nav>
       </header>
 
@@ -290,10 +302,11 @@ export default function AllAthleteCaseStudy() {
 
       <div className={styles.heroMedia}>
         <div className={styles.heroFrame}>
-          <LoopVideo
+            <LoopVideo
             src="/videos/allathlete-mobile.mp4"
             title="AllAthlete mobile product"
             className={styles.heroVideo}
+            eager
           />
         </div>
       </div>
@@ -306,7 +319,7 @@ export default function AllAthleteCaseStudy() {
           </div>
           <div className={styles.detail}>
             <h6>Role</h6>
-            <p>Product Designer I<br />1 of 2 designers</p>
+            <p>Product Designer<br />1 of 2 designers</p>
           </div>
           <div className={styles.detail}>
             <h6>Year</h6>
@@ -538,13 +551,13 @@ export default function AllAthleteCaseStudy() {
             <h3>Building a socially proofed ticketing network for live events.</h3>
             <p>Product lead at Poppin. Overhaul of 3.0 through seed.</p>
           </Link>
-          <Link href="/?skipLoading=true#case-studies" className={styles.moreItem}>
+          <Link href="/lore" className={styles.moreItem}>
             <div className={styles.moreImg}>
-              <Image src="/images/CrowdSurfMockupTwo.jpg" alt="Crowdsurf" width={1200} height={800} sizes="(max-width: 700px) 100vw, 50vw" />
+              <Image src="/images/LoreHealthMockup.png" alt="Lore Health" width={1200} height={900} sizes="(max-width: 700px) 100vw, 50vw" />
               <span className={styles.moreCircle} />
             </div>
-            <h3>A social music discovery concept for shared listening.</h3>
-            <p>Founder and product lead at Crowdsurf.</p>
+            <h3>An AI-powered health platform for psychological and physical stressors.</h3>
+            <p>Design engineer at Lore Health.</p>
           </Link>
         </div>
       </section>

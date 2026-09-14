@@ -4,9 +4,9 @@ import { useEffect, useRef } from 'react'
 import styles from './DesignSliders.module.scss'
 
 const ROWS = [
-  { label: 'Product', left: -1.55, dir: 1 },
-  { label: 'Interaction', left: -1.25, dir: -1 },
-  { label: 'Visual', left: -1.6, dir: 1 },
+  { label: 'Product', left: -1.55, dir: 1, pill: '/images/CapsuleOne-sm.jpg' },
+  { label: 'Interaction', left: -1.25, dir: -1, pill: '/images/NewYork-sm.jpg' },
+  { label: 'Visual', left: -1.6, dir: 1, pill: '/images/DelMar-sm.jpg' },
 ]
 const COPIES = 10
 const TRAVEL = 1500
@@ -122,6 +122,11 @@ export default function DesignSliders() {
 
     setup()
 
+    ROWS.forEach((row) => {
+      const img = new Image()
+      img.src = row.pill
+    })
+
     onScroll = () => {
       if (compositor) return
       applyJs(progress())
@@ -151,7 +156,10 @@ export default function DesignSliders() {
               <div key={n} className={styles.unit}>
                 <span>{row.label}</span>
                 <span className={styles.design}> Design</span>
-                <span className={styles.pill} />
+                <span
+                  className={styles.pill}
+                  style={{ backgroundImage: `url('${row.pill}')` }}
+                />
               </div>
             ))}
           </div>

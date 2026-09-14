@@ -55,7 +55,7 @@
 
     .headerName p {
         margin: 0;
-        font-size: 12px;
+        font-size: 14px;
         color: var(--ink);
         font-weight: 600;
         letter-spacing: 0.35px;
@@ -71,7 +71,7 @@
         align-items: center;
         p {
             margin: 0;
-            font-size: 12px;
+            font-size: 14px;
             color: var(--ink);
             cursor: pointer;
             letter-spacing: 0.35px;
@@ -94,11 +94,39 @@
     box-sizing: border-box;
     pointer-events: none;
     z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 
     @media (pointer: coarse) {
         display: none;
     }
+}
+
+.pageCursorLink {
+    background: transparent;
+    border-color: #ffffff;
+    mix-blend-mode: difference;
+}
+
+.pageCursorDot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ffffff;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.pageCursorLink .pageCursorDot {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .hideNativeCursor,
@@ -807,5 +835,14 @@
         grid-template-columns: 1fr;
         padding-top: 32px;
         padding-bottom: 96px;
+    }
+}
+
+@media (max-width: 700px) {
+    .stickyHeader {
+        .headerName p,
+        .headerNav p {
+            font-size: 12px;
+        }
     }
 }

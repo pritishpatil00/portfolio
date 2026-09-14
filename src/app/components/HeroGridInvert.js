@@ -3,13 +3,29 @@
 import { useEffect, useRef, useState } from 'react'
 import styles from './HeroGridInvert.module.scss'
 
-function gridFor(w, h) {
+export function gridFor(w, h) {
   if (w <= 900) return { cols: 6, rows: 10 }
   const target = 96
   return {
     cols: Math.min(16, Math.max(10, Math.round(w / target))),
     rows: Math.min(12, Math.max(8, Math.round(h / target))),
   }
+}
+
+export const HERO_CELL_DURATION = 0.38
+export const HERO_CELL_EASE = 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+
+export function invertWaveDelay({ open, origin, nx, ny, w, h }) {
+  if (w < 8 || h < 8) return 0
+  const { cols, rows } = gridFor(w, h)
+  const step = w <= 900 ? 0.028 : 0.022
+  const oc = Math.max(0, Math.min(cols - 1, Math.round(origin.c * (cols - 1))))
+  const or = Math.max(0, Math.min(rows - 1, Math.round(origin.r * (rows - 1))))
+  const cc = Math.max(0, Math.min(cols - 1, Math.round(nx * (cols - 1))))
+  const cr = Math.max(0, Math.min(rows - 1, Math.round(ny * (rows - 1))))
+  const d = Math.abs(cc - oc) + Math.abs(cr - or)
+  const maxD = cols + rows
+  return (open ? d : maxD - d) * step
 }
 
 function InvertCopy({ width, height, left, top }) {
