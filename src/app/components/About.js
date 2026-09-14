@@ -92,14 +92,20 @@ const TOOLS = [
 
 const EXPERIENCE = [
   {
+    company: 'Lore Health',
+    role: 'Design Engineer',
+    dates: 'Sep 2025 — Present',
+    place: 'Los Angeles',
+  },
+  {
     company: 'Crew',
-    role: 'Lead Product Designer, Co-Founder',
-    dates: 'Jul 2024 — Present',
+    role: 'Design Engineer',
+    dates: 'Jun 2024 — Sep 2025',
     place: 'Los Angeles',
   },
   {
     company: 'Poppin',
-    role: 'Lead Product Designer',
+    role: 'Product Designer',
     dates: 'Jun 2023 — Jun 2024',
     place: 'Palo Alto',
     href: '/poppin',

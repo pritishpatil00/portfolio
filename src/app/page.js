@@ -688,7 +688,7 @@ function Home() {
 
         <div className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
-            <p className={styles.caseStudyYear}>Present</p>
+            <p className={styles.caseStudyYear}>2025 to Present</p>
             <h3 className={styles.caseStudyTitle}>Lore Health</h3>
             <p className={styles.caseStudyDescription}>
               An AI-powered health platform helping users manage psychological and physical stressors.

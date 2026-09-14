@@ -6,12 +6,13 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { LORE_CHAPTERS } from '../lore/content'
+import useMousePosition from '../utils/useMousePosition'
 import styles from './LoreModal.module.scss'
 
 const ease = [0.25, 0.46, 0.45, 0.94]
 
 const META = [
-  { label: 'Year', value: 'Present' },
+  { label: 'Year', value: '2025 to Present' },
   { label: 'Role', value: 'Design Engineer' },
   { label: 'Org', value: 'Lore Health' },
   { label: 'Status', value: 'Ongoing' },
@@ -37,10 +38,36 @@ const MORE = [
 export default function LoreModal({ open, onClose }) {
   const [mounted, setMounted] = useState(false)
   const overlayRef = useRef(null)
+  const { x, y } = useMousePosition()
+  const [finePointer, setFinePointer] = useState(false)
+  const [onLink, setOnLink] = useState(false)
+  const [onExit, setOnExit] = useState(false)
+  const cursorW = onExit ? 88 : onLink ? 26 : 40
+  const cursorH = onExit ? 40 : onLink ? 26 : 40
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)')
+    const sync = () => setFinePointer(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
+  useEffect(() => {
+    if (!open || x == null || y == null) {
+      setOnLink(false)
+      setOnExit(false)
+      return
+    }
+    const el = document.elementFromPoint(x - window.scrollX, y - window.scrollY)
+    const overSheet = Boolean(el?.closest('[data-lore-sheet]'))
+    setOnExit(!overSheet)
+    setOnLink(overSheet && Boolean(el?.closest('[data-cursor="link"]')))
+  }, [open, x, y])
 
   useEffect(() => {
     if (!open) return
@@ -71,7 +98,7 @@ export default function LoreModal({ open, onClose }) {
       {open && (
         <motion.div
           ref={overlayRef}
-          className={styles.overlay}
+          className={`${styles.overlay} ${finePointer ? styles.hideNativeCursor : ''}`}
           data-lenis-prevent
           onClick={onClose}
           initial={{ opacity: 0 }}
@@ -81,6 +108,7 @@ export default function LoreModal({ open, onClose }) {
         >
           <motion.div
             className={styles.sheet}
+            data-lore-sheet
             role="dialog"
             aria-modal="true"
             aria-labelledby="lore-modal-title"
@@ -95,21 +123,24 @@ export default function LoreModal({ open, onClose }) {
               <button
                 type="button"
                 className={styles.close}
+                data-cursor="link"
                 onClick={onClose}
                 aria-label="Close Lore Health preview"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M10 4H4V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M4 4L10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M14 20H20V14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M20 20L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <svg width="18" height="18" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3 3l8 8M11 3 3 11" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
                 </svg>
               </button>
             </div>
             <div className={styles.scroll}>
               <div className={styles.col}>
                 <div className={styles.hero}>
-                  <div className={styles.mark} aria-hidden="true">L</div>
+                  <img
+                    className={styles.mark}
+                    src="/images/Lore.svg"
+                    alt=""
+                    aria-hidden="true"
+                  />
                   <h2 id="lore-modal-title" className={styles.title}>Lore Health</h2>
                   <div className={styles.meta}>
                     {META.map((item) => (
@@ -121,22 +152,17 @@ export default function LoreModal({ open, onClose }) {
                   </div>
                   <div className={styles.rule} role="separator" />
                   <div className={styles.media}>
-                    <div className={styles.orbit} aria-hidden="true">
-                      <div className={styles.mediaOrb}>
-                        <span className={styles.orbMint} />
-                        <span className={styles.orbSky} />
-                      </div>
+                    <div className={styles.logoOrb}>
+                      <img src="/images/Lore.svg" alt="" />
                     </div>
-                    <div className={styles.logoOrb} aria-hidden="true" />
-                    <p className={styles.mediaCaption}>Interface withheld</p>
                   </div>
                 </div>
 
                 <section className={styles.split}>
                   <div className={styles.splitLead}>
-                    <p className={styles.splitKicker}>The work</p>
+                    <p className={styles.splitKicker}>The Mission</p>
                     <p className={styles.splitHead}>
-                      An AI-powered health platform helping users manage psychological and physical stressors.
+                      Lore Health’s mission is to build people’s resilience and reasoning capacity through AI-guided conversation — helping users navigate real pressures (work, money, relationships) by strengthening how they think, not by handing them a fixed program.
                     </p>
                   </div>
                   <div className={styles.splitBody}>
@@ -200,7 +226,7 @@ export default function LoreModal({ open, onClose }) {
                   <p className={styles.moreLabel}>Also check out...</p>
                   <div className={styles.moreGrid}>
                     {MORE.map((item) => (
-                      <Link key={item.href} href={item.href} className={styles.moreItem}>
+                      <Link key={item.href} href={item.href} className={styles.moreItem} data-cursor="link">
                         <div className={styles.moreImg}>
                           <Image
                             src={item.src}
@@ -221,6 +247,26 @@ export default function LoreModal({ open, onClose }) {
               </div>
             </div>
           </motion.div>
+          {finePointer && x != null && y != null && (
+            <motion.div
+              className={`${styles.pageCursor} ${onLink ? styles.pageCursorLink : ''} ${onExit ? styles.pageCursorExit : ''}`}
+              animate={{
+                x: x - window.scrollX - cursorW / 2,
+                y: y - window.scrollY - cursorH / 2,
+                width: cursorW,
+                height: cursorH,
+              }}
+              transition={{
+                x: { type: 'tween', ease: 'backOut', duration: 0.5 },
+                y: { type: 'tween', ease: 'backOut', duration: 0.5 },
+                width: { type: 'tween', ease: [0.25, 0.46, 0.45, 0.94], duration: 0.28 },
+                height: { type: 'tween', ease: [0.25, 0.46, 0.45, 0.94], duration: 0.28 },
+              }}
+            >
+              <span className={styles.pageCursorDot} aria-hidden="true" />
+              <span className={styles.pageCursorLabel}>Exit</span>
+            </motion.div>
+          )}
         </motion.div>
       )}
     </AnimatePresence>,
