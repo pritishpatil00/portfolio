@@ -111,12 +111,10 @@ function Home() {
   const handleLoreNavigation = (e) => {
     e.preventDefault()
     setLoreOpen(true)
-    lenisRef.current?.stop()
   }
 
   const closeLore = () => {
     setLoreOpen(false)
-    lenisRef.current?.start()
   }
 
   const toggleDropdown = (caseStudyIndex, dropdownType) => {

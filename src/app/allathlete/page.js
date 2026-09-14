@@ -323,7 +323,7 @@ export default function AllAthleteCaseStudy() {
           </div>
           <div className={styles.detail}>
             <h6>Year</h6>
-            <p>Jul 2022 to Jun 2023</p>
+            <p>Jun 2022 to Jun 2023</p>
           </div>
           <div className={styles.detail}>
             <h6>Tools</h6>
