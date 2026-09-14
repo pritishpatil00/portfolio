@@ -326,12 +326,6 @@
     flex-shrink: 0;
 }
 
-.pageCursorLink {
-    background: transparent;
-    border-color: #ffffff;
-    mix-blend-mode: difference;
-}
-
 .pageCursorDot {
     position: absolute;
     top: 50%;
@@ -339,16 +333,8 @@
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: #ffffff;
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5);
     pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.pageCursorLink .pageCursorDot {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
 }
 
 .pageCursorView .pageCursorDot {

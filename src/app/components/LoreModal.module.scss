@@ -38,42 +38,17 @@
     }
 }
 
-.pageCursorLink {
-    background: transparent;
-    border-color: #121212;
-}
-
 .pageCursorDot {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #121212;
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5);
     pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.pageCursorLink .pageCursorDot {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.pageCursorLabel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Neue Montreal Book', sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+.pageCursorX {
+    display: block;
     color: #121212;
-    white-space: nowrap;
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.7);
     transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
@@ -85,7 +60,7 @@
     opacity: 0;
 }
 
-.pageCursorExit .pageCursorLabel {
+.pageCursorExit .pageCursorX {
     opacity: 1;
     transform: scale(1);
 }
@@ -180,7 +155,7 @@
     width: 100%;
     max-width: 1040px;
     margin: 0 auto;
-    padding: 0 clamp(40px, 5.5vw, 72px) 64px;
+    padding: 0 clamp(40px, 5.5vw, 72px) 104px;
     box-sizing: border-box;
 }
 
@@ -196,8 +171,8 @@
 
 .mark {
     display: block;
-    width: 48px;
-    height: 48px;
+    width: 64px;
+    height: 64px;
     object-fit: contain;
     filter: brightness(0);
 }
@@ -205,7 +180,7 @@
 .title {
     margin: 0;
     font-family: 'Neue Montreal Regular', sans-serif;
-    font-size: 36px;
+    font-size: 42px;
     line-height: 1.2;
     font-weight: 400;
     letter-spacing: -0.02em;
@@ -258,6 +233,98 @@
     overflow: hidden;
     border-radius: 26px;
     background: #f6f6f6;
+}
+
+.mediaGlow {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+    mask-image: radial-gradient(ellipse 47% 51% at 50% 50%, transparent 36%, #000 86%);
+    -webkit-mask-image: radial-gradient(ellipse 47% 51% at 50% 50%, transparent 36%, #000 86%);
+}
+
+.glowTrack {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 96%;
+    height: 90%;
+    margin-left: -48%;
+    margin-top: -45%;
+    animation: loreEdgeSpin 22s linear infinite;
+}
+
+.glowTrackAlt {
+    width: 88%;
+    height: 96%;
+    margin-left: -44%;
+    margin-top: -48%;
+    animation-duration: 32s;
+    animation-direction: reverse;
+}
+
+.glowMint,
+.glowSage,
+.glowRim {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(42px);
+}
+
+.glowMint {
+    left: 50%;
+    top: 0;
+    width: 42%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+        circle at 50% 50%,
+        rgba(220, 248, 232, 0.72) 0%,
+        rgba(186, 236, 210, 0.4) 42%,
+        transparent 70%
+    );
+}
+
+.glowSage {
+    left: 50%;
+    bottom: 0;
+    top: auto;
+    width: 38%;
+    aspect-ratio: 1;
+    transform: translate(-50%, 50%);
+    background: radial-gradient(
+        circle at 50% 50%,
+        rgba(206, 242, 222, 0.6) 0%,
+        rgba(176, 228, 200, 0.28) 46%,
+        transparent 70%
+    );
+}
+
+.glowRim {
+    left: 0;
+    top: 50%;
+    width: 34%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+        circle at 50% 50%,
+        rgba(214, 244, 228, 0.55) 0%,
+        rgba(180, 230, 206, 0.24) 48%,
+        transparent 70%
+    );
+}
+
+@keyframes loreEdgeSpin {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .glowTrack,
+    .glowTrackAlt {
+        animation: none;
+    }
 }
 
 .logoOrb {
@@ -539,7 +606,7 @@
         gap: 24px;
     }
 
-    .title { font-size: 32px; }
+    .title { font-size: 36px; }
 
     .meta {
         display: grid;
@@ -579,5 +646,33 @@
     .moreBlurb {
         opacity: 1;
         transform: none;
+    }
+}
+
+.asPage {
+    background: #ffffff;
+    color: #18181b;
+    min-height: 100vh;
+    font-family: 'Neue Montreal Book', sans-serif;
+    -webkit-font-smoothing: antialiased;
+
+    .hero {
+        padding-top: 28px;
+    }
+}
+
+@media (max-width: 700px) {
+    .asPage .hero {
+        padding-top: 16px;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .asPage .split,
+    .asPage .ruleBlock,
+    .asPage .noteWrap,
+    .asPage .more {
+        padding-left: 0;
+        padding-right: 0;
     }
 }

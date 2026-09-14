@@ -179,7 +179,7 @@ export default function PoppinCaseStudy() {
         </div>
         <div className={styles.clip}>
           <motion.h1 variants={rise} initial="hidden" animate="show">
-            Building a socially proofed ticketing network for live events<span>.</span>
+            Building a socially proofed ticketing network<br className={styles.heroBr} />for <span className={styles.heroEnd}>live events</span><span className={styles.heroDot}>.</span>
           </motion.h1>
         </div>
         <div className={styles.clip}>
@@ -412,7 +412,15 @@ export default function PoppinCaseStudy() {
             <h3>Redesigning AllAthlete as the destination for recruiting.</h3>
             <p>Product designer at AllAthlete.</p>
           </Link>
-          <Link href="/lore" className={styles.moreItem}>
+          <Link
+            href="/lore"
+            className={styles.moreItem}
+            onClick={(e) => {
+              if (window.matchMedia('(max-width: 700px)').matches) return
+              e.preventDefault()
+              goHome('/?skipLoading=true&lore=1')
+            }}
+          >
             <div className={styles.moreImg}>
               <Image src="/images/LoreHealthMockup.png" alt="Lore Health" width={1200} height={900} sizes="(max-width: 700px) 100vw, 50vw" />
               <span className={styles.moreCircle} />

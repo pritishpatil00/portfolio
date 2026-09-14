@@ -103,29 +103,10 @@
     }
 }
 
-.pageCursorLink {
-    background: transparent;
-    border-color: #ffffff;
-    mix-blend-mode: difference;
-}
-
 .pageCursorDot {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #ffffff;
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5);
     pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.pageCursorLink .pageCursorDot {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
 }
 
 .hideNativeCursor,
@@ -150,7 +131,30 @@
     letter-spacing: -0.03em;
     font-weight: 400;
     max-width: 18ch;
-    span { color: var(--muted); }
+
+    @media (min-width: 801px) {
+        max-width: 22em;
+    }
+}
+
+.heroBr {
+    display: none;
+
+    @media (min-width: 801px) {
+        display: revert;
+    }
+}
+
+.heroDot {
+    color: var(--muted);
+}
+
+.heroEnd {
+    color: inherit;
+
+    @media (min-width: 801px) {
+        white-space: nowrap;
+    }
 }
 
 .heroLead,

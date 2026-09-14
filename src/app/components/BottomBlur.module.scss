@@ -9,6 +9,11 @@
     overflow: hidden;
 }
 
+.contained {
+    position: absolute;
+    z-index: 25;
+}
+
 .layer {
     position: absolute;
     inset: 0;

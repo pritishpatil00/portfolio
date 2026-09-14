@@ -37,6 +37,7 @@ function Home() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const skipLoading = searchParams.get('skipLoading') === 'true'
+  const openLoreParam = searchParams.get('lore') === '1'
 
   const [isHovered, setIsHovered] = useState(false);
   const [introReady, setIntroReady] = useState(false);
@@ -64,6 +65,7 @@ function Home() {
   const lenisRef = useRef(null)
   const heroTouched = useRef(false)
   const heroRef = useRef(null)
+  const restoredScroll = useRef(false)
   const [homeReady, setHomeReady] = useState(() => {
     if (typeof window === 'undefined') return false
     try {
@@ -110,11 +112,25 @@ function Home() {
 
   const handleLoreNavigation = (e) => {
     e.preventDefault()
+    if (window.matchMedia('(max-width: 700px)').matches) {
+      saveHomeScroll()
+      setIsNavigating(true)
+      if (lenisRef.current) {
+        lenisRef.current.stop()
+      }
+      setTimeout(() => {
+        router.push('/lore')
+      }, 520)
+      return
+    }
     setLoreOpen(true)
   }
 
   const closeLore = () => {
     setLoreOpen(false)
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('lore') === '1') {
+      window.history.replaceState(null, '', '/?skipLoading=true')
+    }
   }
 
   const toggleDropdown = (caseStudyIndex, dropdownType) => {
@@ -207,6 +223,7 @@ function Home() {
 
   useEffect(() => {
     if (!introReady || showImages) return
+    if (restoredScroll.current) return
 
     let cancelled = false
     const finish = () => {
@@ -233,13 +250,23 @@ function Home() {
       if (cancelled) return
       const lenis = lenisRef.current
       lenis?.resize?.()
-      if (Number.isFinite(y) && y > 8) {
+      if (openLoreParam) {
+        const lore = document.getElementById('lore')
+        if (lore) {
+          const top = Math.round(window.scrollY + lore.getBoundingClientRect().top)
+          lenis?.scrollTo(top, { immediate: true })
+          window.scrollTo(0, top)
+        }
+      } else if (Number.isFinite(y) && y > 8) {
         lenis?.scrollTo(y, { immediate: true })
         window.scrollTo(0, y)
       } else if (skipLoading) {
         document.getElementById('case-studies')?.scrollIntoView({ behavior: 'instant' })
       }
-      requestAnimationFrame(finish)
+      requestAnimationFrame(() => {
+        restoredScroll.current = true
+        finish()
+      })
     }
 
     const id = requestAnimationFrame(() => requestAnimationFrame(apply))
@@ -247,7 +274,12 @@ function Home() {
       cancelled = true
       cancelAnimationFrame(id)
     }
-  }, [introReady, showImages, skipLoading]);
+  }, [introReady, showImages, skipLoading, openLoreParam]);
+
+  useEffect(() => {
+    if (!homeReady || !openLoreParam) return
+    setLoreOpen(true)
+  }, [homeReady, openLoreParam]);
 
   useEffect(() => {
     if (!introReady || showImages) return
@@ -401,7 +433,7 @@ function Home() {
       </motion.header>
       {isFine && !loreOpen && x != null && y != null && (
         <motion.div
-          className={`${styles.pageCursor} ${onCaseImage ? styles.pageCursorView : ''} ${onNavLink ? styles.pageCursorLink : ''} ${(isTouch || isFine) && isHovered && !pastHero && !onNavLink ? styles.pageCursorInverted : ''}`}
+          className={`${styles.pageCursor} ${onCaseImage ? styles.pageCursorView : ''} ${onNavLink ? styles.pageCursorLink : ''} ${(isTouch || isFine) && isHovered && !pastHero ? styles.pageCursorInverted : ''}`}
           style={{
             transitionDuration: `${HERO_CELL_DURATION}s`,
             transitionTimingFunction: HERO_CELL_EASE,
@@ -686,7 +718,7 @@ function Home() {
           </div>
         </div>
 
-        <div className={styles.caseStudy}>
+        <div id="lore" className={styles.caseStudy}>
           <div className={styles.caseStudyContent}>
             <p className={styles.caseStudyYear}>2025 to Present</p>
             <h3 className={styles.caseStudyTitle}>Lore Health</h3>
@@ -757,10 +789,10 @@ function Home() {
                 This project is ongoing
               </div>
             </div>
-            <ViewCta href="#lore" onClick={handleLoreNavigation} />
+            <ViewCta href="/lore" onClick={handleLoreNavigation} />
           </div>
           <div className={styles.caseStudyImageContainer} data-cursor="view">
-            <a href="#lore" onClick={handleLoreNavigation}>
+            <a href="/lore" onClick={handleLoreNavigation}>
               <Image
               src="/images/LoreHealthMockup.png"
               alt="Lore Health"

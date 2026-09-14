@@ -11,9 +11,9 @@ const LAYERS = [
   { blur: 32, mask: 'linear-gradient(to bottom, transparent 87.5%, #000 100%)' },
 ]
 
-export default function BottomBlur() {
+export default function BottomBlur({ contained = false }) {
   return (
-    <div className={styles.wrap} aria-hidden="true">
+    <div className={`${styles.wrap} ${contained ? styles.contained : ''}`} aria-hidden="true">
       {LAYERS.map((layer, i) => (
         <div
           key={i}

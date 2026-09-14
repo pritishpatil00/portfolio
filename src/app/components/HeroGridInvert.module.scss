@@ -114,8 +114,10 @@
     }
 }
 
-:global(html[data-browser='safari']) .copy {
-    padding: 0 20px calc(14vh + 52px + 112px);
+@media (max-width: 700px) {
+    :global(html[data-browser='safari']) .copy {
+        padding: 0 20px calc(14vh + 52px + 112px);
+    }
 }
 
 @media (min-width: 701px) {

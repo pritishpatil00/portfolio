@@ -551,7 +551,15 @@ export default function AllAthleteCaseStudy() {
             <h3>Building a socially proofed ticketing network for live events.</h3>
             <p>Product lead at Poppin. Overhaul of 3.0 through seed.</p>
           </Link>
-          <Link href="/lore" className={styles.moreItem}>
+          <Link
+            href="/lore"
+            className={styles.moreItem}
+            onClick={(e) => {
+              if (window.matchMedia('(max-width: 700px)').matches) return
+              e.preventDefault()
+              goHome('/?skipLoading=true&lore=1')
+            }}
+          >
             <div className={styles.moreImg}>
               <Image src="/images/LoreHealthMockup.png" alt="Lore Health" width={1200} height={900} sizes="(max-width: 700px) 100vw, 50vw" />
               <span className={styles.moreCircle} />
