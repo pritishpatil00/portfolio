@@ -67,37 +67,49 @@ export default function LoreBody({ titleId = 'lore-title' }) {
         <div className={styles.splitLead}>
           <p className={styles.splitKicker}>The Mission</p>
           <p className={styles.splitHead}>
-            Lore Health’s mission is to build people’s resilience and reasoning capacity through AI-guided conversation — helping users navigate real pressures (work, money, relationships) by strengthening how they think, not by handing them a fixed program.
+            Designing new features to drive user engagement, activation, and exploration
           </p>
         </div>
         <div className={styles.splitBody}>
           <p>
-            Four things I owned: onboarding across channels, explorations and conversations, the design system, and the customer lifetime. The screens themselves are not here. In this industry, they shouldn’t be.
+            I joined Lore Health in 2025 to lead the end-to-end activation of users and their conversations, alongside contributing to a new design system pipeline across product microsurfaces.
+          </p>
+          <p>
+            Working closely with doctors, engineers, data scientists, and clinical partners, I led research and concept exploration and shipped features across onboarding, users’ explorations, and journey experiences.
+          </p>
+          <p>
+            I’m grateful to help build a product that’s had a positive impact on people’s everyday lives.
           </p>
         </div>
       </section>
 
-      {LORE_CHAPTERS.map((item) => (
-        <div key={item.n}>
-          <div className={styles.ruleBlock}><div className={styles.rule} /></div>
-          <section className={styles.split}>
-            <div className={styles.splitLead}>
-              <p className={styles.splitKicker}>{item.n}</p>
-              <p className={styles.splitHead}>{item.title}</p>
-            </div>
-            <div className={styles.splitBody}>
-              <p>{item.copy}</p>
-            </div>
-          </section>
+      <div className={styles.ruleBlock}><div className={styles.rule} /></div>
+      <section className={styles.split}>
+        <div className={styles.splitLead}>
+          <p className={styles.splitKicker}>Focus</p>
+          <p className={styles.splitHead}>Four areas I owned</p>
         </div>
-      ))}
+        <ol className={styles.focusList}>
+          {LORE_CHAPTERS.map((item) => (
+            <li key={item.n} tabIndex={0}>
+              <span className={styles.focusNum}>{item.n}</span>
+              <div>
+                <p className={styles.focusTitle}>{item.title.replace(/\.$/, '')}</p>
+                <div className={styles.focusBlurb}>
+                  <p className={styles.focusBlurbInner}>{item.blurb}</p>
+                </div>
+              </div>
+              <span className={styles.focusHint} aria-hidden="true">+</span>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <div className={styles.noteWrap}>
         <div className={styles.seal}>
           <div className={styles.chart} aria-hidden="true">
             <div className={styles.chartHead}>
               <span>Session record</span>
-              <span>Sealed</span>
             </div>
             <div className={styles.chartRow}>
               <span>Onboarding</span>
@@ -115,7 +127,6 @@ export default function LoreBody({ titleId = 'lore-title' }) {
               <span>Lifetime</span>
               <b className={styles.chartBarShort} />
             </div>
-            <p className={styles.chartFoot}>Redacted for the people it was made for.</p>
           </div>
           <div className={styles.sealCopy}>
             <p className={styles.splitKicker}>Protected</p>

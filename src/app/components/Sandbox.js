@@ -9,28 +9,37 @@ const PLACEHOLDER =
   'Placeholder copy. A short note on what this exploration was, the interaction, and what I was testing.'
 
 const ITEMS = [
-  { src: '/images/sandbox/crowdsurf.jpg', title: 'CrowdSurf' },
-  { src: '/images/sandbox/edtech.png', title: 'EdTech Future' },
-  { video: '/videos/metamask.mp4', title: 'Metamask RD' },
+  { video: '/videos/AtomBeam.mp4', title: 'AtomBeam', matte: true },
+  { src: '/images/Crowdsurf.jpg', title: 'CrowdSurf' },
   { video: '/videos/rotating-wallet.mp4', title: 'Rotating Wallet' },
-  { src: '/images/sandbox/og.jpg', title: 'OG' },
-  { video: '/videos/looping-stack.mp4', title: 'Looping Stack Interaction' },
-  { src: '/images/sandbox/program.jpg', title: 'ProGram' },
+  { video: '/videos/metamask.mp4', title: 'Metamask RD' },
+  { src: '/images/Learn4Life.png', title: 'Learn4Life' },
+  { src: '/images/sandbox/edtech.png', title: 'EdTech Future' },
   { src: '/images/sandbox/hoodie.jpg', title: 'Subject' },
-  { src: '/images/sandbox/hazard.jpg', title: 'Hazard' },
+  { video: '/videos/looping-stack.mp4', title: 'Looping Stack Interaction' },
+  { src: '/images/sandbox/og.jpg', title: 'OG' },
+  { src: '/images/SAATH.png', title: 'SAATH', matte: true },
   { video: '/videos/cardview.mp4', title: 'CardView Interaction' },
-  { src: '/images/sandbox/sath.jpg', title: 'SAATH' },
-  { src: '/images/sandbox/navi.jpg', title: 'Navi' },
+  { src: '/images/sandbox/hazard.jpg', title: 'Hazard' },
+  { src: '/images/Noise.png', title: 'Noise', matte: true },
+  { src: '/images/sandbox/program.jpg', title: 'ProGram' },
   { video: '/videos/tiktok-scroll.mp4', title: 'TikTokScroll' },
   { src: '/images/sandbox/ailanding.jpg', title: 'AI Landing' },
-  { src: '/images/sandbox/oasis.jpg', title: 'Oasis' },
+  { src: '/images/sandbox/navi.jpg', title: 'Navi' },
+  { src: '/images/Crew.jpg', title: 'Crew' },
 ]
 
 const flipSpring = { type: 'spring', stiffness: 170, damping: 22, mass: 0.85 }
 
 function TileMedia({ item }) {
   if (item.video) {
-    return <LoopVideo src={item.video} title={item.title} className={styles.tileVideo} />
+    return (
+      <LoopVideo
+        src={item.video}
+        title={item.title}
+        className={styles.tileVideo}
+      />
+    )
   }
 
   return (
@@ -66,7 +75,7 @@ function useFineHover() {
 }
 
 function Tile({ item, isFlipped, onToggle, liftOnHover }) {
-  const className = `${styles.tile} ${item.wide ? styles.wide : ''} ${isFlipped ? styles.flipped : ''}`
+  const className = `${styles.tile} ${item.wide ? styles.wide : ''} ${item.matte ? styles.matte : ''} ${isFlipped ? styles.flipped : ''}`
   const faceRef = useRef(null)
 
   const setVideoFace = (show) => {

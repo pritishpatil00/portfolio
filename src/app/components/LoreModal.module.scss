@@ -360,6 +360,8 @@
 .split {
     display: grid;
     grid-template-columns: 5fr 1fr 7fr;
+    grid-template-rows: auto auto;
+    row-gap: 20px;
     align-items: start;
     width: 100%;
     padding: 64px 0;
@@ -368,9 +370,9 @@
 
 .splitLead {
     grid-column: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    grid-row: 1 / 3;
+    display: grid;
+    grid-template-rows: subgrid;
 }
 
 .splitKicker {
@@ -385,7 +387,7 @@
 .splitHead {
     margin: 0;
     font-family: 'Neue Montreal Regular', sans-serif;
-    font-size: 20px;
+    font-size: 24px;
     line-height: 1.4;
     font-weight: 400;
     color: #18181b;
@@ -393,11 +395,142 @@
 
 .splitBody {
     grid-column: 3;
-    font-size: 16px;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    font-size: 18px;
     line-height: 1.55;
     color: #52525b;
 
     p { margin: 0; }
+}
+
+.focusList {
+    grid-column: 3;
+    grid-row: 2;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    li {
+        display: grid;
+        grid-template-columns: 2.4em 1fr auto;
+        gap: 16px;
+        align-items: start;
+        padding: 16px 18px;
+        margin: 0 -18px;
+        cursor: pointer;
+        outline: none;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        box-sizing: border-box;
+        background: transparent;
+        transition: border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+}
+
+.focusNum {
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    color: #a1a1aa;
+    padding-top: 0.28em;
+    transition: color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.focusHint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    margin-top: 2px;
+    border: 1px solid #d4d4d8;
+    border-radius: 50%;
+    font-size: 15px;
+    line-height: 1;
+    color: #a1a1aa;
+    transition:
+        color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.focusTitle {
+    margin: 0;
+    font-family: 'Neue Montreal Regular', sans-serif;
+    font-size: 20px;
+    line-height: 1.35;
+    color: #18181b;
+    transition: color 0.2s ease;
+}
+
+.focusBlurb {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    margin: 0;
+    transform: translateY(-4px);
+    transition:
+        grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.04s,
+        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        margin 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.focusBlurbInner {
+    min-height: 0;
+    overflow: hidden;
+    margin: 0;
+    font-family: 'Neue Montreal Book', sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    color: #71717a;
+}
+
+.focusList li:hover,
+.focusList li:focus-visible {
+    border-color: #e4e4e7;
+}
+
+.focusList li:hover .focusNum,
+.focusList li:focus-visible .focusNum {
+    color: #52525b;
+}
+
+.focusList li:hover .focusHint,
+.focusList li:focus-visible .focusHint {
+    color: #52525b;
+    border-color: #a1a1aa;
+    transform: rotate(45deg);
+}
+
+.focusList li:hover .focusBlurb,
+.focusList li:focus-visible .focusBlurb {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: 8px;
+    transform: none;
+}
+
+@media (hover: none) {
+    .focusBlurb {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        margin-top: 8px;
+        transform: none;
+    }
+
+    .focusHint {
+        display: none;
+    }
+
+    .focusList li {
+        cursor: default;
+    }
 }
 
 .mediaCaption {
@@ -445,10 +578,6 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #a1a1aa;
-
-    span:last-child {
-        color: #71717a;
-    }
 }
 
 .chartRow {
@@ -468,23 +597,13 @@
         height: 11px;
         width: 72%;
         border-radius: 99px;
-        background: repeating-linear-gradient(
-            -55deg,
-            #d4d4d8 0 6px,
-            #e4e4e7 6px 12px
-        );
+        background: #e4e4e7;
     }
 }
 
 .chartBarMid { width: 58% !important; }
 .chartBarLong { width: 86% !important; }
 .chartBarShort { width: 44% !important; }
-
-.chartFoot {
-    margin: 16px 0 0;
-    font-size: 13px;
-    color: #a1a1aa;
-}
 
 .sealCopy {
     display: flex;
@@ -621,7 +740,22 @@
         padding: 48px 24px;
     }
 
-    .splitBody { grid-column: auto; }
+    .splitLead {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        grid-row: auto;
+    }
+
+    .splitBody {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .focusList {
+        grid-column: auto;
+        grid-row: auto;
+    }
 
     .ruleBlock { padding: 24px; }
 

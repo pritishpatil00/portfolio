@@ -4,9 +4,18 @@ import { useEffect, useRef } from 'react'
 import styles from './DesignSliders.module.scss'
 
 const ROWS = [
-  { label: 'Product', left: -1.55, dir: 1, pill: '/images/CapsuleOne-sm.jpg' },
-  { label: 'Interaction', left: -1.25, dir: -1, pill: '/images/NewYork-sm.jpg' },
-  { label: 'Visual', left: -1.6, dir: 1, pill: '/images/DelMar-sm.jpg' },
+  {
+    label: 'Product',
+    left: -1.55,
+    dir: 1,
+    pills: [
+      '/images/CapsuleOne-sm.jpg',
+      '/images/CapsuleOne-sm.jpg',
+      '/images/Dragon-sm.jpg',
+    ],
+  },
+  { label: 'Interaction', left: -1.25, dir: -1, pills: ['/images/Chicago-sm.jpg'] },
+  { label: 'Visual', left: -1.6, dir: 1, pills: ['/images/Crane-sm.jpg', '/images/Purple-sm.jpg'] },
 ]
 const COPIES = 10
 const TRAVEL = 1500
@@ -123,8 +132,10 @@ export default function DesignSliders() {
     setup()
 
     ROWS.forEach((row) => {
-      const img = new Image()
-      img.src = row.pill
+      row.pills.forEach((src) => {
+        const img = new Image()
+        img.src = src
+      })
     })
 
     onScroll = () => {
@@ -158,7 +169,9 @@ export default function DesignSliders() {
                 <span className={styles.design}> Design</span>
                 <span
                   className={styles.pill}
-                  style={{ backgroundImage: `url('${row.pill}')` }}
+                  style={{
+                    backgroundImage: `url('${row.pills[n % row.pills.length]}')`,
+                  }}
                 />
               </div>
             ))}
