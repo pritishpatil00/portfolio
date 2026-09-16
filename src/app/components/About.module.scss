@@ -9,7 +9,7 @@
     padding-bottom: 120px;
     scroll-margin-top: 12px;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 .section {
@@ -154,6 +154,8 @@
 
 .photoSection {
     margin-top: 72px;
+    padding: 56px 0 72px;
+    overflow: visible;
 }
 
 .stage {
@@ -162,7 +164,7 @@
     min-height: 800px;
     width: min(calc(100% - 48px), 2000px);
     margin-inline: auto;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .card {
