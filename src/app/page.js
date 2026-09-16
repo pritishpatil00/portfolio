@@ -674,9 +674,9 @@ function Home() {
             <p className={styles.caseStudyYear}>2023</p>
             <h3 className={styles.caseStudyTitle}>Poppin</h3>
             <p className={styles.caseStudyDescription}>
-              A hyperlocal ticketing marketplace enabling social event discovery. I led the design and conceptualization from MVP to v3. Managed a team of four designers.
+              A hyperlocal ticketing marketplace enabling social event discovery.
               <br /><br />
-              Participated in PearX and raised a $2,000,000+ round backed by 1984Ventures, ProgressionFund, and Liquid2.
+              Managed a team of four designers. Participated in PearX and raised a $2,000,000+ round backed by 1984Ventures, ProgressionFund, and Liquid2.
             </p>
             
             <div className={styles.dropdownSection}>

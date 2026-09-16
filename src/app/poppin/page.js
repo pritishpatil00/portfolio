@@ -68,7 +68,7 @@ function ScrollingFeatures() {
       n: '04',
       src: '/images/poppin/eventInfo.png',
       title: 'Event information',
-      copy: 'Event information, rebuilt so purchase could follow the guest list.',
+      copy: 'The event page put the guest list ahead of generic details, so purchase followed people instead of a listing. Classification and disclosure lived here so a buyer did not have to leave the page to decide.',
     },
   ]
 
@@ -336,8 +336,8 @@ export default function PoppinCaseStudy() {
             <p>2023</p>
           </div>
           <div className={styles.detail}>
-            <h6>Team</h6>
-            <p>2 iOS, backend, frontend, design</p>
+            <h6>Tools</h6>
+            <p>Figma, SwiftUI, ProtoPie</p>
           </div>
           <div className={styles.detail}>
             <h6>Contributions</h6>
@@ -352,7 +352,7 @@ export default function PoppinCaseStudy() {
         <div className={styles.objective}>
           <h6>Brief</h6>
           <p>
-            Demand was already there. People could not see what was happening nearby. The MVP proved a network would form if events were findable: 10,000 users in a single market.
+            Demand was already there. People could not see what was happening nearby. 10,000 users in a single market showed a network would form if events were findable.
           </p>
           <p>
             The job was to take that demand to scale: a new iOS app, a web experience for independent hosts, and a backend that could hold a multi-market network, without adding surface the team could not ship.
@@ -384,10 +384,8 @@ export default function PoppinCaseStudy() {
       </section>
 
       <section className={styles.split}>
-        <div>
-          <h6>Product goals</h6>
-          <h3>Make the guest list the reason to buy<span>.</span></h3>
-        </div>
+        <h6>Product goals</h6>
+        <h3>Make the guest list the reason to buy<span>.</span></h3>
         <p>
           Accessing the right event required too much work. Buyers were not lacking options. They were missing a reason to commit, and the MVP leaked that commitment across browse, tickets, and purchase. Existing tools offered personal event pages, open marketplaces, or host dashboards. None of them made “who else is going” the default path to a ticket.
         </p>
@@ -398,7 +396,7 @@ export default function PoppinCaseStudy() {
         <p className={styles.caption}>Competitors sold pages, tickets, or tooling. None sold the friends list</p>
       </section>
 
-      <section id="research" className={`${styles.narrative} ${styles.sectionAnchor}`}>
+      <section id="research" className={`${styles.narrative} ${styles.fieldwork} ${styles.sectionAnchor}`}>
         <h6>Fieldwork</h6>
         <h3>Friends first. Then everything else<span>.</span></h3>
         <p>
@@ -439,7 +437,7 @@ export default function PoppinCaseStudy() {
         <p className={styles.caption}>Design roadmap for scale</p>
       </section>
 
-      <section className={styles.narrative}>
+      <section className={`${styles.narrative} ${styles.copyToImage}`}>
         <h6>Host tooling</h6>
         <h3>Defining success<span>.</span></h3>
         <p>
@@ -452,55 +450,18 @@ export default function PoppinCaseStudy() {
         <p className={styles.caption}>Base metrics hosts could actually use across the event lifecycle</p>
       </section>
 
-      <section id="solutions" className={`${styles.narrative} ${styles.sectionAnchor}`}>
+      <section id="solutions" className={`${styles.narrative} ${styles.solutionsHead} ${styles.sectionAnchor}`}>
         <h6>Solutions</h6>
-        <h3>Onboarding, browse, and host tools that could actually ship<span>.</span></h3>
+        <h3 className={styles.solutionsTitle}>Onboarding, browse, and hosting as one path to purchase<span>.</span></h3>
         <p>
-          These were the screens required for discovery and conversion, without extra surface the team could not deliver.
+          Buyers were missing a reason to commit, and hosts could not turn events they already ran into a network. These screens close that loop: put someone into local context, let them decide from who else is going, and give hosts a few numbers they would actually check.
         </p>
       </section>
 
       <ScrollingFeatures />
 
-      <section className={styles.stickyBand}>
-        <aside className={styles.stickyCard}>
-          <h4>Building a marketplace next<span>.</span></h4>
-          <p>I can take a two sided marketplace and make the path from discovery to purchase obvious, without adding surface area.</p>
-          <HoverFill href="/?skipLoading=true#about" className={`${styles.primary} ${styles.primaryStretch}`}>
-            Start a conversation
-          </HoverFill>
-        </aside>
-        <div className={styles.stickyCopy}>
-          <h3>Poppin made live events discoverable through the people already going<span>.</span></h3>
-          <p>
-            People could not see what was happening, and hosts could not turn existing events into a network. We rebuilt onboarding around local context, rebuilt browse around disclosure, and put the guest list on the event page so purchase had a reason.
-          </p>
-          <p>
-            Scope constraints meant the system had to be specific. Web covered independent hosts. Mobile held the social layer. The metrics were few enough that hosts would actually look at them.
-          </p>
-          <blockquote>
-            “People decide which events to attend based on who else is going, prior to considering other factors.”
-          </blockquote>
-          <h6>Outcome</h6>
-          <p>
-            100,000+ users, $2,000,000+ GMV, 60% weekly retention, and a $2,000,000 round.
-          </p>
-        </div>
-      </section>
-
-      <section className={styles.narrative}>
-        <h6>What held</h6>
-        <h3>Density is a network problem before it is a feature problem<span>.</span></h3>
-        <p>
-          Align the room before you add surface area. Architect for the next market, not a larger interface.
-        </p>
-        <p>
-          A constrained build punishes extra screens. The useful response was a clearer guest list, and flows the team could actually finish.
-        </p>
-      </section>
-
       <section className={styles.more}>
-        <h2>Continue<span>.</span></h2>
+        <h2>Other projects<span>.</span></h2>
         <div className={styles.moreGrid}>
           <Link href="/allathlete" className={styles.moreItem}>
             <div className={styles.moreImg}>
@@ -529,7 +490,7 @@ export default function PoppinCaseStudy() {
 
       <footer className={styles.pageFooter}>
         <HoverFill href="https://www.linkedin.com/in/pritish-patil/" className={styles.footerTouch} external>
-          Let’s get in touch
+          Get in Touch
         </HoverFill>
         <div className={styles.footerLinks}>
           <a href="https://www.linkedin.com/in/pritish-patil/" target="_blank" rel="noreferrer">LinkedIn</a>

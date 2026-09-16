@@ -37,6 +37,24 @@
     z-index: 0;
 }
 
+.flipsOff .tile {
+    cursor: default;
+}
+
+.flipsOff .flip {
+    transform-style: flat;
+    will-change: auto;
+}
+
+.flipsOff .face {
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+}
+
+.flipsOff .back {
+    display: none;
+}
+
 .tile:hover,
 .flipped {
     z-index: 2;

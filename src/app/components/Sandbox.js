@@ -8,6 +8,9 @@ import LoopVideo, { playAllLoopVideos, pauseAllLoopVideos } from './LoopVideo'
 const PLACEHOLDER =
   'Placeholder copy. A short note on what this exploration was, the interaction, and what I was testing.'
 
+// Flip tiles on click. Set true to restore.
+const ENABLE_TILE_FLIPS = false
+
 const ITEMS = [
   { video: '/videos/AtomBeam.mp4', title: 'AtomBeam', matte: true },
   { src: '/images/Crowdsurf.jpg', title: 'CrowdSurf' },
@@ -87,12 +90,19 @@ function Tile({ item, isFlipped, onToggle, liftOnHover }) {
   }
 
   return (
-    <motion.button
-      type="button"
+    <motion.div
+      role="button"
+      tabIndex={0}
       className={className}
       onClick={onToggle}
-      aria-pressed={isFlipped}
-      aria-label={isFlipped ? `Hide ${item.title}` : `About ${item.title}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onToggle?.()
+        }
+      }}
+      aria-pressed={ENABLE_TILE_FLIPS ? isFlipped : undefined}
+      aria-label={item.title}
       whileHover={liftOnHover && !isFlipped ? { y: -5 } : { y: 0 }}
       transition={{ type: 'spring', stiffness: 380, damping: 32 }}
     >
@@ -106,10 +116,10 @@ function Tile({ item, isFlipped, onToggle, liftOnHover }) {
           return !n || Math.abs(n) < 0.5 ? 'none' : `rotateY(${n}deg)`
         }}
         onUpdate={(latest) => {
-          if (item.video) setVideoFace(frontIsShowing(latest.rotateY))
+          if (ENABLE_TILE_FLIPS && item.video) setVideoFace(frontIsShowing(latest.rotateY))
         }}
         onAnimationComplete={() => {
-          if (!item.video) return
+          if (!ENABLE_TILE_FLIPS || !item.video) return
           setVideoFace(!isFlipped)
           if (!isFlipped) playAllLoopVideos()
         }}
@@ -122,7 +132,7 @@ function Tile({ item, isFlipped, onToggle, liftOnHover }) {
           <p className={styles.backCopy}>{PLACEHOLDER}</p>
         </div>
       </motion.div>
-    </motion.button>
+    </motion.div>
   )
 }
 
@@ -154,7 +164,7 @@ export default function Sandbox() {
   }, [flipped])
 
   return (
-    <section id="sandbox" className={styles.sandbox}>
+    <section id="sandbox" className={`${styles.sandbox} ${ENABLE_TILE_FLIPS ? '' : styles.flipsOff}`}>
       <p className={styles.kicker}>Sandbox</p>
 
       <div className={styles.grid}>
@@ -162,9 +172,12 @@ export default function Sandbox() {
           <Tile
             key={`${entry.title}-${entry.video || entry.src}`}
             item={entry}
-            isFlipped={flipped === index}
+            isFlipped={ENABLE_TILE_FLIPS && flipped === index}
             liftOnHover={liftOnHover}
-            onToggle={() => setFlipped(flipped === index ? null : index)}
+            onToggle={() => {
+              if (!ENABLE_TILE_FLIPS) return
+              setFlipped(flipped === index ? null : index)
+            }}
           />
         ))}
       </div>

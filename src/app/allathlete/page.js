@@ -646,7 +646,7 @@ export default function AllAthleteCaseStudy() {
 
       <section id="solutions" className={`${styles.narrative} ${styles.sectionAnchor}`}>
         <h6>Solutions</h6>
-        <h3>Home, profile, search, and training as one recruiting system<span>.</span></h3>
+        <h3 className={styles.solutionsTitle}>Home, profile, search, and training as one recruiting system<span>.</span></h3>
         <p>
           Visual design locked layout, type, color, and interaction so engineering could build the coach-to-athlete loop without guessing across surfaces.
         </p>
@@ -684,7 +684,7 @@ export default function AllAthleteCaseStudy() {
 
       <footer className={styles.pageFooter}>
         <HoverFill href="https://www.linkedin.com/in/pritish-patil/" className={styles.footerTouch} external>
-          Let’s get in touch
+          Get in Touch
         </HoverFill>
         <div className={styles.footerLinks}>
           <a href="https://www.linkedin.com/in/pritish-patil/" target="_blank" rel="noreferrer">LinkedIn</a>

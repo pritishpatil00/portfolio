@@ -790,12 +790,21 @@
     font-family: 'Neue Montreal Book', sans-serif;
     -webkit-font-smoothing: antialiased;
 
+    .col {
+        padding-top: max(88px, calc(env(safe-area-inset-top, 0px) + 64px));
+    }
+
     .hero {
         padding-top: 28px;
     }
 }
 
 @media (max-width: 700px) {
+    .asPage .col {
+        padding-left: clamp(20px, 5vw, 72px);
+        padding-right: clamp(20px, 5vw, 72px);
+    }
+
     .asPage .hero {
         padding-top: 16px;
         padding-left: 0;

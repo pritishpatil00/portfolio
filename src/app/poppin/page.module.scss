@@ -473,12 +473,21 @@
 .split {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px 64px;
+    grid-template-areas:
+        "label ."
+        "heading copy";
+    column-gap: 64px;
+    row-gap: 12px;
     padding-top: 100px;
     padding-bottom: 48px;
-    align-items: end;
+    align-items: start;
+    h6 {
+        grid-area: label;
+        margin: 0;
+    }
     h3 {
-        margin: 12px 0 0;
+        grid-area: heading;
+        margin: 0;
         font-family: 'Neue Montreal Regular', sans-serif;
         font-size: clamp(32px, 3.4vw, 48px);
         line-height: 1.12;
@@ -487,6 +496,7 @@
         span { color: var(--muted); }
     }
     p {
+        grid-area: copy;
         margin: 0;
         font-size: 17px;
         line-height: 1.5;
@@ -540,6 +550,24 @@
         color: var(--muted);
         max-width: 38em;
     }
+}
+
+.narrative .solutionsTitle {
+    padding-right: clamp(160px, 36%, 420px);
+}
+
+.solutionsHead {
+    padding-bottom: 0;
+    p:last-child { margin-bottom: 0; }
+}
+
+.copyToImage {
+    padding-bottom: 32px;
+    p:last-child { margin-bottom: 0; }
+}
+
+.copyToImage + .fullImage {
+    padding-top: 48px;
 }
 
 .narrativeFaint {
@@ -911,18 +939,39 @@
     }
 }
 
+@media (max-width: 1400px) {
+    .sideNav { display: none; }
+}
+
 @media (max-width: 1100px) {
     .stats { grid-template-columns: 1fr 1fr; }
     .principles { grid-template-columns: 1fr; }
     .personas { grid-template-columns: 1fr 1fr; }
-    .sideNav { display: none; }
 }
 
 @media (max-width: 800px) {
+    .narrative .solutionsTitle {
+        padding-right: 0;
+    }
+    .fieldwork {
+        padding-bottom: 12px;
+        p:last-child { margin-bottom: 0; }
+    }
+    .fieldwork + .fullImage {
+        padding-top: 28px;
+    }
     .hero { padding-top: 100px; padding-bottom: 32px; }
     .heroFrame { border-radius: 16px; }
-    .overview,
-    .split,
+    .overview {
+        grid-template-columns: 1fr;
+    }
+    .split {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "label"
+            "heading"
+            "copy";
+    }
     .stickyBand {
         grid-template-columns: 1fr;
     }

@@ -134,15 +134,13 @@ export default function LorePreview() {
       </header>
 
       <div className={loreStyles.col}>
-        <div className={styles.clip} style={{ paddingTop: 28 }}>
-          <HoverFill
-            href="/?skipLoading=true"
-            className={styles.backLink}
-            onClick={(e) => { e.preventDefault(); goHome() }}
-          >
-            ‹ Back to Projects
-          </HoverFill>
-        </div>
+        <HoverFill
+          href="/?skipLoading=true"
+          className={styles.backLink}
+          onClick={(e) => { e.preventDefault(); goHome() }}
+        >
+          ‹ Back to Projects
+        </HoverFill>
         <LoreBody titleId="lore-page-title" />
       </div>
       <BottomBlur />

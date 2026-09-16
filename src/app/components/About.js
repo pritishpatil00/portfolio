@@ -16,9 +16,9 @@ const PHOTOS = [
     z: 2,
   },
   {
-    src: '/images/about/timesSquare.jpg',
-    title: 'Times Square',
-    place: 'New York City',
+    src: '/images/about/cows-p.jpg',
+    title: 'Cows',
+    place: 'Cornwall Park, Auckland, NZ',
     x: 16,
     y: -14,
     rotate: 7,
@@ -43,18 +43,18 @@ const PHOTOS = [
     z: 4,
   },
   {
-    src: '/images/DelMar.png',
-    title: 'Del Mar',
-    place: 'San Diego, California',
+    src: '/images/about/london.jpg',
+    title: 'London',
+    place: 'Kings Cross, United Kingdom',
     x: -26,
     y: 4,
     rotate: 8,
     z: 5,
   },
   {
-    src: '/images/NewYork.png',
-    title: 'Union Square',
-    place: 'New York City',
+    src: '/images/about/boat-p.jpg',
+    title: 'Boat',
+    place: 'Lake Union, Seattle WA',
     x: 6,
     y: -22,
     rotate: -7,
@@ -150,11 +150,11 @@ function PhotoCard({ photo, index, mx, my, hovered, setHovered }) {
           sizes="(max-width: 700px) 70vw, 360px"
           quality={80}
         />
+        <figcaption className={`${styles.cardCaption} ${isHot ? styles.cardCaptionOn : ''}`}>
+          <span>{photo.title}</span>
+          <span>{photo.place}</span>
+        </figcaption>
       </div>
-      <figcaption className={`${styles.cardCaption} ${isHot ? styles.cardCaptionOn : ''}`}>
-        <span>{photo.title}</span>
-        <span>{photo.place}</span>
-      </figcaption>
     </motion.figure>
   )
 }
@@ -190,10 +190,10 @@ export default function About() {
           </p>
           <div className={styles.heroCopy}>
             <p className={styles.body}>
-              I care about design, psychology, and technology — and the ways they lock together into experiences that actually hit a goal.
+              I care about design, psychology, and technology, and the ways they lock together into experiences that actually hit a goal.
             </p>
             <p className={styles.body}>
-              Driven by high-impact work. I like running cross-functional teams, setting product strategy, and shipping the interface myself.
+              Driven by high impact work. I like running cross functional teams, setting product strategy, and shipping the interface myself.
             </p>
             <p className={styles.body}>
               Off hours: Smash Ultimate brackets, skating a new neighborhood, or Chelsea F.C.
