@@ -124,7 +124,7 @@ export default function LorePreview() {
       )}
       <header className={styles.stickyHeader}>
         <div className={styles.headerName}>
-          <Link href="/" data-cursor="link" onClick={(e) => { e.preventDefault(); goHome('/?skipLoading=true') }}><p>PRITISH PATIL</p></Link>
+          <Link href="/?skipLoading=true#hero" data-cursor="link" onClick={(e) => { e.preventDefault(); try { sessionStorage.removeItem('homeScroll') } catch {}; goHome('/?skipLoading=true#hero') }}><p>PRITISH PATIL</p></Link>
         </div>
         <nav className={styles.headerNav}>
           <p data-cursor="link" onClick={() => goHome('/?skipLoading=true')}>WORK</p>

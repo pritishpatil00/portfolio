@@ -299,7 +299,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    transition: background-color 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: none;
 
     @media (pointer: coarse) {
         display: none;
@@ -623,13 +623,13 @@
 }
 
 .dropdownContent.open {
-    max-height: 150px;
+    max-height: 280px;
     opacity: 1;
     padding: 8px 0 0 0;
 }
 
 .contributionsDropdown.open {
-    max-height: 150px;
+    max-height: 280px;
     opacity: 1;
     padding: 8px 0 12px 0;
 }

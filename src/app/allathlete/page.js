@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -16,6 +16,20 @@ const rise = {
   hidden: { y: 20 },
   show: { y: 0, transition: { duration: 0.75, ease } },
 }
+
+const SYSTEM_SHOTS = [
+  { src: '/images/Buttons and Controls.jpg', alt: 'Buttons and controls', caption: 'Buttons and controls' },
+  { src: '/images/Navigation.jpg', alt: 'Navigation components', caption: 'Navigation' },
+  { src: '/images/Cards.jpg', alt: 'Cards and list items', caption: 'Cards' },
+  { src: '/images/Inputs and fields.jpg', alt: 'Inputs and fields', caption: 'Inputs and fields' },
+]
+
+const SIDE_NAV = [
+  { id: 'intro', label: 'Intro' },
+  { id: 'research', label: 'Research' },
+  { id: 'structure', label: 'Structure' },
+  { id: 'solutions', label: 'Solutions' },
+]
 
 function BeforeAfter({ before, after, beforeAlt, afterAlt }) {
   const wrapRef = useRef(null)
@@ -97,64 +111,67 @@ function HoverFill({ href, children, className, external, onClick }) {
 }
 
 function ScrollingFeatures() {
-  const ref = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  })
-  const yLeft = useTransform(scrollYProgress, [0, 1], [120, -160])
-  const yRight = useTransform(scrollYProgress, [0, 1], [-80, 180])
-
-  const left = [
+  const items = [
     {
-      src: '/images/allathlete/hifi-home.png',
-      title: 'Home and consumption.',
-      copy: 'A modular post structure replaced the competing visual hierarchy of the old feed, so athletes could scan highlights, metrics, and social proof in one rhythm, on web and in parity with mobile.',
+      n: '01',
+      src: '/images/AllAthleteNew.jpg',
+      title: 'Home and consumption',
+      copy: 'A modular post structure replaced the competing visual hierarchy of the old feed, so athletes could scan highlights, metrics, and social proof in one rhythm.',
     },
     {
-      src: '/images/allathlete/hifi-profile.png',
-      title: 'Profile and sports experience.',
+      n: '02',
+      stack: [
+        '/images/PostingOne.jpg',
+        '/images/PostingTwo.jpg',
+        '/images/PostingThree.jpg',
+      ],
+      title: 'Posting and Metrics',
+      copy: 'Create a post, tag skills on the film, and give coaches metrics they can search.',
+    },
+    {
+      n: '03',
+      src: '/images/AllAthleteProfile.jpg',
+      title: 'Profile and sports experience',
       copy: 'Profile components were rebuilt to actually show sports data. Athletes who previously stalled on incomplete profiles could now present measurables, achievements, and film without fighting the layout.',
     },
     {
-      src: '/images/allathlete/hifi-search.png',
-      title: 'Player search and filtering.',
+      n: '04',
+      src: '/images/AllAthleteFilters.jpg',
+      title: 'Player search and filtering',
       copy: 'A master search with grouped filters let coaches isolate athletes by sport, position, and user generated metrics: the missing endpoint between AllAthlete’s coach network and the people on the platform.',
     },
     {
+      n: '05',
       src: '/images/allathlete/hifi-calendar.png',
-      title: 'Training and calendar.',
+      title: 'Training and calendar',
       copy: 'Activity and training views gave the product a reason to return daily, not only at recruiting season, keeping the network warm for both athletes and the coaches watching them.',
     },
   ]
 
-  const right = [
-    '/images/allathlete/hifi-feed.png',
-    '/images/allathlete/hifi-full.png',
-    '/images/allathlete/hifi-search.png',
-    '/images/allathlete/hifi-profile.png',
-  ]
-
   return (
-    <div ref={ref} className={styles.scrolling}>
-      <motion.div className={styles.scrollCol} style={{ y: yLeft }}>
-        {left.map((item) => (
-          <div key={item.title} className={styles.scrollBlock}>
-            <div className={styles.scrollShot}>
-              <Image src={item.src} alt="" width={1400} height={900} sizes="(max-width: 900px) 90vw, 44vw" />
-            </div>
-            <h3>{item.title}</h3>
-            <p>{item.copy}</p>
+    <div className={styles.solutions}>
+      <div className={styles.solutionsRule} aria-hidden="true" />
+      {items.map((item) => (
+        <article key={item.n} className={styles.solution}>
+          <header className={styles.solutionHead}>
+            <p className={styles.solutionNum}>{item.n}</p>
+            <h4>{item.title}</h4>
+            <p className={styles.solutionCopy}>{item.copy}</p>
+          </header>
+          <div className={styles.solutionShot}>
+            {(item.stack || [item.src]).map((src) => (
+              <Image
+                key={src}
+                src={src}
+                alt=""
+                width={1600}
+                height={1140}
+                sizes="(max-width: 900px) 100vw, 88vw"
+              />
+            ))}
           </div>
-        ))}
-      </motion.div>
-      <motion.div className={`${styles.scrollCol} ${styles.scrollColRight}`} style={{ y: yRight }}>
-        {right.map((src) => (
-          <div key={src} className={styles.scrollShotTall}>
-            <Image src={src} alt="" width={1400} height={1600} sizes="(max-width: 900px) 90vw, 44vw" />
-          </div>
-        ))}
-      </motion.div>
+        </article>
+      ))}
     </div>
   )
 }
@@ -163,8 +180,12 @@ export default function AllAthleteCaseStudy() {
   const router = useRouter()
   const [leaving, setLeaving] = useState(false)
   const [finePointer, setFinePointer] = useState(false)
-  const { x, y } = useMousePosition()
+  const { clientX, clientY } = useMousePosition()
   const [onNavLink, setOnNavLink] = useState(false)
+  const [activeSection, setActiveSection] = useState('intro')
+  const lenisRef = useRef(null)
+  const heroTitleRef = useRef(null)
+  const [navTop, setNavTop] = useState(null)
   const cursorSize = onNavLink ? 26 : 40
 
   useEffect(() => {
@@ -176,13 +197,13 @@ export default function AllAthleteCaseStudy() {
   }, [])
 
   useEffect(() => {
-    if (x == null || y == null) {
+    if (clientX == null || clientY == null) {
       setOnNavLink(false)
       return
     }
-    const el = document.elementFromPoint(x - window.scrollX, y - window.scrollY)
+    const el = document.elementFromPoint(clientX, clientY)
     setOnNavLink(Boolean(el?.closest('[data-cursor="link"]')))
-  }, [x, y])
+  }, [clientX, clientY])
 
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
@@ -200,6 +221,18 @@ export default function AllAthleteCaseStudy() {
     raf = requestAnimationFrame(() => {
       if (!alive) return
       lenis = new Lenis()
+      lenisRef.current = lenis
+      lenis.on('scroll', () => {
+        const ids = SIDE_NAV.map((item) => item.id)
+        const mark = 140
+        let current = ids[0]
+        for (const id of ids) {
+          const el = document.getElementById(id)
+          if (!el) continue
+          if (el.getBoundingClientRect().top <= mark) current = id
+        }
+        setActiveSection((prev) => (prev === current ? prev : current))
+      })
       raf = requestAnimationFrame(loop)
     })
 
@@ -211,9 +244,59 @@ export default function AllAthleteCaseStudy() {
       alive = false
       cancelAnimationFrame(raf)
       try { lenis?.destroy() } catch {}
+      lenisRef.current = null
       window.removeEventListener('popstate', fadeOut)
       window.removeEventListener('pagehide', fadeOut)
     }
+  }, [])
+
+  useEffect(() => {
+    const ids = SIDE_NAV.map((item) => item.id)
+    const update = () => {
+      const mark = 140
+      let current = ids[0]
+      for (const id of ids) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        if (el.getBoundingClientRect().top <= mark) current = id
+      }
+      setActiveSection((prev) => (prev === current ? prev : current))
+    }
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', update)
+    }
+  }, [])
+
+  useLayoutEffect(() => {
+    const layoutTop = (el) => {
+      let y = 0
+      let node = el
+      while (node) {
+        y += node.offsetTop
+        node = node.offsetParent
+      }
+      return y
+    }
+    const sync = () => {
+      const title = heroTitleRef.current
+      if (!title) return
+      const top = layoutTop(title)
+      setNavTop((prev) => (prev != null && Math.abs(prev - top) < 0.5 ? prev : top))
+    }
+    sync()
+    document.fonts?.ready?.then(sync)
+    window.addEventListener('resize', sync)
+    return () => window.removeEventListener('resize', sync)
+  }, [])
+
+  const scrollToSection = useCallback((id) => {
+    const el = document.getElementById(id)
+    if (!el) return
+    const top = window.scrollY + el.getBoundingClientRect().top - 56
+    if (lenisRef.current) lenisRef.current.scrollTo(top)
+    else window.scrollTo({ top, behavior: 'smooth' })
   }, [])
 
   const goHome = (href = '/?skipLoading=true') => {
@@ -232,12 +315,12 @@ export default function AllAthleteCaseStudy() {
       animate={{ opacity: leaving ? 0 : 1 }}
       transition={{ duration: 0.52, ease }}
     >
-      {finePointer && x != null && y != null && (
+      {finePointer && clientX != null && clientY != null && (
         <motion.div
           className={`${styles.pageCursor} ${onNavLink ? styles.pageCursorLink : ''}`}
           animate={{
-            x: x - window.scrollX - cursorSize / 2,
-            y: y - window.scrollY - cursorSize / 2,
+            x: clientX - cursorSize / 2,
+            y: clientY - cursorSize / 2,
             width: cursorSize,
             height: cursorSize,
           }}
@@ -248,7 +331,7 @@ export default function AllAthleteCaseStudy() {
       )}
       <header className={styles.stickyHeader}>
         <div className={styles.headerName}>
-          <Link href="/" data-cursor="link" onClick={(e) => { e.preventDefault(); goHome('/?skipLoading=true') }}><p>PRITISH PATIL</p></Link>
+          <Link href="/?skipLoading=true#hero" data-cursor="link" onClick={(e) => { e.preventDefault(); try { sessionStorage.removeItem('homeScroll') } catch {}; goHome('/?skipLoading=true#hero') }}><p>PRITISH PATIL</p></Link>
         </div>
         <nav className={styles.headerNav}>
           <p data-cursor="link" onClick={handleCaseStudiesClick}>WORK</p>
@@ -257,7 +340,28 @@ export default function AllAthleteCaseStudy() {
         </nav>
       </header>
 
-      <section className={styles.hero}>
+      <div className={styles.sideNav} style={navTop != null ? { top: navTop } : undefined}>
+        <motion.nav
+          aria-label="Case study sections"
+          variants={rise}
+          initial="hidden"
+          animate="show"
+        >
+          {SIDE_NAV.map(({ id, label }) => (
+            <button
+              key={id}
+              type="button"
+              data-cursor="link"
+              className={activeSection === id ? styles.sideNavActive : ''}
+              onClick={() => scrollToSection(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </motion.nav>
+      </div>
+
+      <section id="intro" className={`${styles.hero} ${styles.sectionAnchor}`}>
         <div className={styles.clip}>
           <motion.div initial="hidden" animate="show">
             <HoverFill
@@ -270,9 +374,11 @@ export default function AllAthleteCaseStudy() {
           </motion.div>
         </div>
         <div className={styles.clip}>
+          <div ref={heroTitleRef} className={styles.heroTitleLock}>
           <motion.h1 variants={rise} initial="hidden" animate="show">
             Redesigning AllAthlete as the destination for recruiting<span>.</span>
           </motion.h1>
+          </div>
         </div>
         <div className={styles.clip}>
           <motion.p className={styles.heroLead} variants={rise} initial="hidden" animate="show" transition={{ delay: 0.06, duration: 0.75, ease }}>
@@ -281,7 +387,7 @@ export default function AllAthleteCaseStudy() {
         </div>
         <div className={styles.clip}>
           <motion.p className={styles.heroSub} variants={rise} initial="hidden" animate="show" transition={{ delay: 0.12, duration: 0.75, ease }}>
-            First product designer on the team. Redesigned the web experience and brand for an existing base of athletes and coaches, then shipped the system that let that network actually connect.
+            Redesigned the experience and brand for an existing base of athletes and coaches, then shipped the system that let that network actually connect.
           </motion.p>
         </div>
         <div className={styles.ctaWrap}>
@@ -303,8 +409,8 @@ export default function AllAthleteCaseStudy() {
       <div className={styles.heroMedia}>
         <div className={styles.heroFrame}>
             <LoopVideo
-            src="/videos/allathlete-mobile.mp4"
-            title="AllAthlete mobile product"
+            src="/videos/allathlete.mp4"
+            title="AllAthlete product"
             className={styles.heroVideo}
             eager
           />
@@ -319,28 +425,33 @@ export default function AllAthleteCaseStudy() {
           </div>
           <div className={styles.detail}>
             <h6>Role</h6>
-            <p>Product Designer<br />1 of 2 designers</p>
+            <p>Product Designer</p>
           </div>
           <div className={styles.detail}>
             <h6>Year</h6>
-            <p>Jun 2022 to Jun 2023</p>
+            <p>2022</p>
           </div>
           <div className={styles.detail}>
             <h6>Tools</h6>
-            <p>Figma, FigJam, Maze, Illustrator</p>
+            <p>Figma, ProtoPie, Illustrator</p>
           </div>
           <div className={styles.detail}>
-            <h6>Skills</h6>
-            <p>Design systems, branding, user research, information architecture, UX/UI, usability testing</p>
+            <h6>Contributions</h6>
+            <ul className={styles.contribList}>
+              <li>Design System</li>
+              <li>User Research</li>
+              <li>UX/UI Design</li>
+              <li>Usability Testing</li>
+            </ul>
           </div>
         </div>
         <div className={styles.objective}>
           <h6>Brief</h6>
           <p>
-            Alongside distribution, AllAthlete needed an online experience that matched the mission: be the place athletes get recruited. The existing web product had a tangled information architecture that athletes and coaches could not consume. This was the chance to design a digital experience for the people already on the platform, and to give the product a brand that could hold them.
+            Alongside distribution, AllAthlete needed an experience that matched the mission: be the place athletes get recruited. The existing product had a tangled information architecture that athletes and coaches could not consume. This was the chance to design for the people already on the platform, and to give the product a brand that could hold them.
           </p>
           <p>
-            The high level goal was a web platform (with mobile parity) that let athletes share sports data and achievements, then connect with coaches to start recruiting, with the least friction through the architecture we already had.
+            The high level goal was a product that let athletes share sports data and achievements, then connect with coaches to start recruiting, with the least friction through the architecture we already had.
           </p>
         </div>
       </section>
@@ -364,7 +475,7 @@ export default function AllAthleteCaseStudy() {
         <div className={styles.stat}>
           <div className={styles.statNum}>50k+</div>
           <h6>Athletes and coaches</h6>
-          <p>Scope of the web overhaul: the people using AllAthlete out of need, not because the product was clear.</p>
+          <p>Scope of the overhaul: the people using AllAthlete out of need, not because the product was clear.</p>
         </div>
       </section>
 
@@ -372,7 +483,7 @@ export default function AllAthleteCaseStudy() {
         <h6>The old site / the new site</h6>
         <BeforeAfter
           before="/images/allathlete/old-home.jpg"
-          after="/images/allathlete/home.jpg"
+          after="/images/AllAthleteNew.jpg"
           beforeAlt="AllAthlete home before the redesign"
           afterAlt="AllAthlete home after the redesign"
         />
@@ -380,7 +491,7 @@ export default function AllAthleteCaseStudy() {
 
       <section className={styles.split}>
         <div>
-          <h6>Website goals</h6>
+          <h6>Product goals</h6>
           <h3>Make recruiting the path, not a scavenger hunt<span>.</span></h3>
         </div>
         <p>
@@ -399,56 +510,45 @@ export default function AllAthleteCaseStudy() {
         </figure>
       </section>
 
-      <section className={styles.narrative}>
+      <section id="research" className={`${styles.narrative} ${styles.sectionAnchor}`}>
         <h6>Audit</h6>
         <h3>Find out who was on the platform, and why recruiting never closed<span>.</span></h3>
         <p>
-          I joined and audited top down. Direct user testing was not guaranteed, so the first job was to learn how people already related to AllAthlete, and what they hoped to get from it, from stakeholders, field notes, and the competitive set.
-        </p>
-        <p>
-          Most users are high school athletes aiming to be recruited, skewed toward football, track, and basketball. AllAthlete’s supply of college coaches is the endpoint. The product failed that handshake: metrics were hard to consume, profiles were rarely complete, and coaches could not isolate qualified athletes or contact them.
+          I talked with athletes and coaches already on AllAthlete to learn who they were, what they needed from recruiting, and where the product dropped them.
         </p>
       </section>
 
-      <section className={styles.narrative}>
-        <h6>Mid fidelity</h6>
-        <h3>Wireframes of the design solution<span>.</span></h3>
-        <p>
-          After the audit, the first screens locked structure before visual design. Home and profile were the two surfaces that had to carry sports data, social proof, and a path to coaches.
-        </p>
-      </section>
-
-      <section className={styles.pair}>
-        <figure>
-          <Image src="/images/allathlete/wire-home.png" alt="Home feed mid fidelity wireframe" width={1600} height={2000} sizes="(max-width: 900px) 100vw, 50vw" />
-          <figcaption>Home feed, mid fidelity</figcaption>
-        </figure>
-        <figure>
-          <Image src="/images/allathlete/wire-profile.png" alt="Profile mid fidelity wireframe" width={1600} height={2000} sizes="(max-width: 900px) 100vw, 50vw" />
-          <figcaption>Profile, mid fidelity</figcaption>
-        </figure>
-      </section>
-
-      <section className={`${styles.narrative} ${styles.narrativeFaint}`}>
-        <h6>Information architecture</h6>
-        <p>
-          Hudl showed that strong content drives engagement, but a social sports data product is still an unfamiliar idea because recruiting happens in many steps. Other databases are not user generated. AllAthlete’s advantage only works if athletes can actually upload data, if there is social proof to keep them there, and if coaches can filter that data without noise.
-        </p>
-        <p>
-          Three questions drove the IA: make upload simple enough that profiles get finished; give younger athletes social currency so the network has density; make coach search an efficient cut on user generated sport metrics.
-        </p>
-      </section>
-
-      <section className={styles.fullImage}>
-        <Image src="/images/allathlete/wire-search.png" alt="Search and filter wireframe" width={2000} height={1400} sizes="100vw" />
-        <p className={styles.caption}>Player search grouped with master filters, mid fidelity</p>
+      <section className={styles.auditResearch} aria-label="Audit metrics and user research">
+        <div className={styles.auditMetrics}>
+          <article>
+            <p className={styles.auditNum}>15%</p>
+            <div className={styles.auditCopy}>
+              <h6>Profile completion</h6>
+              <p>Athletes rarely finished a profile, so coaches had nothing to recruit against.</p>
+            </div>
+          </article>
+          <article>
+            <p className={styles.auditNum}>5%</p>
+            <div className={styles.auditCopy}>
+              <h6>Coach search success</h6>
+              <p>Almost no coaches could find a qualified player, or contact them in product.</p>
+            </div>
+          </article>
+          <article>
+            <p className={styles.auditNum}>&lt;2</p>
+            <div className={styles.auditCopy}>
+              <h6>Avg. connections</h6>
+              <p>The graph was too thin for social proof, or for coaches to judge a recruit.</p>
+            </div>
+          </article>
+        </div>
       </section>
 
       <section className={styles.narrative}>
         <h6>User personas</h6>
         <h3>Consumers of the platform<span>.</span></h3>
         <p>
-          The product had to serve four existing people at once: the intermediate athlete who lives on the app to get scouted, the coach hunting a specific profile, the superstar building a brand, and the fan who keeps the social layer alive. Each persona named a distinct job so the IA could serve them without inheriting the others’ complexity.
+          Interviews kept landing on the same four people. Each one named a distinct job so the IA could serve them without inheriting the others’ complexity.
         </p>
       </section>
 
@@ -488,13 +588,64 @@ export default function AllAthleteCaseStudy() {
         ))}
       </section>
 
+      <section id="structure" className={`${styles.narrative} ${styles.sectionAnchor}`}>
+        <h6>Mid fidelity</h6>
+        <h3>Establishing Structure<span>.</span></h3>
+        <p>
+          After the audit, the first screens locked structure before visual design. Home and profile were the two surfaces that had to carry sports data, social proof, and a path to coaches.
+        </p>
+      </section>
+
+      <section className={styles.pair}>
+        <figure>
+          <Image src="/images/allathlete/wire-home.png" alt="Home feed mid fidelity wireframe" width={1600} height={2000} sizes="(max-width: 900px) 100vw, 50vw" />
+          <figcaption>Home feed, mid fidelity</figcaption>
+        </figure>
+        <figure>
+          <Image src="/images/allathlete/wire-profile.png" alt="Profile mid fidelity wireframe" width={1600} height={2000} sizes="(max-width: 900px) 100vw, 50vw" />
+          <figcaption>Profile, mid fidelity</figcaption>
+        </figure>
+      </section>
+
+      <section className={`${styles.narrative} ${styles.narrativeFaint}`}>
+        <h6>Information architecture</h6>
+        <p>
+          Hudl showed that strong content drives engagement, but a social sports data product is still an unfamiliar idea because recruiting happens in many steps. Other databases are not user generated. AllAthlete’s advantage only works if athletes can actually upload data, if there is social proof to keep them there, and if coaches can filter that data without noise.
+        </p>
+        <p>
+          Three questions drove the IA: make upload simple enough that profiles get finished; give younger athletes social currency so the network has density; make coach search an efficient cut on user generated sport metrics.
+        </p>
+      </section>
+
+      <section className={styles.fullImage}>
+        <Image src="/images/allathlete/wire-search.png" alt="Search and filter wireframe" width={2000} height={1400} sizes="100vw" />
+        <p className={styles.caption}>Player search grouped with master filters, mid fidelity</p>
+      </section>
+
       <section className={styles.fullImage}>
         <Image src="/images/allathlete/wire-header.png" alt="Wireframe header system" width={2000} height={800} sizes="100vw" />
         <p className={styles.caption}>Header system in mid fidelity, before high fidelity</p>
       </section>
 
       <section className={styles.narrative}>
-        <h6>Shipped screens</h6>
+        <h6>Design system</h6>
+        <h3>A component library engineering could ship without guessing<span>.</span></h3>
+        <p>
+          Visual design locked type, color, and interaction into a shared set of parts. The system stayed specific to the recruiting loop, not exhaustive, so a thin build could still stay consistent across home, profile, search, and training.
+        </p>
+      </section>
+
+      <section className={styles.systemGrid}>
+        {SYSTEM_SHOTS.map(({ src, alt, caption }) => (
+          <figure key={caption}>
+            <Image src={src} alt={alt} width={1600} height={1200} sizes="(max-width: 900px) 100vw, 50vw" />
+            <figcaption>{caption}</figcaption>
+          </figure>
+        ))}
+      </section>
+
+      <section id="solutions" className={`${styles.narrative} ${styles.sectionAnchor}`}>
+        <h6>Solutions</h6>
         <h3>Home, profile, search, and training as one recruiting system<span>.</span></h3>
         <p>
           Visual design locked layout, type, color, and interaction so engineering could build the coach-to-athlete loop without guessing across surfaces.
@@ -503,50 +654,12 @@ export default function AllAthleteCaseStudy() {
 
       <ScrollingFeatures />
 
-      <section className={styles.stickyBand}>
-        <aside className={styles.stickyCard}>
-          <h4>Need a product designer<span>.</span></h4>
-          <p>I can take a messy two sided recruiting product and make the path between athletes and coaches obvious.</p>
-          <HoverFill href="/?skipLoading=true#about" className={`${styles.primary} ${styles.primaryStretch}`}>
-            Let’s talk
-          </HoverFill>
-        </aside>
-        <div className={styles.stickyCopy}>
-          <h3>The AllAthlete web overhaul made recruiting data usable for the people already on the platform<span>.</span></h3>
-          <p>
-            Athletes could not finish or present a profile, and coaches could not find them. We rebuilt consumption around modular posts, rebuilt the profile around sports data, and put customizable filters next to search so AllAthlete’s coach relationships had somewhere to land.
-          </p>
-          <p>
-            A design system and brand held the new IA together across web and mobile. Development resources were thin relative to the architecture, so the rate of learning outpaced the rate of shipping, which meant the system had to be specific, not exhaustive.
-          </p>
-          <blockquote>
-            “Only a small proportion of athletes had completed their profile. The breakpoints were in upload, not in demand.”
-          </blockquote>
-          <h6>What landed</h6>
-          <p>
-            The redesigned web platform supported hundreds of thousands of users, 10,000+ college visits, and 8,000+ offers. Coaches could finally cut the directory; athletes had a reason to finish the page that represented them.
-          </p>
-        </div>
-      </section>
-
-      <section className={styles.narrative}>
-        <h6>After the year</h6>
-        <h3>The audit had to stand in for the tests we could not run yet<span>.</span></h3>
-        <p>
-          Being the first product designer on a small team means stakeholder interviews and field notes have to name the breakpoints before a test plan exists. Upload, social density, and coach filter were enough to refuse features that did not serve them.
-        </p>
-        <p>
-          I also learned the cost of communication past the point of diminishing returns, and the cost of an architecture that outruns engineering. The useful response was a tighter system, a clearer brand, and flows that a limited build could actually finish.
-        </p>
-      </section>
-
       <section className={styles.more}>
         <h2>Other projects<span>.</span></h2>
         <div className={styles.moreGrid}>
           <Link href="/poppin" className={styles.moreItem}>
             <div className={styles.moreImg}>
               <Image src="/images/PoppinMockupTwo.jpg" alt="Poppin" width={1200} height={800} sizes="(max-width: 700px) 100vw, 50vw" />
-              <span className={styles.moreCircle} />
             </div>
             <h3>Building a socially proofed ticketing network for live events.</h3>
             <p>Product lead at Poppin. Overhaul of 3.0 through seed.</p>
@@ -562,7 +675,6 @@ export default function AllAthleteCaseStudy() {
           >
             <div className={styles.moreImg}>
               <Image src="/images/LoreHealthMockup.png" alt="Lore Health" width={1200} height={900} sizes="(max-width: 700px) 100vw, 50vw" />
-              <span className={styles.moreCircle} />
             </div>
             <h3>An AI-powered health platform for psychological and physical stressors.</h3>
             <p>Design engineer at Lore Health.</p>

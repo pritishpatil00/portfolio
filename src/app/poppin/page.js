@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,6 +15,13 @@ const rise = {
   hidden: { y: 20 },
   show: { y: 0, transition: { duration: 0.75, ease } },
 }
+
+const SIDE_NAV = [
+  { id: 'intro', label: 'Intro' },
+  { id: 'research', label: 'Research' },
+  { id: 'structure', label: 'Structure' },
+  { id: 'solutions', label: 'Solutions' },
+]
 
 function HoverFill({ href, children, className, external, onClick }) {
   const inner = (
@@ -37,35 +44,48 @@ function HoverFill({ href, children, className, external, onClick }) {
   )
 }
 
-function HifiFeatures() {
+function ScrollingFeatures() {
   const items = [
     {
+      n: '01',
       src: '/images/poppin/onboarding.png',
-      title: 'Onboarding into the local network.',
+      title: 'Onboarding into the local network',
       copy: 'Traffic came from shares, web, and social. The iOS app was the moment a user entered the network, so people on the same events became visible before browse.',
     },
     {
+      n: '02',
       src: '/images/poppin/browsing.png',
-      title: 'Browse you can decide from.',
+      title: 'Browse you can decide from',
       copy: 'Early feedback showed missing disclosure. I rebuilt classification and event information so a buyer could choose in one pass, without hunting.',
     },
     {
+      n: '03',
       src: '/images/poppin/hostTooling.png',
-      title: 'Host tooling that is thin on purpose.',
+      title: 'Host tooling that is thin on purpose',
       copy: 'Guest lists you can actually manage, and a small set of metrics across the event lifecycle. Web covered independent hosts, then pulled them onto mobile.',
+    },
+    {
+      n: '04',
+      src: '/images/poppin/eventInfo.png',
+      title: 'Event information',
+      copy: 'Event information, rebuilt so purchase could follow the guest list.',
     },
   ]
 
   return (
-    <div className={styles.hifiStack}>
+    <div className={styles.solutions}>
+      <div className={styles.solutionsRule} aria-hidden="true" />
       {items.map((item) => (
-        <div key={item.title} className={styles.scrollBlock}>
-          <div className={styles.scrollShot}>
-            <Image src={item.src} alt="" width={1600} height={1000} sizes="(max-width: 900px) 92vw, 88vw" />
+        <article key={item.n} className={styles.solution}>
+          <header className={styles.solutionHead}>
+            <p className={styles.solutionNum}>{item.n}</p>
+            <h4>{item.title}</h4>
+            <p className={styles.solutionCopy}>{item.copy}</p>
+          </header>
+          <div className={styles.solutionShot}>
+            <Image src={item.src} alt="" width={1600} height={1140} sizes="(max-width: 900px) 100vw, 88vw" />
           </div>
-          <h3>{item.title}</h3>
-          <p>{item.copy}</p>
-        </div>
+        </article>
       ))}
     </div>
   )
@@ -75,8 +95,12 @@ export default function PoppinCaseStudy() {
   const router = useRouter()
   const [leaving, setLeaving] = useState(false)
   const [finePointer, setFinePointer] = useState(false)
-  const { x, y } = useMousePosition()
+  const { clientX, clientY } = useMousePosition()
   const [onNavLink, setOnNavLink] = useState(false)
+  const [activeSection, setActiveSection] = useState('intro')
+  const lenisRef = useRef(null)
+  const heroTitleRef = useRef(null)
+  const [navTop, setNavTop] = useState(null)
   const cursorSize = onNavLink ? 26 : 40
 
   useEffect(() => {
@@ -88,13 +112,13 @@ export default function PoppinCaseStudy() {
   }, [])
 
   useEffect(() => {
-    if (x == null || y == null) {
+    if (clientX == null || clientY == null) {
       setOnNavLink(false)
       return
     }
-    const el = document.elementFromPoint(x - window.scrollX, y - window.scrollY)
+    const el = document.elementFromPoint(clientX, clientY)
     setOnNavLink(Boolean(el?.closest('[data-cursor="link"]')))
-  }, [x, y])
+  }, [clientX, clientY])
 
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
@@ -112,6 +136,18 @@ export default function PoppinCaseStudy() {
     raf = requestAnimationFrame(() => {
       if (!alive) return
       lenis = new Lenis()
+      lenisRef.current = lenis
+      lenis.on('scroll', () => {
+        const ids = SIDE_NAV.map((item) => item.id)
+        const mark = 140
+        let current = ids[0]
+        for (const id of ids) {
+          const el = document.getElementById(id)
+          if (!el) continue
+          if (el.getBoundingClientRect().top <= mark) current = id
+        }
+        setActiveSection((prev) => (prev === current ? prev : current))
+      })
       raf = requestAnimationFrame(loop)
     })
 
@@ -123,9 +159,59 @@ export default function PoppinCaseStudy() {
       alive = false
       cancelAnimationFrame(raf)
       try { lenis?.destroy() } catch {}
+      lenisRef.current = null
       window.removeEventListener('popstate', fadeOut)
       window.removeEventListener('pagehide', fadeOut)
     }
+  }, [])
+
+  useEffect(() => {
+    const ids = SIDE_NAV.map((item) => item.id)
+    const update = () => {
+      const mark = 140
+      let current = ids[0]
+      for (const id of ids) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        if (el.getBoundingClientRect().top <= mark) current = id
+      }
+      setActiveSection((prev) => (prev === current ? prev : current))
+    }
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', update)
+    }
+  }, [])
+
+  useLayoutEffect(() => {
+    const layoutTop = (el) => {
+      let y = 0
+      let node = el
+      while (node) {
+        y += node.offsetTop
+        node = node.offsetParent
+      }
+      return y
+    }
+    const sync = () => {
+      const title = heroTitleRef.current
+      if (!title) return
+      const top = layoutTop(title)
+      setNavTop((prev) => (prev != null && Math.abs(prev - top) < 0.5 ? prev : top))
+    }
+    sync()
+    document.fonts?.ready?.then(sync)
+    window.addEventListener('resize', sync)
+    return () => window.removeEventListener('resize', sync)
+  }, [])
+
+  const scrollToSection = useCallback((id) => {
+    const el = document.getElementById(id)
+    if (!el) return
+    const top = window.scrollY + el.getBoundingClientRect().top - 56
+    if (lenisRef.current) lenisRef.current.scrollTo(top)
+    else window.scrollTo({ top, behavior: 'smooth' })
   }, [])
 
   const goHome = (href = '/?skipLoading=true') => {
@@ -140,12 +226,12 @@ export default function PoppinCaseStudy() {
       animate={{ opacity: leaving ? 0 : 1 }}
       transition={{ duration: 0.52, ease }}
     >
-      {finePointer && x != null && y != null && (
+      {finePointer && clientX != null && clientY != null && (
         <motion.div
           className={`${styles.pageCursor} ${onNavLink ? styles.pageCursorLink : ''}`}
           animate={{
-            x: x - window.scrollX - cursorSize / 2,
-            y: y - window.scrollY - cursorSize / 2,
+            x: clientX - cursorSize / 2,
+            y: clientY - cursorSize / 2,
             width: cursorSize,
             height: cursorSize,
           }}
@@ -156,7 +242,7 @@ export default function PoppinCaseStudy() {
       )}
       <header className={styles.stickyHeader}>
         <div className={styles.headerName}>
-          <Link href="/" data-cursor="link" onClick={(e) => { e.preventDefault(); goHome('/?skipLoading=true') }}><p>PRITISH PATIL</p></Link>
+          <Link href="/?skipLoading=true#hero" data-cursor="link" onClick={(e) => { e.preventDefault(); try { sessionStorage.removeItem('homeScroll') } catch {}; goHome('/?skipLoading=true#hero') }}><p>PRITISH PATIL</p></Link>
         </div>
         <nav className={styles.headerNav}>
           <p data-cursor="link" onClick={() => goHome('/?skipLoading=true')}>WORK</p>
@@ -165,7 +251,28 @@ export default function PoppinCaseStudy() {
         </nav>
       </header>
 
-      <section className={styles.hero}>
+      <div className={styles.sideNav} style={navTop != null ? { top: navTop } : undefined}>
+        <motion.nav
+          aria-label="Case study sections"
+          variants={rise}
+          initial="hidden"
+          animate="show"
+        >
+          {SIDE_NAV.map(({ id, label }) => (
+            <button
+              key={id}
+              type="button"
+              data-cursor="link"
+              className={activeSection === id ? styles.sideNavActive : ''}
+              onClick={() => scrollToSection(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </motion.nav>
+      </div>
+
+      <section id="intro" className={`${styles.hero} ${styles.sectionAnchor}`}>
         <div className={styles.clip}>
           <motion.div initial="hidden" animate="show">
             <HoverFill
@@ -178,9 +285,14 @@ export default function PoppinCaseStudy() {
           </motion.div>
         </div>
         <div className={styles.clip}>
+          <div ref={heroTitleRef} className={styles.heroTitleLock}>
           <motion.h1 variants={rise} initial="hidden" animate="show">
-            Building a socially proofed ticketing network<br className={styles.heroBr} />for <span className={styles.heroEnd}>live events</span><span className={styles.heroDot}>.</span>
+            <span className={styles.heroLine}>Building a socially proofed</span>
+            <br />
+            <span className={styles.heroLine}>ticketing network for live events</span>
+            <span className={styles.heroDot}>.</span>
           </motion.h1>
+          </div>
         </div>
         <div className={styles.clip}>
           <motion.p className={styles.heroLead} variants={rise} initial="hidden" animate="show" transition={{ delay: 0.06, duration: 0.75, ease }}>
@@ -189,7 +301,7 @@ export default function PoppinCaseStudy() {
         </div>
         <div className={styles.clip}>
           <motion.p className={styles.heroSub} variants={rise} initial="hidden" animate="show" transition={{ delay: 0.12, duration: 0.75, ease }}>
-            Product lead. Directed design and branding across iOS and web so hosts could convert, and buyers could decide from social proof.
+            Product designer. Directed design and branding across iOS and web so hosts could convert, and buyers could decide from social proof.
           </motion.p>
         </div>
       </section>
@@ -217,7 +329,7 @@ export default function PoppinCaseStudy() {
           </div>
           <div className={styles.detail}>
             <h6>Role</h6>
-            <p>Product Lead<br />Design and research</p>
+            <p>Product Designer</p>
           </div>
           <div className={styles.detail}>
             <h6>Year</h6>
@@ -228,12 +340,17 @@ export default function PoppinCaseStudy() {
             <p>2 iOS, backend, frontend, design</p>
           </div>
           <div className={styles.detail}>
-            <h6>Skills</h6>
-            <p>Product design, user research, information architecture, visual design, product management</p>
+            <h6>Contributions</h6>
+            <ul className={styles.contribList}>
+              <li>User Research</li>
+              <li>UX/UI Design</li>
+              <li>Visual Design</li>
+              <li>Front End Development</li>
+            </ul>
           </div>
         </div>
         <div className={styles.objective}>
-          <h6>Mandate</h6>
+          <h6>Brief</h6>
           <p>
             Demand was already there. People could not see what was happening nearby. The MVP proved a network would form if events were findable: 10,000 users in a single market.
           </p>
@@ -281,7 +398,7 @@ export default function PoppinCaseStudy() {
         <p className={styles.caption}>Competitors sold pages, tickets, or tooling. None sold the friends list</p>
       </section>
 
-      <section className={styles.narrative}>
+      <section id="research" className={`${styles.narrative} ${styles.sectionAnchor}`}>
         <h6>Fieldwork</h6>
         <h3>Friends first. Then everything else<span>.</span></h3>
         <p>
@@ -297,18 +414,17 @@ export default function PoppinCaseStudy() {
         <p className={styles.caption}>Spectrums used to map when buyers commit, from awareness to loyalty</p>
       </section>
 
-      <section className={styles.pair}>
-        <figure>
-          <Image src="/images/poppin/situations.png" alt="Commitment situations" width={1600} height={1000} sizes="(max-width: 900px) 100vw, 50vw" />
-          <figcaption>Contexts where a buyer actually commits</figcaption>
-        </figure>
-        <figure>
-          <Image src="/images/poppin/cases.png" alt="Decision cases" width={1600} height={1000} sizes="(max-width: 900px) 100vw, 50vw" />
-          <figcaption>Cases that shaped browse, tickets, and purchase</figcaption>
-        </figure>
+      <section className={styles.fullImage}>
+        <Image src="/images/poppin/situations.png" alt="Commitment situations" width={2000} height={1400} sizes="100vw" />
+        <p className={styles.caption}>Contexts where a buyer actually commits</p>
       </section>
 
-      <section className={`${styles.narrative} ${styles.narrativeFaint}`}>
+      <section className={styles.fullImage}>
+        <Image src="/images/poppin/cases.png" alt="Decision cases" width={2000} height={1400} sizes="100vw" />
+        <p className={styles.caption}>Cases that shaped browse, tickets, and purchase</p>
+      </section>
+
+      <section id="structure" className={`${styles.narrative} ${styles.narrativeFaint} ${styles.sectionAnchor}`}>
         <h6>Strategy</h6>
         <p>
           Scope had to be decided against value, usability, feasibility, and business viability, so the room could agree on what not to build. We needed a new iOS app, a web experience for independent hosts, and a rewritten backend for scale.
@@ -324,24 +440,11 @@ export default function PoppinCaseStudy() {
       </section>
 
       <section className={styles.narrative}>
-        <h6>Principles</h6>
-        <h3>Social proof, then clarity<span>.</span></h3>
+        <h6>Host tooling</h6>
+        <h3>Defining success<span>.</span></h3>
         <p>
-          The goal was a seamless path from selecting an event to completing a ticket purchase. Maximize the number of friends on the guest list so buying is motivated by people, then keep browse to purchase obvious enough that the motivation does not leak.
+          Hosts already run events. Success for them is revenue and awareness, not a dashboard. The product needed a small set of numbers they would actually check across the event lifecycle, so they could see whether Poppin was reaching the right people.
         </p>
-      </section>
-
-      <section className={styles.principles}>
-        <article>
-          <Image src="/images/poppin/connectivity.png" alt="" width={96} height={96} />
-          <h3>Connectivity</h3>
-          <p>Use social validation and proof to increase ticket transaction rate.</p>
-        </article>
-        <article>
-          <Image src="/images/poppin/simplicity.png" alt="" width={96} height={96} />
-          <h3>Simplicity</h3>
-          <p>Clarity from browse to purchase, so a buyer is not hunting for the details.</p>
-        </article>
       </section>
 
       <section className={styles.fullImage}>
@@ -349,20 +452,15 @@ export default function PoppinCaseStudy() {
         <p className={styles.caption}>Base metrics hosts could actually use across the event lifecycle</p>
       </section>
 
-      <section className={styles.narrative}>
-        <h6>Product surfaces</h6>
+      <section id="solutions" className={`${styles.narrative} ${styles.sectionAnchor}`}>
+        <h6>Solutions</h6>
         <h3>Onboarding, browse, and host tools that could actually ship<span>.</span></h3>
         <p>
           These were the screens required for discovery and conversion, without extra surface the team could not deliver.
         </p>
       </section>
 
-      <HifiFeatures />
-
-      <section className={styles.fullImage}>
-        <Image src="/images/poppin/eventInfo.png" alt="Event information architecture" width={2000} height={1400} sizes="100vw" />
-        <p className={styles.caption}>Event information, rebuilt so purchase could follow the guest list</p>
-      </section>
+      <ScrollingFeatures />
 
       <section className={styles.stickyBand}>
         <aside className={styles.stickyCard}>
@@ -407,7 +505,6 @@ export default function PoppinCaseStudy() {
           <Link href="/allathlete" className={styles.moreItem}>
             <div className={styles.moreImg}>
               <Image src="/images/AllAthleteMockup.jpg" alt="AllAthlete" width={1200} height={800} sizes="(max-width: 700px) 100vw, 50vw" />
-              <span className={styles.moreCircle} />
             </div>
             <h3>Redesigning AllAthlete as the destination for recruiting.</h3>
             <p>Product designer at AllAthlete.</p>
@@ -423,7 +520,6 @@ export default function PoppinCaseStudy() {
           >
             <div className={styles.moreImg}>
               <Image src="/images/LoreHealthMockup.png" alt="Lore Health" width={1200} height={900} sizes="(max-width: 700px) 100vw, 50vw" />
-              <span className={styles.moreCircle} />
             </div>
             <h3>An AI-powered health platform for psychological and physical stressors.</h3>
             <p>Design engineer at Lore Health.</p>

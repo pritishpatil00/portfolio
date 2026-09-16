@@ -26,9 +26,11 @@
 .split,
 .pair,
 .narrative,
+.auditResearch,
 .fullImage,
 .personas,
-.scrolling,
+.systemGrid,
+.solutions,
 .stickyBand,
 .more,
 .pageFooter,
@@ -82,6 +84,50 @@
     }
 }
 
+.pageCursorLink {
+    width: 26px;
+    height: 26px;
+}
+
+.sideNav {
+    position: fixed;
+    left: 24px;
+    top: 182px;
+    z-index: 2000;
+    overflow: hidden;
+
+    nav {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    button {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        cursor: pointer;
+        font-family: 'Neue Montreal Book', sans-serif;
+        font-size: 16px;
+        letter-spacing: 0.03em;
+        color: #b0b0b0;
+        transition: color 0.2s ease;
+        text-align: left;
+
+        &:hover { color: var(--ink); }
+    }
+}
+
+.sideNavActive {
+    color: var(--ink) !important;
+}
+
+.sectionAnchor {
+    scroll-margin-top: 72px;
+}
+
 .pageCursor {
     position: fixed;
     top: 0;
@@ -124,8 +170,12 @@
     overflow: hidden;
 }
 
+.heroTitleLock {
+    margin-top: 16px;
+}
+
 .hero h1 {
-    margin: 16px 0 24px;
+    margin: 0 0 24px;
     font-family: 'Neue Montreal Regular', sans-serif;
     font-size: clamp(40px, 5.4vw, 76px);
     line-height: 1.1;
@@ -316,6 +366,21 @@
     line-height: 1.45;
 }
 
+.contribList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        margin: 0 0 4px;
+        font-size: 16px;
+        line-height: 1.45;
+        color: var(--ink);
+
+        &:last-child { margin-bottom: 0; }
+    }
+}
+
 .objective p + p { margin-top: 16px; color: var(--muted); }
 
 .stats {
@@ -359,7 +424,7 @@
 .baStage {
     position: relative;
     width: 100%;
-    aspect-ratio: 2201 / 1565;
+    aspect-ratio: 2201 / 1566;
     overflow: hidden;
     background: var(--mat);
     border: 1px solid var(--line);
@@ -423,8 +488,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px 64px;
-    padding-top: 100px;
-    padding-bottom: 48px;
+    padding-top: 168px;
+    padding-bottom: 0;
     align-items: end;
     h3 {
         margin: 12px 0 0;
@@ -448,7 +513,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     padding-top: 0;
-    padding-bottom: 80px;
+    padding-bottom: 0;
     figure { margin: 0; }
     img {
         width: 100%;
@@ -471,10 +536,11 @@
 }
 
 .narrative {
-    padding-top: 40px;
-    padding-bottom: 48px;
+    padding-top: 168px;
+    padding-bottom: 0;
     h3 {
         margin: 8px 0 24px;
+        padding-right: clamp(48px, 18%, 200px);
         font-family: 'Neue Montreal Regular', sans-serif;
         font-size: clamp(32px, 3.6vw, 52px);
         line-height: 1.12;
@@ -489,17 +555,132 @@
         color: var(--muted);
         max-width: 38em;
     }
+    p:last-child { margin-bottom: 0; }
+}
+
+.narrative + .narrative {
+    padding-top: 200px;
+}
+
+.narrative + .auditResearch {
+    padding-top: 48px;
+}
+
+.auditResearch + .narrative {
+    padding-top: 168px;
+}
+
+.split + .pair,
+.narrative + .pair,
+.narrative + .personas,
+.narrative + .fullImage,
+.narrative + .systemGrid,
+.narrativeFaint + .fullImage {
+    padding-top: 64px;
+}
+
+.pair + .narrative,
+.personas + .narrative,
+.fullImage + .narrative,
+.systemGrid + .narrative {
+    padding-top: 168px;
+}
+
+.auditResearch {
+    padding-bottom: 0;
+}
+
+.auditMetrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+
+    article {
+        margin: 0;
+        padding: 32px 28px 28px;
+        background: var(--mat);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        min-width: 0;
+        min-height: 260px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 32px;
+    }
+
+    .auditNum {
+        margin: 0;
+        font-family: 'Neue Montreal Regular', sans-serif;
+        font-size: clamp(48px, 5vw, 72px);
+        line-height: 0.9;
+        letter-spacing: -0.05em;
+        color: var(--ink);
+    }
+
+    .auditCopy {
+        h6 {
+            margin: 0 0 10px;
+            font-size: 20px;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+            text-transform: none;
+            font-weight: 400;
+            font-family: 'Neue Montreal Regular', sans-serif;
+            color: var(--ink);
+        }
+
+        p {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.45;
+            color: var(--muted);
+        }
+    }
+}
+
+.systemGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px 20px;
+    padding-top: 0;
+    padding-bottom: 0;
+
+    figure { margin: 0; }
+
+    img {
+        width: 100%;
+        height: auto;
+        display: block;
+        box-sizing: border-box;
+        background: transparent;
+        border: 1px solid #c8c8c8;
+        border-radius: 12px;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    figcaption {
+        margin-top: 12px;
+        font-size: 13px;
+        color: var(--muted);
+    }
+}
+
+.pair + .narrative.narrativeFaint {
+    padding-top: 48px;
+    margin-top: 64px;
 }
 
 .narrativeFaint {
     background: var(--faint);
-    padding-top: 80px;
-    padding-bottom: 80px;
+    padding-top: 48px;
+    padding-bottom: 48px;
 }
 
 .fullImage {
-    padding-top: 80px;
-    padding-bottom: 80px;
+    padding-top: 120px;
+    padding-bottom: 0;
     img {
         width: 100%;
         height: auto;
@@ -510,6 +691,10 @@
         border: 1px solid var(--line);
         border-radius: 12px;
     }
+}
+
+.fullImage + .fullImage {
+    padding-top: 40px;
 }
 
 .caption {
@@ -524,7 +709,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 28px 24px;
     padding-top: 0;
-    padding-bottom: 80px;
+    padding-bottom: 0;
     article {
         img {
             width: 72%;
@@ -557,63 +742,95 @@
     }
 }
 
-.scrolling {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px 20px;
-    padding-top: 40px;
+.solutions {
+    display: flex;
+    flex-direction: column;
+    padding-top: 72px;
     padding-bottom: 120px;
-    padding-left: var(--inset-wide);
-    padding-right: var(--inset-wide);
-    align-items: start;
-}
-
-.scrollCol { will-change: transform; }
-
-.scrollColRight { padding-top: 18vh; }
-
-.scrollBlock {
-    margin-bottom: 80px;
-    h3 {
-        margin: 20px 0 12px;
-        font-family: 'Neue Montreal Regular', sans-serif;
-        font-size: clamp(26px, 2.4vw, 36px);
-        font-weight: 400;
-        letter-spacing: -0.03em;
-        line-height: 1.16;
-    }
-    p {
-        margin: 0;
-        font-size: 16px;
-        line-height: 1.5;
-        color: var(--muted);
-        max-width: 36em;
-    }
-}
-
-.scrollShot,
-.scrollShotTall {
-    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     box-sizing: border-box;
-    padding: 16px;
+}
+
+.solutionsRule {
+    width: 100%;
+    height: 1px;
+    margin: 0 0 64px;
+    background: var(--line);
+}
+
+.solution + .solution {
+    margin-top: 120px;
+}
+
+.solutionHead {
+    max-width: 38em;
+    margin-bottom: 28px;
+}
+
+.solutionNum {
+    margin: 0 0 12px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-family: 'Neue Montreal Medium', sans-serif;
+    color: var(--muted);
+}
+
+.solutionHead h4 {
+    margin: 0 0 10px;
+    font-family: 'Neue Montreal Regular', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+}
+
+.solutionCopy {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.solutionShot {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 24px;
     background: var(--mat);
     border: 1px solid var(--line);
     border-radius: 12px;
+    overflow: hidden;
+
+    > * {
+        width: 100% !important;
+        max-width: 100%;
+        height: auto !important;
+        min-width: 0;
+    }
+
     img {
         width: 100%;
+        max-width: 100%;
         height: auto;
         display: block;
         background: transparent;
+        border-radius: 8px;
     }
 }
-
-.scrollShotTall { margin-bottom: 32px; }
 
 .stickyBand {
     display: grid;
     grid-template-columns: minmax(240px, 0.34fr) 1fr;
     gap: 48px 64px;
-    padding-top: 80px;
+    padding-top: 120px;
     padding-bottom: 120px;
     background: var(--faint);
     align-items: start;
@@ -672,8 +889,8 @@
 }
 
 .more {
-    padding-top: 80px;
-    padding-bottom: 64px;
+    padding-top: 168px;
+    padding-bottom: 80px;
     h2 {
         text-transform: none;
         letter-spacing: -0.03em;
@@ -791,6 +1008,7 @@
 @media (max-width: 1100px) {
     .stats { grid-template-columns: 1fr 1fr; }
     .personas { grid-template-columns: 1fr 1fr; }
+    .sideNav { display: none; }
 }
 
 @media (max-width: 800px) {
@@ -798,15 +1016,15 @@
     .heroFrame { border-radius: 16px; }
     .overview,
     .split,
-    .stickyBand,
-    .scrolling {
+    .stickyBand {
         grid-template-columns: 1fr;
     }
-    .scrollColRight { padding-top: 0; display: none; }
     .pair,
     .moreGrid,
     .stats,
-    .personas {
+    .personas,
+    .auditMetrics,
+    .systemGrid {
         grid-template-columns: 1fr;
     }
     .pair img { aspect-ratio: auto; }

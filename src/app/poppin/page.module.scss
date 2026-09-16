@@ -27,7 +27,7 @@
 .fullImage,
 .principles,
 .personas,
-.hifiStack,
+.solutions,
 .stickyBand,
 .more,
 .pageFooter,
@@ -109,6 +109,50 @@
     pointer-events: none;
 }
 
+.pageCursorLink {
+    width: 26px;
+    height: 26px;
+}
+
+.sideNav {
+    position: fixed;
+    left: 24px;
+    top: 182px;
+    z-index: 2000;
+    overflow: hidden;
+
+    nav {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    button {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        cursor: pointer;
+        font-family: 'Neue Montreal Book', sans-serif;
+        font-size: 16px;
+        letter-spacing: 0.03em;
+        color: #b0b0b0;
+        transition: color 0.2s ease;
+        text-align: left;
+
+        &:hover { color: var(--ink); }
+    }
+}
+
+.sideNavActive {
+    color: var(--ink) !important;
+}
+
+.sectionAnchor {
+    scroll-margin-top: 72px;
+}
+
 .hideNativeCursor,
 .hideNativeCursor * {
     cursor: none !important;
@@ -123,25 +167,23 @@
     overflow: hidden;
 }
 
-.hero h1 {
-    margin: 16px 0 24px;
-    font-family: 'Neue Montreal Regular', sans-serif;
-    font-size: clamp(40px, 5.4vw, 76px);
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    font-weight: 400;
-    max-width: 18ch;
-
-    @media (min-width: 801px) {
-        max-width: 22em;
-    }
+.heroTitleLock {
+    margin-top: 16px;
 }
 
-.heroBr {
-    display: none;
+.hero h1 {
+    margin: 0 0 24px;
+    font-family: 'Neue Montreal Regular', sans-serif;
+    font-size: clamp(32px, 4.2vw, 58px);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    font-weight: 400;
+    max-width: none;
+}
 
+.heroLine {
     @media (min-width: 801px) {
-        display: revert;
+        white-space: nowrap;
     }
 }
 
@@ -308,6 +350,21 @@
     margin: 0;
     font-size: 16px;
     line-height: 1.45;
+}
+
+.contribList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        margin: 0 0 4px;
+        font-size: 16px;
+        line-height: 1.45;
+        color: var(--ink);
+
+        &:last-child { margin-bottom: 0; }
+    }
 }
 
 .objective p + p { margin-top: 16px; color: var(--muted); }
@@ -506,6 +563,10 @@
     }
 }
 
+.fullImage + .fullImage {
+    padding-top: 0;
+}
+
 .caption {
     margin: 12px 0 0;
     text-transform: none;
@@ -587,47 +648,88 @@
     }
 }
 
-.hifiStack {
-    padding-top: 40px;
+.solutions {
+    display: flex;
+    flex-direction: column;
+    padding-top: 72px;
     padding-bottom: 120px;
-}
-
-.scrollBlock {
-    margin-bottom: 80px;
-    h3 {
-        margin: 20px 0 12px;
-        font-family: 'Neue Montreal Regular', sans-serif;
-        font-size: clamp(26px, 2.4vw, 36px);
-        font-weight: 400;
-        letter-spacing: -0.03em;
-        line-height: 1.16;
-    }
-    p {
-        margin: 0;
-        font-size: 16px;
-        line-height: 1.5;
-        color: var(--muted);
-        max-width: 36em;
-    }
-}
-
-.scrollShot {
-    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     box-sizing: border-box;
-    padding: 16px;
+}
+
+.solutionsRule {
+    width: 100%;
+    height: 1px;
+    margin: 0 0 64px;
+    background: var(--line);
+}
+
+.solution + .solution {
+    margin-top: 120px;
+}
+
+.solutionHead {
+    max-width: 38em;
+    margin-bottom: 28px;
+}
+
+.solutionNum {
+    margin: 0 0 12px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-family: 'Neue Montreal Medium', sans-serif;
+    color: var(--muted);
+}
+
+.solutionHead h4 {
+    margin: 0 0 10px;
+    font-family: 'Neue Montreal Regular', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+}
+
+.solutionCopy {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.solutionShot {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 24px;
     background: var(--mat);
     border: 1px solid var(--line);
     border-radius: 12px;
+    overflow: hidden;
+
+    > * {
+        width: 100% !important;
+        max-width: 100%;
+        height: auto !important;
+        min-width: 0;
+    }
+
     img {
         width: 100%;
+        max-width: 100%;
         height: auto;
         display: block;
         background: transparent;
+        border-radius: 8px;
     }
-}
-
-.hifiStack .scrollBlock:last-child {
-    margin-bottom: 0;
 }
 
 .stickyBand {
@@ -813,6 +915,7 @@
     .stats { grid-template-columns: 1fr 1fr; }
     .principles { grid-template-columns: 1fr; }
     .personas { grid-template-columns: 1fr 1fr; }
+    .sideNav { display: none; }
 }
 
 @media (max-width: 800px) {

@@ -51,10 +51,11 @@ function Home() {
     '1-role': true,
     '2-role': true,
   });
-  const { x, y } = useMousePosition();
+  const { x, y, clientX, clientY } = useMousePosition();
   const [finePointer, setFinePointer] = useState(null);
   const [view, setView] = useState({ w: 1440, h: 900 });
   const [pastHero, setPastHero] = useState(false);
+  const [scrollTick, setScrollTick] = useState(0);
   const [gridOrigin, setGridOrigin] = useState({ c: 0.35, r: 0.78 });
   const isFine = finePointer === true;
   const isTouch = finePointer === false;
@@ -231,6 +232,23 @@ function Home() {
     }
 
     const hash = window.location.hash.replace('#', '')
+    if (hash === 'hero') {
+      try { sessionStorage.removeItem('homeScroll') } catch {}
+      const applyHero = () => {
+        if (cancelled) return
+        const lenis = lenisRef.current
+        lenis?.resize?.()
+        lenis?.scrollTo(0, { immediate: true })
+        window.scrollTo(0, 0)
+        restoredScroll.current = true
+        finish()
+      }
+      const id = requestAnimationFrame(() => requestAnimationFrame(applyHero))
+      return () => {
+        cancelled = true
+        cancelAnimationFrame(id)
+      }
+    }
     if (hash === 'about' || hash === 'sandbox') {
       document.getElementById(hash)?.scrollIntoView({ behavior: 'instant' })
       finish()
@@ -286,9 +304,15 @@ function Home() {
     const studies = document.getElementById('case-studies')
     if (!studies) return
 
+    let raf = 0
     const update = () => {
-      const next = studies.getBoundingClientRect().top <= 56
-      setPastHero((prev) => (prev === next ? prev : next))
+      if (raf) return
+      raf = requestAnimationFrame(() => {
+        raf = 0
+        const next = studies.getBoundingClientRect().top <= 56
+        setPastHero((prev) => (prev === next ? prev : next))
+        setScrollTick((n) => n + 1)
+      })
     }
     update()
 
@@ -296,6 +320,7 @@ function Home() {
     lenis?.on('scroll', update)
     window.addEventListener('scroll', update, { passive: true })
     return () => {
+      if (raf) cancelAnimationFrame(raf)
       lenis?.off('scroll', update)
       window.removeEventListener('scroll', update)
     }
@@ -347,30 +372,43 @@ function Home() {
   }, [])
 
   useEffect(() => {
-    if (x == null || y == null) {
+    if (clientX == null || clientY == null) {
       setOnCaseImage(false)
       setOnNavLink(false)
       return
     }
-    const el = document.elementFromPoint(x - window.scrollX, y - window.scrollY)
+    const el = document.elementFromPoint(clientX, clientY)
     const hit = el?.closest('[data-cursor]')
     const mode = hit?.getAttribute('data-cursor')
     setOnCaseImage(mode === 'view')
     setOnNavLink(mode === 'link')
-  }, [x, y])
+  }, [clientX, clientY, scrollTick])
+
+  const cursorX = clientX ?? (x == null || typeof window === 'undefined' ? null : x - window.scrollX)
+  const cursorY = clientY ?? (y == null || typeof window === 'undefined' ? null : y - window.scrollY)
+  const heroRect = scrollTick >= 0 ? heroRef.current?.getBoundingClientRect() : null
+  const overHero = Boolean(
+    heroRect &&
+    cursorX != null &&
+    cursorY != null &&
+    cursorX >= heroRect.left &&
+    cursorX <= heroRect.right &&
+    cursorY >= heroRect.top &&
+    cursorY <= heroRect.bottom
+  )
+  const overTopBar = Boolean(!pastHero && cursorY != null && cursorY < 64)
+  const cursorInverted = (isTouch || isFine) && isHovered && (overHero || overTopBar)
 
   const cursorInvertDelay = (() => {
-    const el = heroRef.current
-    if (!el || x == null || y == null || typeof window === 'undefined') return 0
-    const rect = el.getBoundingClientRect()
-    if (rect.width < 8 || rect.height < 8) return 0
+    if (!cursorInverted || !overHero || !heroRect) return 0
+    if (heroRect.width < 8 || heroRect.height < 8) return 0
     return invertWaveDelay({
       open: isHovered,
       origin: gridOrigin,
-      nx: (x - window.scrollX - rect.left) / rect.width,
-      ny: (y - window.scrollY - rect.top) / rect.height,
-      w: rect.width,
-      h: rect.height,
+      nx: (cursorX - heroRect.left) / heroRect.width,
+      ny: (cursorY - heroRect.top) / heroRect.height,
+      w: heroRect.width,
+      h: heroRect.height,
     })
   })()
 
@@ -421,7 +459,19 @@ function Home() {
         transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 2 }}
       >
         <div className={styles.headerName}>
-          <p data-cursor="link" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>PRITISH PATIL</p>
+          <p
+            data-cursor="link"
+            onClick={() => {
+              try { sessionStorage.removeItem('homeScroll') } catch {}
+              if (lenisRef.current) lenisRef.current.scrollTo(0)
+              else window.scrollTo({ top: 0, behavior: 'smooth' })
+              if (window.location.hash && window.location.hash !== '#hero') {
+                window.history.replaceState(null, '', '/?skipLoading=true#hero')
+              }
+            }}
+          >
+            PRITISH PATIL
+          </p>
         </div>
         <nav 
           className={styles.headerNav}
@@ -433,11 +483,11 @@ function Home() {
       </motion.header>
       {isFine && !loreOpen && x != null && y != null && (
         <motion.div
-          className={`${styles.pageCursor} ${onCaseImage ? styles.pageCursorView : ''} ${onNavLink ? styles.pageCursorLink : ''} ${(isTouch || isFine) && isHovered && !pastHero ? styles.pageCursorInverted : ''}`}
+          className={`${styles.pageCursor} ${onCaseImage ? styles.pageCursorView : ''} ${onNavLink ? styles.pageCursorLink : ''} ${cursorInverted ? styles.pageCursorInverted : ''}`}
           style={{
-            transitionDuration: `${HERO_CELL_DURATION}s`,
+            transitionDuration: cursorInverted ? `${HERO_CELL_DURATION}s` : '0s',
             transitionTimingFunction: HERO_CELL_EASE,
-            transitionDelay: `${cursorInvertDelay}s`,
+            transitionDelay: cursorInverted ? `${cursorInvertDelay}s` : '0s',
             transitionProperty: 'background-color',
           }}
           animate={{
@@ -465,6 +515,7 @@ function Home() {
       <div className={styles.body}>
         <div
           className={styles.heroSection}
+          id="hero"
           ref={heroRef}
           onClick={(e) => {
             heroTouched.current = true
@@ -528,9 +579,7 @@ function Home() {
             <p className={styles.caseStudyYear}>2022</p>
             <h3 className={styles.caseStudyTitle}>AllAthlete</h3>
             <p className={styles.caseStudyDescription}>
-              As the first product designer on the product team, my job was 
-              <br /><br />
-              Participated in PearX's S'23 accelerator and raised a $2,000,000+ seed round backed by 1984Ventures, ProgressionFund, and Liquid2.
+              A social recruiting platform that consolidates sports data so high school athletes get discovered and college programs can find them.
             </p>
             
             <div className={styles.dropdownSection}>
@@ -625,7 +674,7 @@ function Home() {
             <p className={styles.caseStudyYear}>2023</p>
             <h3 className={styles.caseStudyTitle}>Poppin</h3>
             <p className={styles.caseStudyDescription}>
-              A hyperlocal ticketing marketplace enabling social event discovery. I led the 0→1 design and conceptualization from MVP to v3. Managed a team of four designers.
+              A hyperlocal ticketing marketplace enabling social event discovery. I led the design and conceptualization from MVP to v3. Managed a team of four designers.
               <br /><br />
               Participated in PearX and raised a $2,000,000+ round backed by 1984Ventures, ProgressionFund, and Liquid2.
             </p>
@@ -646,7 +695,7 @@ function Home() {
                 </div>
               </div>
               <div className={`${styles.dropdownContent} ${dropdownStates['1-role'] ? styles.open : ''}`}>
-                Founding Designer and Product Lead
+                Product Designer
               </div>
             </div>
 
@@ -670,7 +719,6 @@ function Home() {
                   <li>User Research</li>
                   <li>UX/UI Design</li>
                   <li>Visual Design</li>
-                  <li>Engineer Collaboration</li>
                   <li>Front End Development</li>
                 </ul>
               </div>
@@ -694,7 +742,7 @@ function Home() {
               <div className={`${styles.dropdownContent} ${dropdownStates['1-timeline'] ? styles.open : ''}`}>
                 <ul className={styles.contributionsList}>
                   <li>$2,000,000+ GMV</li>
-                  <li>75,000+ Users</li>
+                  <li>100,000+ users</li>
                   <li>60% Weekly Retention</li>
                   <li>Round raised</li>
                 </ul>
