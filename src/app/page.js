@@ -558,7 +558,7 @@ function Home() {
                   : { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.1 }
                 }
               >
-                Design engineer. Product, interaction, and the interface.
+                Product design, visual communication, design engineering
               </motion.p>
             </div>
             <motion.span

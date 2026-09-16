@@ -48,7 +48,7 @@ function InvertCopy({ width, height, left, top }) {
       </div>
       <div className={styles.skillsWrap}>
         <p className={styles.skills}>
-          Design engineer. Product, interaction, and the interface.
+          Product design, visual communication, design engineering
         </p>
       </div>
       <span className={styles.signifier}>

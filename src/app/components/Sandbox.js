@@ -65,19 +65,7 @@ function frontIsShowing(rotateY) {
   return a < 90 || a > 270
 }
 
-function useFineHover() {
-  const [fine, setFine] = useState(false)
-  useEffect(() => {
-    const mq = window.matchMedia('(hover: hover) and (pointer: fine)')
-    const sync = () => setFine(mq.matches)
-    sync()
-    mq.addEventListener('change', sync)
-    return () => mq.removeEventListener('change', sync)
-  }, [])
-  return fine
-}
-
-function Tile({ item, isFlipped, onToggle, liftOnHover }) {
+function Tile({ item, isFlipped, onToggle }) {
   const className = `${styles.tile} ${item.wide ? styles.wide : ''} ${item.matte ? styles.matte : ''} ${isFlipped ? styles.flipped : ''}`
   const faceRef = useRef(null)
 
@@ -103,8 +91,6 @@ function Tile({ item, isFlipped, onToggle, liftOnHover }) {
       }}
       aria-pressed={ENABLE_TILE_FLIPS ? isFlipped : undefined}
       aria-label={item.title}
-      whileHover={liftOnHover && !isFlipped ? { y: -5 } : { y: 0 }}
-      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
     >
       <motion.div
         className={styles.flip}
@@ -138,7 +124,6 @@ function Tile({ item, isFlipped, onToggle, liftOnHover }) {
 
 export default function Sandbox() {
   const [flipped, setFlipped] = useState(null)
-  const liftOnHover = useFineHover()
 
   useEffect(() => {
     const section = document.getElementById('sandbox')
@@ -173,7 +158,6 @@ export default function Sandbox() {
             key={`${entry.title}-${entry.video || entry.src}`}
             item={entry}
             isFlipped={ENABLE_TILE_FLIPS && flipped === index}
-            liftOnHover={liftOnHover}
             onToggle={() => {
               if (!ENABLE_TILE_FLIPS) return
               setFlipped(flipped === index ? null : index)

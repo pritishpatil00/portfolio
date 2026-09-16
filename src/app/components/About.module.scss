@@ -365,8 +365,18 @@
     }
 
     .cardCaption {
+        position: static;
         opacity: 1;
         transform: none;
+        background: none;
+        padding: 8px 2px 0;
+        color: #8f8f8f;
+        gap: 8px;
+        flex-wrap: wrap;
+
+        span:last-child {
+            color: #5c5c5c;
+        }
     }
 
     .nowGrid {

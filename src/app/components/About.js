@@ -17,8 +17,8 @@ const PHOTOS = [
   },
   {
     src: '/images/about/cows-p.jpg',
-    title: 'Cows',
-    place: 'Cornwall Park, Auckland, NZ',
+    title: 'Cornwall Park',
+    place: 'Auckland, NZ',
     x: 16,
     y: -14,
     rotate: 7,
@@ -44,8 +44,8 @@ const PHOTOS = [
   },
   {
     src: '/images/about/london.jpg',
-    title: 'London',
-    place: 'Kings Cross, United Kingdom',
+    title: 'Kings Cross',
+    place: 'United Kingdom',
     x: -26,
     y: 4,
     rotate: 8,
@@ -53,8 +53,8 @@ const PHOTOS = [
   },
   {
     src: '/images/about/boat-p.jpg',
-    title: 'Boat',
-    place: 'Lake Union, Seattle WA',
+    title: 'Lake Union',
+    place: 'Seattle, WA',
     x: 6,
     y: -22,
     rotate: -7,
@@ -95,7 +95,7 @@ const EXPERIENCE = [
     company: 'Lore Health',
     role: 'Design Engineer',
     dates: 'Sep 2025 — Present',
-    place: 'Los Angeles',
+    place: 'Remote',
   },
   {
     company: 'Crew',
@@ -150,11 +150,11 @@ function PhotoCard({ photo, index, mx, my, hovered, setHovered }) {
           sizes="(max-width: 700px) 70vw, 360px"
           quality={80}
         />
-        <figcaption className={`${styles.cardCaption} ${isHot ? styles.cardCaptionOn : ''}`}>
-          <span>{photo.title}</span>
-          <span>{photo.place}</span>
-        </figcaption>
       </div>
+      <figcaption className={`${styles.cardCaption} ${isHot ? styles.cardCaptionOn : ''}`}>
+        <span>{photo.title}</span>
+        <span>{photo.place}</span>
+      </figcaption>
     </motion.figure>
   )
 }
@@ -190,13 +190,13 @@ export default function About() {
           </p>
           <div className={styles.heroCopy}>
             <p className={styles.body}>
-              I care about design, psychology, and technology, and the ways they lock together into experiences that actually hit a goal.
+              I care about design, psychology, and technology, and the ways they lock together into experiences that hit a goal. I enjoy making products easier to understand, and making the next action natural.
             </p>
             <p className={styles.body}>
-              Driven by high impact work. I like running cross functional teams, setting product strategy, and shipping the interface myself.
+              I'm driven by high impact work. I love working cross-functionally and creating effective interfaces for users' goals. I believe asking the right question is the first step toward understanding a goal and communicating it visually.
             </p>
             <p className={styles.body}>
-              Off hours: Smash Ultimate brackets, skating a new neighborhood, or Chelsea F.C.
+              Outside of work, I'm in Smash Ultimate brackets, skating a new neighborhood, or watching Chelsea F.C.
             </p>
             <p className={styles.buildLine}>
               <span>Build</span>

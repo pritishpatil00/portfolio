@@ -688,7 +688,6 @@ export default function AllAthleteCaseStudy() {
         </HoverFill>
         <div className={styles.footerLinks}>
           <a href="https://www.linkedin.com/in/pritish-patil/" target="_blank" rel="noreferrer">LinkedIn</a>
-          <Link href="/?skipLoading=true" onClick={(e) => { e.preventDefault(); goHome() }}>Work</Link>
         </div>
       </footer>
       <BottomBlur />
