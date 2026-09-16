@@ -153,13 +153,13 @@
 }
 
 .photoSection {
-    margin-top: 48px;
+    margin-top: 72px;
 }
 
 .stage {
     position: relative;
-    height: 82vh;
-    min-height: 640px;
+    height: 90vh;
+    min-height: 800px;
     width: min(calc(100% - 48px), 2000px);
     margin-inline: auto;
     overflow: hidden;
